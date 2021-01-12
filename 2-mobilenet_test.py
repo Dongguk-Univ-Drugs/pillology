@@ -59,15 +59,15 @@ dataset = tf.data.Dataset.from_generator(
 )
 
 
-train_size = int(0.7 * DATASET_SIZE)
-val_size = int(0.1 * DATASET_SIZE)
+train_size = int(0.8 * DATASET_SIZE)
+# val_size = int(0.1 * DATASET_SIZE)
 test_size = int(0.2 * DATASET_SIZE)
 
 dataset = dataset.shuffle(buffer_size=5000)
 train_ds = dataset.take(train_size)
 test_ds = dataset.skip(train_size)
-val_ds = dataset.skip(val_size)
-test_ds = dataset.take(test_size)
+# val_ds = dataset.skip(val_size)
+# test_ds = dataset.take(test_size)
 
 
 """ Define Model """
@@ -116,6 +116,7 @@ model.compile(
 
 history = model.fit(
     train_ds.batch(BATCH_SIZE),
-    validation_data=val_ds.batch(BATCH_SIZE),
+    # validation_data=val_ds.batch(BATCH_SIZE),
+    validation_split=0.2,
     epochs=EPOCHS
 )
