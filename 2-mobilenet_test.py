@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array, load_img
-from sklearn.metrics import classification_report
+
 import os
 import pandas as pd
 
@@ -43,10 +43,11 @@ def get_data():
         try:
             shape = shape_to_index[shape]
             color = color_to_index[color]
+            outputs = (shape, color)
             img = load_img(img_dir, target_size=(224, 224))
             img = img_to_array(img)
             img = preprocess_input(img)
-            yield (img, shape, color)
+            yield img, outputs
 
         except GeneratorExit:
             return
@@ -54,20 +55,20 @@ def get_data():
 
 dataset = tf.data.Dataset.from_generator(
     get_data,
-    output_types=(tf.float32, tf.int32, tf.int32),
-    output_shapes=(tf.TensorShape([224, 224, 3]), tf.TensorShape([]), tf.TensorShape([]))
+    output_types=(tf.float32, (tf.int32, tf.int32)),
+    output_shapes=(tf.TensorShape([224, 224, 3]), (tf.TensorShape([]), tf.TensorShape([]))),
 )
 
 
 train_size = int(0.8 * DATASET_SIZE)
 # val_size = int(0.1 * DATASET_SIZE)
 test_size = int(0.2 * DATASET_SIZE)
-
-dataset = dataset.shuffle(buffer_size=5000)
+#
+dataset = dataset.shuffle(buffer_size=2048)
 train_ds = dataset.take(train_size)
 test_ds = dataset.skip(train_size)
-# val_ds = dataset.skip(val_size)
-# test_ds = dataset.take(test_size)
+# val_ds = test_ds.skip(test_size)
+# test_ds = test_ds.take(test_size)
 
 
 """ Define Model """
@@ -116,7 +117,6 @@ model.compile(
 
 history = model.fit(
     train_ds.batch(BATCH_SIZE),
-    # validation_data=val_ds.batch(BATCH_SIZE),
-    validation_split=0.2,
+    validation_data=test_ds.batch(BATCH_SIZE),
     epochs=EPOCHS
 )
