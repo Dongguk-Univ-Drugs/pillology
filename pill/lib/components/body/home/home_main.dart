@@ -45,8 +45,7 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Row(
+    return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
@@ -62,22 +61,17 @@ class _SearchBarState extends State<SearchBar> {
           ),
           Expanded(
             flex: 2,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: null,
-              // child: ImageIcon(
-              //   AssetImage('assets/icons/search-grey.png'),
-              // ),
-              child: Text("ddd"),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                side: BorderSide.none
+              child: ImageIcon(
+                AssetImage('assets/icons/search-grey.png'),
               ),
-              color: Colors.white,
-              splashColor: colorThemeGreen,
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)
+              ),
             ),
           )
         ],
-      ),
-    );
+      );
   }
 }
