@@ -12,25 +12,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 1,
-            child: SearchBar(),
-          ),
-          //  Expanded(
-          //    flex: 3,
-          //  ),
-          //  Expanded(
-          //    flex: 3,
-          //  ),
-          //  Expanded(
-          //    flex: 3,
-          //  )
-        ],
-      ),
-    );
+        child: Container(
+            padding: EdgeInsets.all(10.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: SearchBar(),
+                ),
+                //  Expanded(
+                //    flex: 3,
+                //  ),
+                //  Expanded(
+                //    flex: 3,
+                //  ),
+                //  Expanded(
+                //    flex: 3,
+                //  )
+              ],
+            )));
   }
 }
 
@@ -46,7 +47,7 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
             flex: 7,
@@ -61,22 +62,20 @@ class _SearchBarState extends State<SearchBar> {
           ),
           Expanded(
             flex: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20), 
-                color: Colors.white
-              ),
-              child: RaisedButton(
+            child: RaisedButton(
               onPressed: null,
-              child: ImageIcon(AssetImage('assets/icons/search-grey.png'),),
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(20),
-              //   side: BorderSide.none
+              // child: ImageIcon(
+              //   AssetImage('assets/icons/search-grey.png'),
               // ),
-              splashColor: colorThemeGreen,
+              child: Text("ddd"),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+                side: BorderSide.none
               ),
+              color: Colors.white,
+              splashColor: colorThemeGreen,
             ),
-          )          
+          )
         ],
       ),
     );
