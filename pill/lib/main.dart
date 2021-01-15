@@ -19,11 +19,37 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int pageIndex = 0;
+  int currentPageIndex = 0;
+
+  List<Map<String, dynamic>> routePage = [
+    { 
+      "pageIndex" : 0,
+      "title" : Image(
+            image: AssetImage('assets/icons/logo.png'),
+            width: 200.0,
+          ),
+      "screen" : HomeScreen()
+    },
+    { 
+      "pageIndex" : 1,
+      "title" : "지도",
+      "screen" : Text("MAP SCREEN")
+    },
+    { 
+      "pageIndex" : 2,
+      "title" : "캘린더",
+      "screen" : Text("CALENDAR SCREEN")
+    },
+    { 
+      "pageIndex" : 3,
+      "title" : "나의약",
+      "screen" : Text("MYINFO SCREEN")
+    }      
+  ];
 
   changePage(int index) {
     setState(() {
-      pageIndex = index;
+      currentPageIndex = index;
     });
   }
 
@@ -33,18 +59,15 @@ class _AppState extends State<App> {
         title: '이건뭐약',
         theme: ThemeData(primaryColor: Colors.white),
         home: Scaffold(
-          appBar: customHeader(Image(
-            image: AssetImage('assets/icons/logo.png'),
-            width: 200.0,
-          )),
+          appBar: customHeader(routePage[currentPageIndex]['title']),
           body: Container(
             alignment: Alignment.center,
             color: Colors.white,
-            child: pages(pageIndex),
+            child: routePage[currentPageIndex]['screen'],
           ),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
-            currentIndex: pageIndex,
+            currentIndex: currentPageIndex,
             onTap: (int index) => changePage(index),
             selectedItemColor: Colors.black,
             items: [
