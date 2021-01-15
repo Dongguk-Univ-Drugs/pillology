@@ -22,6 +22,8 @@ environment:
 
 dependencies:
   imagebutton: ^0.0.6
+  flutter_calendar_carousel: ^1.5.2
+  intl: ^0.16.1
   flutter:
     sdk: flutter
 
