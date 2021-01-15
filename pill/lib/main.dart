@@ -37,7 +37,9 @@ class _AppState extends State<App> {
             image: AssetImage('assets/icons/logo.png'),
             width: 200.0,
           )),
-          body: Center(
+          body: Container(
+            alignment: Alignment.center,
+            color: Colors.white,
             child: pages(pageIndex),
           ),
           bottomNavigationBar: BottomNavigationBar(

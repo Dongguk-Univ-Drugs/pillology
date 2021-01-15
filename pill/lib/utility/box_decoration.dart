@@ -15,3 +15,10 @@ BoxDecoration boxDecorationMain() {
       border: Border.all(color: colorEEE),
       boxShadow: [boxShadow01()]);
 }
+BoxDecoration boxDecorationNoShadow() {
+  return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: colorEEE),
+      );
+}
