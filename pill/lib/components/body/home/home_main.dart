@@ -13,30 +13,36 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  ScrollController mainScrollController = new ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Container(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: SearchBar(),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: searchTabs(),
-                ),
-                Expanded(flex: 3, child: drugStory(context)),
-                Expanded(
-                  flex: 3,
-                  child: emergency(context),
-                ),
-              ],
-            )));
+        child: SingleChildScrollView(
+            controller: mainScrollController,
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 0.9,
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SearchBar(),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: searchTabs(),
+                    ),
+                    Expanded(flex: 3, child: drugStory(context)),
+                    Expanded(
+                      flex: 3,
+                      child: emergency(context),
+                    ),
+                  ],
+                ))));
   }
 }
 

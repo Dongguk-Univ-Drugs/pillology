@@ -22,29 +22,17 @@ class _AppState extends State<App> {
   int currentPageIndex = 0;
 
   List<Map<String, dynamic>> routePage = [
-    { 
-      "pageIndex" : 0,
-      "title" : Image(
-            image: AssetImage('assets/icons/logo.png'),
-            width: 200.0,
-          ),
-      "screen" : HomeScreen()
+    {
+      "pageIndex": 0,
+      "title": Image(
+        image: AssetImage('assets/icons/logo.png'),
+        width: 200.0,
+      ),
+      "screen": HomeScreen()
     },
-    { 
-      "pageIndex" : 1,
-      "title" : "지도",
-      "screen" : Text("MAP SCREEN")
-    },
-    { 
-      "pageIndex" : 2,
-      "title" : "캘린더",
-      "screen" : Text("CALENDAR SCREEN")
-    },
-    { 
-      "pageIndex" : 3,
-      "title" : "나의약",
-      "screen" : Text("MYINFO SCREEN")
-    }      
+    {"pageIndex": 1, "title": "지도", "screen": Text("MAP SCREEN")},
+    {"pageIndex": 2, "title": "캘린더", "screen": Text("CALENDAR SCREEN")},
+    {"pageIndex": 3, "title": "나의약", "screen": Text("MYINFO SCREEN")}
   ];
 
   changePage(int index) {
@@ -60,11 +48,13 @@ class _AppState extends State<App> {
         theme: ThemeData(primaryColor: Colors.white),
         home: Scaffold(
           appBar: customHeader(routePage[currentPageIndex]['title']),
-          body: Container(
-            alignment: Alignment.center,
-            color: Colors.white,
-            child: routePage[currentPageIndex]['screen'],
-          ),
+          body: GestureDetector(
+              onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+              child: Container(
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: routePage[currentPageIndex]['screen'],
+              )),
           bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             currentIndex: currentPageIndex,
