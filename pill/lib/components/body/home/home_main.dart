@@ -54,15 +54,18 @@ class _SearchBarState extends State<SearchBar> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
-          flex: 8,
-          child: TextFormField(
-            controller: searchController,
-            decoration: inputDecoration("검색하려는 약품명을 입력해주세요."),
-          ),
-        ),
+            flex: 8,
+            child: Container(
+                margin: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.02),
+                child: TextFormField(
+                  controller: searchController,
+                  decoration: inputDecoration("검색하려는 약품명을 입력해주세요."),
+                ))),
         Expanded(
             flex: 2,
             child: ImageButton(
+              mainAxisAlignment: MainAxisAlignment.end,
               height: 30,
               width: 30,
               children: [
@@ -272,7 +275,8 @@ Container emergency(BuildContext context) {
                   flex: 4,
                   child: TextButton(
                     onPressed: () => print("emergency1"),
-                    child: makeBoldTitleWithSize("상황별\n응급처치", 18.0, TextAlign.center),
+                    child: makeBoldTitleWithSize(
+                        "상황별\n응급처치", 18.0, TextAlign.center),
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                             vertical: MediaQuery.of(context).size.height * 0.03,
@@ -282,8 +286,7 @@ Container emergency(BuildContext context) {
                             borderRadius: BorderRadius.circular(20),
                             side: BorderSide(color: colorEEE)),
                         backgroundColor: Colors.white,
-                        elevation: 1.0
-                        ),
+                        elevation: 1.0),
                   )),
               Expanded(
                 flex: 1,
@@ -293,7 +296,8 @@ Container emergency(BuildContext context) {
                   flex: 4,
                   child: TextButton(
                     onPressed: () => print("emergency2"),
-                    child: makeBoldTitleWithSize("독극물\n응급처치", 18.0, TextAlign.center),
+                    child: makeBoldTitleWithSize(
+                        "독극물\n응급처치", 18.0, TextAlign.center),
                     style: TextButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                             vertical: MediaQuery.of(context).size.height * 0.03,
@@ -303,8 +307,7 @@ Container emergency(BuildContext context) {
                             borderRadius: BorderRadius.circular(20),
                             side: BorderSide(color: colorEEE)),
                         backgroundColor: Colors.white,
-                        elevation: 1.0
-                        ),
+                        elevation: 1.0),
                   ))
             ],
           ),
