@@ -21,6 +21,11 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+<<<<<<< Updated upstream:app/pill/pubspec.yaml
+=======
+  imagebutton: ^0.0.6
+  flutter_calendar_carousel: ^1.5.2
+>>>>>>> Stashed changes:pill/pubspec.yaml
   flutter:
     sdk: flutter
 
@@ -48,7 +53,11 @@ flutter:
   assets:
     - assets/
     - assets/icons/
+<<<<<<< Updated upstream:app/pill/pubspec.yaml
   #   - images/a_dot_ham.jpeg
+=======
+    
+>>>>>>> Stashed changes:pill/pubspec.yaml
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
