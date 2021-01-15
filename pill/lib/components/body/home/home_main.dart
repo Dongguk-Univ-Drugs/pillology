@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pill/components/body/home/search/photo_main.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
@@ -34,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Expanded(
                       flex: 2,
-                      child: searchTabs(),
+                      child: searchTabs(context),
                     ),
                     Expanded(flex: 3, child: drugStory(context)),
                     Expanded(
@@ -95,7 +96,7 @@ class _SearchBarState extends State<SearchBar> {
   }
 }
 
-Row searchTabs() {
+Row searchTabs(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
@@ -106,20 +107,26 @@ Row searchTabs() {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextButton(
-                  style: TextButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 15.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: colorEEE))),
-                  child: ImageIcon(
-                    AssetImage('assets/icons/camera-outline.png'),
-                    size: 30,
-                    color: Colors.black87,
-                  ),
-                  onPressed: () => print("camera search !")),
+                style: TextButton.styleFrom(
+                    primary: colorThemeGreen,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(color: colorEEE))),
+                child: ImageIcon(
+                  AssetImage('assets/icons/camera-outline.png'),
+                  size: 30,
+                  color: Colors.black87,
+                ),
+                // onPressed: () => print("camera search !")),
+                // onPressed: () => Navigator.push(context,
+                //     MaterialPageRoute(builder: (context) => PhotoSearch()))
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => PhotoSearch())),
+              ),
               SizedBox(height: 5.0),
-              makeSemiTitle("사진으로 검색하기")
+              makeSemiTitle(title:"사진으로 검색하기")
             ],
           )),
       Expanded(
@@ -130,6 +137,7 @@ Row searchTabs() {
             children: [
               TextButton(
                   style: TextButton.styleFrom(
+                      primary: colorThemeGreen,
                       padding: EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15.0),
                       shape: RoundedRectangleBorder(
@@ -141,7 +149,7 @@ Row searchTabs() {
               SizedBox(
                 height: 5.0,
               ),
-              makeSemiTitle("텍스트로 검색하기")
+              makeSemiTitle(title:"텍스트로 검색하기")
             ],
           )),
       Expanded(
@@ -152,6 +160,7 @@ Row searchTabs() {
             children: [
               TextButton(
                   style: TextButton.styleFrom(
+                      primary: colorThemeGreen,
                       padding: EdgeInsets.symmetric(
                           horizontal: 30.0, vertical: 15.0),
                       shape: RoundedRectangleBorder(
@@ -166,7 +175,7 @@ Row searchTabs() {
               SizedBox(
                 height: 5.0,
               ),
-              makeSemiTitle("바코드로 검색하기")
+              makeSemiTitle(title:"바코드로 검색하기")
             ],
           ))
     ],
