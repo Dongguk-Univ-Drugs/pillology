@@ -92,17 +92,20 @@ class _PhotoSearchState extends State<PhotoSearch> {
                                   Expanded(
                                     flex: 1,
                                     child: TextButton(
-                                      onPressed: () => print("등록하기 눌ㄹ미!"),
+                                      onPressed: () =>
+                                          photoOptionModal(context),
                                       child: makeSemiTitle(
                                           title: "등록하기",
                                           size: 14.0,
-                                          color: Colors.white),
+                                          color: Colors.black87),
                                       style: TextButton.styleFrom(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        backgroundColor: colorThemeGreen,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            side: BorderSide(
+                                                color: colorThemeGreen,
+                                                width: 2.0)),
+                                        // backgroundColor: colorThemeGreen,
                                       ),
                                     ),
                                   )
@@ -158,13 +161,14 @@ class _PhotoSearchState extends State<PhotoSearch> {
                                       child: makeSemiTitle(
                                           title: "등록하기",
                                           size: 14.0,
-                                          color: Colors.white),
+                                          color: Colors.black87),
                                       style: TextButton.styleFrom(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        backgroundColor: colorThemeGreen,
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            side: BorderSide(
+                                                color: colorThemeGreen,
+                                                width: 2.0)),
                                       ),
                                     ),
                                   )
@@ -219,19 +223,20 @@ Widget buildBottomSheet(BuildContext context) {
               children: [
                 Expanded(
                     flex: 4,
-                    child: ElevatedButton(
+                    child: TextButton(
                       onPressed: () => print("카메라로 찍는거임 !"),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
-                          onPrimary: colorThemeGreen,
-                          padding: EdgeInsets.symmetric(
-                              vertical: MediaQuery.of(context).size.width * 0.1,
-                              horizontal:
-                                  MediaQuery.of(context).size.width * 0.08),
-                          shape: RoundedRectangleBorder(
+                        onPrimary: colorThemeGreen,
+                        padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.width * 0.1,
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.08),
+                        shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 6.0, shadowColor: Colors.black45),
+                            side: BorderSide(color: Colors.black12)),
+                        // elevation: 16.0, shadowColor: Colors.black45
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -242,26 +247,29 @@ Widget buildBottomSheet(BuildContext context) {
                                       'assets/icons/camera-outline.png'))),
                           blankBox(flex: 1),
                           Expanded(
-                              flex: 2, child: makeSemiTitle(title: '새로 사진 찍기', size: MediaQuery.of(context).size.width * 0.04))
+                              flex: 2,
+                              child: makeSemiTitle(
+                                  title: '새로 사진 찍기',
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.04))
                         ],
                       ),
                     )),
                 blankBox(flex: 1),
                 Expanded(
                     flex: 4,
-                    child: ElevatedButton(
-                      onPressed: () => print("카메라로 찍는거임 !"),
+                    child: TextButton(
+                      onPressed: () => print("갤러리 선택 !"),
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
+                          primary: Colors.white,
                           onPrimary: colorThemeGreen,
                           padding: EdgeInsets.symmetric(
                               vertical: MediaQuery.of(context).size.width * 0.1,
                               horizontal:
                                   MediaQuery.of(context).size.width * 0.08),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          elevation: 6.0, shadowColor: Colors.black45),
+                              borderRadius: BorderRadius.circular(20),
+                              side: BorderSide(color: Colors.black12))),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -272,7 +280,11 @@ Widget buildBottomSheet(BuildContext context) {
                                       'assets/icons/images-outline.png'))),
                           blankBox(flex: 1),
                           Expanded(
-                              flex: 2, child: makeSemiTitle(title: '사진 선택하기', size: MediaQuery.of(context).size.width * 0.04))
+                              flex: 2,
+                              child: makeSemiTitle(
+                                  title: '사진 선택하기',
+                                  size:
+                                      MediaQuery.of(context).size.width * 0.04))
                         ],
                       ),
                     )),
