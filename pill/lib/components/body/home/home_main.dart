@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
             padding: EdgeInsets.all(20.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
                   flex: 1,
@@ -29,17 +30,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   flex: 2,
                   child: searchTabs(),
                 ),
-                Expanded(flex: 3, child: drugStory()),
-                Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    height: 5.0,
-                  ),
-                ),
+                Expanded(flex: 3, child: drugStory(context)),
                 Expanded(
                   flex: 3,
-                  child: emergency(),
-                )
+                  child: emergency(context),
+                ),
               ],
             )));
   }
@@ -70,10 +65,20 @@ class _SearchBarState extends State<SearchBar> {
             child: ImageButton(
               height: 30,
               width: 30,
-              children: [Image.asset('assets/icons/search-grey.png', color: color777,)],
+              children: [
+                Image.asset(
+                  'assets/icons/search-grey.png',
+                  color: color777,
+                )
+              ],
               pressedImage: Image.asset(
-                  'assets/icons/search-grey.png', color: colorThemeGreen,), // TODO: 다른 색 아이콘으로 변경하기 !
-              unpressedImage: Image.asset('assets/icons/search-grey.png', color: color777,),
+                'assets/icons/search-grey.png',
+                color: colorThemeGreen,
+              ), // TODO: 다른 색 아이콘으로 변경하기 !
+              unpressedImage: Image.asset(
+                'assets/icons/search-grey.png',
+                color: color777,
+              ),
               onTap: () => print("search pressed"),
             ))
       ],
@@ -159,7 +164,7 @@ Row searchTabs() {
   );
 }
 
-GestureDetector drugStory() {
+GestureDetector drugStory(BuildContext context) {
   return GestureDetector(
       onTap: () => print("drugs clicked"),
       child: Container(
@@ -228,9 +233,11 @@ GestureDetector drugStory() {
           )));
 }
 
-Container emergency() {
+Container emergency(BuildContext context) {
   return Container(
     padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+    margin: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.015),
     decoration: boxDecorationNoShadow(),
     child: Column(
       children: [
@@ -261,24 +268,44 @@ Container emergency() {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(
-                onPressed: () => print("emergency1"),
-                child: makeSemiTitle("상황별 응급처치"),
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 40, horizontal: 15),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(color: colorEEE))),
+              Expanded(
+                  flex: 4,
+                  child: TextButton(
+                    onPressed: () => print("emergency1"),
+                    child: makeBoldTitleWithSize("상황별\n응급처치", 18.0, TextAlign.center),
+                    style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.height * 0.03,
+                            horizontal:
+                                MediaQuery.of(context).size.height * 0.015),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: colorEEE)),
+                        backgroundColor: Colors.white,
+                        elevation: 1.0
+                        ),
+                  )),
+              Expanded(
+                flex: 1,
+                child: SizedBox(),
               ),
-              TextButton(
-                onPressed: () => print("emergency2"),
-                child: makeSemiTitle("독극물 응급처치"),
-                style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 40, horizontal: 15),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        side: BorderSide(color: colorEEE))),
-              )
+              Expanded(
+                  flex: 4,
+                  child: TextButton(
+                    onPressed: () => print("emergency2"),
+                    child: makeBoldTitleWithSize("독극물\n응급처치", 18.0, TextAlign.center),
+                    style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.height * 0.03,
+                            horizontal:
+                                MediaQuery.of(context).size.height * 0.015),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: colorEEE)),
+                        backgroundColor: Colors.white,
+                        elevation: 1.0
+                        ),
+                  ))
             ],
           ),
         )

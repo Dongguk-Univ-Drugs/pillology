@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:pill/utility/palette.dart';
 
-Text makeSemiTitle(String title) {
+Text makeBoldTitle(String title) {
   return Text(
     title,
     style: TextStyle(color: color777, fontWeight: FontWeight.bold, fontSize: 12.0),
+  );
+}
+Text makeBoldTitleWithSize(String title, double size, TextAlign textAlign) {
+  return Text(
+    title,
+    style: TextStyle(color: color777, fontWeight: FontWeight.bold, fontSize: size),
+    textAlign: textAlign,
+  );
+}
+
+Text makeSemiTitle(String title) {
+  return Text(
+    title,
+    style: TextStyle(color: color777, fontWeight: FontWeight.w600, fontSize: 12.0),
   );
 }
 
