@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/utility/box_decoration.dart';
+import 'package:pill/utility/camera.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
+import 'package:provider/provider.dart';
 
 class PhotoSearch extends StatefulWidget {
   PhotoSearch({Key key}) : super(key: key);
@@ -23,6 +25,7 @@ class _PhotoSearchState extends State<PhotoSearch> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         appBar: customHeader(makeAppTitle("사진으로 검색하기")),
         body: Center(
@@ -189,7 +192,7 @@ class _PhotoSearchState extends State<PhotoSearch> {
                           onPressed: () => print("검사하기"),
                           style: TextButton.styleFrom(
                               backgroundColor: colorThemeGreen,
-                              elevation: 1.0,
+                              elevation: 3.0,
                               primary: Colors.blue[400],
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30))),
@@ -224,7 +227,9 @@ Widget buildBottomSheet(BuildContext context) {
                 Expanded(
                     flex: 4,
                     child: TextButton(
-                      onPressed: () => print("카메라로 찍는거임 !"),
+                      // TODO : get Camera
+                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Camera())),
+                      // onPressed: () => print("tlqkf"),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
                         onPrimary: colorThemeGreen,

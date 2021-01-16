@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //header
 import 'components/header/header.dart';
@@ -8,10 +9,18 @@ import 'components/body/maps/map_main.dart';
 import 'components/body/calendar/calendar_main.dart';
 import 'components/body/personal/personal_main.dart';
 
-Future<void> main() async{
-  WidgetsFlutterBinding.ensureInitialized();  // camera
-  final cameras = await availableCameras();
-  final firstCamera = cameras.first;
+// Future<void> main() async {
+  // WidgetsFlutterBinding.ensureInitialized(); // camera
+  // final cameras = await availableCameras();
+  // final firstCamera = cameras.first;
+  // runApp(
+  //     MultiProvider(
+  //         providers: [
+  //           Provider<CameraDescription>.value(value: firstCamera)
+  //         ],
+  //         child: App()));
+// }
+void main() {
   runApp(App());
 }
 
