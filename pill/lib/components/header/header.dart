@@ -5,9 +5,9 @@ AppBar customHeader(final headerTitle, {Widget rightAction}) {
   return AppBar(
     title: headerTitle is String ? makeAppTitle(headerTitle) : headerTitle,
     elevation: 1.0,
-    actions: [
-      rightAction
-    ],
+    // actions: [
+    //   rightAction
+    // ],
   );
 }
 
