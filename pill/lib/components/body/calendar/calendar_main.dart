@@ -7,9 +7,18 @@ import 'package:intl/intl.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
+import 'package:flutter_switch/flutter_switch.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 DateTime _currentDate = new DateTime.now();
+DateTime _confirmedMorningTime = new DateTime.now();
+DateTime _confirmedAfternoonTime = new DateTime.now();
+DateTime _confirmedEveningTime = new DateTime.now();
 EventList<Event> _markedDateMap;
+bool _isMorningTimeSet = false;
+bool _isAfternoonTimeSet = false;
+bool _isEveningTimeSet = false;
+
 //TODO: change list
 final List<String> pillName = <String>['타이레놀', '아스피린', '몰라요'];
 
@@ -19,6 +28,19 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    _confirmedMorningTime = DateTime.now();
+    _confirmedAfternoonTime = DateTime.now();
+    _confirmedEveningTime = DateTime.now();
+
+    _isMorningTimeSet = false;
+    _isAfternoonTimeSet = false;
+    _isEveningTimeSet = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -71,13 +93,13 @@ Container calendar(BuildContext context) {
         /// This way you can build custom containers for specific days only, leaving rest as default.
 
         // Example: every 15th of month, we have a flight, we can place an icon in the container like that:
-        if (day.day == 15) {
-          return Center(
-            child: Icon(Icons.local_airport),
-          );
-        } else {
-          return null;
-        }
+        // if (day.day == 15) {
+        //   return Center(
+        //     child: Icon(Icons.local_airport),
+        //   );
+        // } else {
+        //   return null;
+        // }
       },
       weekFormat: false,
       markedDatesMap: _markedDateMap,
@@ -126,15 +148,11 @@ Container pillList(BuildContext context) {
               itemCount: pillName.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  height: 50,
-                  color: Colors.white,
-                  child: ElevatedButton(
+                  decoration: boxDecorationNoShadow(),
+                  margin: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.001),
+                  child: FlatButton(
                     child: Text(pillName[index]),
                     onPressed: () => showPillDetail(context, pillName[index]),
-                    style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
-                        onPrimary: Colors.black,
-                        alignment: Alignment.centerLeft),
                   ),
                 );
               }),
@@ -146,50 +164,209 @@ Container pillList(BuildContext context) {
 
 void showPillDetail(BuildContext context, String pillName) {
   showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
       context: context,
       builder: (ctx) {
-        return Container(
-            decoration: boxDecorationNoShadow(),
-            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      makeTitleWithColor(
-                          normalStart: "",
-                          emphasize: "약",
-                          normalEnd: "알림 설정",
-                          color: colorThemeGreen),
-                    ],
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Container(
+              padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        makeTitleWithColor(
+                            normalStart: "",
+                            emphasize: "약",
+                            normalEnd: "알림 설정",
+                            color: colorThemeGreen),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 7,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(pillName, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                            margin: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: colorEEE),
-                              color: colorThemeGreen,
-                            ),
-                          )),
-                      
-                    ],
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                            flex: 1,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                pillName,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              margin: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: colorEEE),
+                                color: colorThemeGreen,
+                              ),
+                            )),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                )
-              ],
-            ));
+                  Expanded(
+                      flex: 7,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                "복용 시간",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                          Expanded(
+                              flex: 5,
+                              child: Row(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text("아침"),
+                                      FlatButton(
+                                          onPressed: () {
+                                            if (_isMorningTimeSet) {
+                                              DatePicker.showDateTimePicker(
+                                                  context,
+                                                  showTitleActions: true,
+                                                  minTime: DateTime.now(),
+                                                  onChanged: (date) {},
+                                                  onConfirm: (date) {
+                                                setState(() {
+                                                  _confirmedMorningTime = date;
+                                                });
+                                              }, locale: LocaleType.ko);
+                                            }
+                                          },
+                                          child: Text(
+                                            '${_confirmedMorningTime.hour.toString()}:${_confirmedMorningTime.minute.toString()}',
+                                            style: _isMorningTimeSet
+                                                ? TextStyle(color: Colors.black)
+                                                : TextStyle(color: Colors.grey),
+                                          )),
+                                      FlutterSwitch(
+                                        value: _isMorningTimeSet,
+                                        onToggle: (val) {
+                                          setState(() {
+                                            _isMorningTimeSet = val;
+                                          });
+                                        },
+                                        activeColor: colorThemeGreen,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Expanded(
+                              flex: 5,
+                              child: Row(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text("점심"),
+                                      FlatButton(
+                                          onPressed: () {
+                                            if (_isAfternoonTimeSet) {
+                                              DatePicker.showDateTimePicker(
+                                                  context,
+                                                  showTitleActions: true,
+                                                  minTime: DateTime.now(),
+                                                  onChanged: (date) {},
+                                                  onConfirm: (date) {
+                                                setState(() {
+                                                  _confirmedAfternoonTime =
+                                                      date;
+                                                });
+                                              }, locale: LocaleType.ko);
+                                            }
+                                          },
+                                          child: Text(
+                                            '${_confirmedAfternoonTime.hour.toString()}:${_confirmedAfternoonTime.minute.toString()}',
+                                            style: _isAfternoonTimeSet
+                                                ? TextStyle(color: Colors.black)
+                                                : TextStyle(color: Colors.grey),
+                                          )),
+                                      FlutterSwitch(
+                                        value: _isAfternoonTimeSet,
+                                        onToggle: (val) {
+                                          setState(() {
+                                            _isAfternoonTimeSet = val;
+                                          });
+                                        },
+                                        activeColor: colorThemeGreen,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                          Expanded(
+                              flex: 5,
+                              child: Row(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text("저녁"),
+                                      FlatButton(
+                                          onPressed: () {
+                                            if (_isEveningTimeSet) {
+                                              DatePicker.showDateTimePicker(
+                                                  context,
+                                                  showTitleActions: true,
+                                                  minTime: DateTime.now(),
+                                                  onChanged: (date) {},
+                                                  onConfirm: (date) {
+                                                setState(() {
+                                                  _confirmedEveningTime = date;
+                                                });
+                                              }, locale: LocaleType.ko);
+                                            }
+                                          },
+                                          child: Text(
+                                            '${_confirmedEveningTime.hour.toString()}:${_confirmedEveningTime.minute.toString()}',
+                                            style: _isEveningTimeSet
+                                                ? TextStyle(color: Colors.black)
+                                                : TextStyle(color: Colors.grey),
+                                          )),
+                                      FlutterSwitch(
+                                        value: _isEveningTimeSet,
+                                        onToggle: (val) {
+                                          setState(() {
+                                            _isEveningTimeSet = val;
+                                          });
+                                        },
+                                        activeColor: colorThemeGreen,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                        ],
+                      )),
+                ],
+              ));
+        });
       });
 }
