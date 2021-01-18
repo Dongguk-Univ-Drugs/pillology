@@ -45,8 +45,8 @@ class CameraState extends State<Camera> {
       // initialize cameras.
       cameras = await availableCameras();
       // initialize camera controllers.
-      _controller = new CameraController(cameras[0], ResolutionPreset.medium);
-      
+      _controller = new CameraController(cameras[0], ResolutionPreset.high);
+
       _initializeControllerFuture = _controller.initialize();
     } on CameraException catch (_) {
       // do something on error.
@@ -72,24 +72,20 @@ class CameraState extends State<Camera> {
       // 카메라 프리뷰를 보여주기 전에 컨트롤러 초기화를 기다려야 합니다. 컨트롤러 초기화가
       // 완료될 때까지 FutureBuilder를 사용하여 로딩 스피너를 보여주세요.
       body: Container(
-          child: Column(children: [
-        Expanded(flex: 1, child: Text(' ')),
-        Expanded(
-            flex: 3,
-            child: FutureBuilder<void>(
-              future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // Future가 완료되면, 프리뷰를 보여줍니다.
-                  return CameraPreview(_controller);
-                } else {
-                  // 그렇지 않다면, 진행 표시기를 보여줍니다.
-                  return loadingPage(context);
-                }
-              },
-            )),
-        Expanded(flex: 1, child: Text(' ')),
-      ])),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // Future가 완료되면, 프리뷰를 보여줍니다.
+                return CameraPreview(_controller);
+              } else {
+                // 그렇지 않다면, 진행 표시기를 보여줍니다.
+                return loadingPage(context);
+              }
+            },
+          )),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.camera_alt),
         // onPressed 콜백을 제공합니다.

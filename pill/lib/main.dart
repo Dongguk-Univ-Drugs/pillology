@@ -20,9 +20,13 @@ import 'components/body/personal/personal_main.dart';
   //         ],
   //         child: App()));
 // }
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(App());
 }
+// void main() {
+//   runApp(App());
+// }
 
 class App extends StatefulWidget {
   App({Key key}) : super(key: key);
