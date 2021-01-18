@@ -1,5 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:pill/components/body/home/search/gallery.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/model/provider.dart';
 import 'package:pill/utility/box_decoration.dart';
@@ -16,6 +18,8 @@ class PhotoSearch extends StatefulWidget {
 class _PhotoSearchState extends State<PhotoSearch> {
   String defaultImage = 'assets/icons/pill.png';
   bool isFront = true;
+  
+  final picker = ImagePicker();
 
   photoOptionModal(BuildContext context, bool pressed) {
     print("before : " +
@@ -226,6 +230,22 @@ class _PhotoSearchState extends State<PhotoSearch> {
                 ))));
   }
 
+  Future getImage(BuildContext context) async {
+
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        // _image = File(pickedFile.path);
+        Provider.of<PhotoSearchImageStore>(context, listen: false).store(pickedFile.path, isFront ? 0 : 1);
+      } else {
+        print('No image selected.');
+      }
+    });
+
+    Navigator.pop(context);
+  }
+
   Widget buildBottomSheet(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(20.0),
@@ -284,8 +304,7 @@ class _PhotoSearchState extends State<PhotoSearch> {
                   Expanded(
                       flex: 4,
                       child: TextButton(
-                        onPressed: () => Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => Gallery())),
+                        onPressed: () => getImage(context),
                         style: ElevatedButton.styleFrom(
                             primary: Colors.white,
                             onPrimary: colorThemeGreen,
