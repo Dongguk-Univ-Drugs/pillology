@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pill/components/body/home/search/result.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/model/provider.dart';
 import 'package:pill/utility/box_decoration.dart';
@@ -212,7 +213,7 @@ class _PhotoSearchState extends State<PhotoSearch> {
                     Expanded(
                       flex: 1,
                       child: TextButton(
-                          onPressed: () => print("검사하기"),
+                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResult())),
                           style: TextButton.styleFrom(
                               backgroundColor: colorThemeGreen,
                               elevation: 3.0,

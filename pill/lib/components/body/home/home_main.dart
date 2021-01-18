@@ -197,9 +197,9 @@ GestureDetector drugStory(BuildContext context) {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     makeTitleWithColor(
-                        normalStart: "오늘의",
+                        normalStart: "오늘의 ",
                         emphasize: "약",
-                        normalEnd: "이야기",
+                        normalEnd: " 이야기",
                         color: colorThemeGreen),
                     ImageIcon(
                         AssetImage('assets/icons/chevron-forward-outline.png'),
@@ -268,7 +268,7 @@ Container emergency(BuildContext context) {
               makeTitleWithColor(
                   normalStart: "",
                   emphasize: "응급처치",
-                  normalEnd: "방법",
+                  normalEnd: " 방법",
                   color: colorThemeGreen),
               ImageIcon(AssetImage('assets/icons/chevron-forward-outline.png'),
                   size: 20, color: Colors.black87),

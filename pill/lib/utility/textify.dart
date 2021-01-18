@@ -33,11 +33,12 @@ Text makeSemiTitle(
 }
 
 RichText makeTitleWithColor(
-    {String normalStart, String emphasize, String normalEnd, Color color}) {
+    {String normalStart, String emphasize, String normalEnd, Color color, TextAlign textAlign}) {
   return RichText(
+    textAlign: textAlign == null ? TextAlign.start : textAlign,
     text: TextSpan(children: <TextSpan>[
       TextSpan(
-          text: normalStart + " ",
+          text: normalStart,
           style: TextStyle(
               color: colorTitle, fontSize: 16.0, fontWeight: FontWeight.w800)),
       TextSpan(
@@ -45,7 +46,7 @@ RichText makeTitleWithColor(
           style: TextStyle(
               color: color, fontSize: 18.0, fontWeight: FontWeight.w900)),
       TextSpan(
-          text: " " + normalEnd,
+          text: normalEnd,
           style: TextStyle(
               color: colorTitle, fontSize: 16.0, fontWeight: FontWeight.w800)),
     ]),

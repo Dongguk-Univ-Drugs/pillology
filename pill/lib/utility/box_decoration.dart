@@ -17,11 +17,11 @@ BoxDecoration boxDecorationMain() {
       boxShadow: [boxShadow01()]);
 }
 
-BoxDecoration boxDecorationNoShadow() {
+BoxDecoration boxDecorationNoShadow({Color color, int border}) {
   return BoxDecoration(
-    color: Colors.white,
+    color: color == null ? Colors.white : color,
     borderRadius: BorderRadius.circular(20),
-    border: Border.all(color: colorEEE),
+    border: border == 0 ? Border.all(color: colorEEE) : Border.all(color: Colors.transparent),
   );
 }
 
