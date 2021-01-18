@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:pill/components/header/header.dart';
+import 'package:pill/model/provider.dart';
 import 'package:pill/utility/box_decoration.dart';
-import 'package:pill/utility/camera.dart';
+import 'package:pill/components/body/home/search/camera.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
 import 'package:provider/provider.dart';
 
 class PhotoSearch extends StatefulWidget {
-  PhotoSearch({Key key}) : super(key: key);
 
   @override
   _PhotoSearchState createState() => _PhotoSearchState();
 }
 
 class _PhotoSearchState extends State<PhotoSearch> {
-  Image defaultImage = new Image.asset('assets/icons/pill.png');
+  String defaultImage = 'assets/icons/pill.png';
+  bool isFront = true;
 
-  photoOptionModal(BuildContext context) {
+  photoOptionModal(BuildContext context, bool pressed) {
+    print("before : " + isFront.toString() + "\t>\tafter : " + pressed.toString());
+    setState(() {
+      isFront = pressed;
+    });
     return showModalBottomSheet(
         context: context,
         builder: buildBottomSheet,
@@ -24,7 +29,17 @@ class _PhotoSearchState extends State<PhotoSearch> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+
+    PhotoSearchImageStore storage = Provider.of<PhotoSearchImageStore>(context);
+    
+    String frontImage =  storage.storage[0] != 'none' ? storage.storage[0] : defaultImage;
+    String backImage = storage.storage[1] != 'none' ? storage.storage[1] : defaultImage;
 
     return Scaffold(
         appBar: customHeader(makeAppTitle("사진으로 검색하기")),
@@ -89,14 +104,14 @@ class _PhotoSearchState extends State<PhotoSearch> {
                                   Expanded(flex: 1, child: SizedBox()),
                                   Expanded(
                                     flex: 5,
-                                    child: dottedBorderContainer(defaultImage),
+                                    child: dottedBorderContainer(frontImage),
                                   ),
                                   Expanded(flex: 1, child: SizedBox()),
                                   Expanded(
                                     flex: 1,
                                     child: TextButton(
                                       onPressed: () =>
-                                          photoOptionModal(context),
+                                          photoOptionModal(context, true),
                                       child: makeSemiTitle(
                                           title: "등록하기",
                                           size: 14.0,
@@ -153,14 +168,14 @@ class _PhotoSearchState extends State<PhotoSearch> {
                                   Expanded(flex: 1, child: SizedBox()),
                                   Expanded(
                                     flex: 5,
-                                    child: dottedBorderContainer(defaultImage),
+                                    child: dottedBorderContainer(backImage),
                                   ),
                                   Expanded(flex: 1, child: SizedBox()),
                                   Expanded(
                                     flex: 1,
                                     child: TextButton(
                                       onPressed: () =>
-                                          photoOptionModal(context),
+                                          photoOptionModal(context, false),
                                       child: makeSemiTitle(
                                           title: "등록하기",
                                           size: 14.0,
@@ -206,9 +221,7 @@ class _PhotoSearchState extends State<PhotoSearch> {
                   ],
                 ))));
   }
-}
-
-Widget buildBottomSheet(BuildContext context) {
+  Widget buildBottomSheet(BuildContext context) {
   return Container(
       padding: EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -227,9 +240,7 @@ Widget buildBottomSheet(BuildContext context) {
                 Expanded(
                     flex: 4,
                     child: TextButton(
-                      // TODO : get Camera
-                      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Camera())),
-                      // onPressed: () => print("tlqkf"),
+                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Camera(isFront: isFront))),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
                         onPrimary: colorThemeGreen,
@@ -306,3 +317,6 @@ Widget buildBottomSheet(BuildContext context) {
         ],
       ));
 }
+
+}
+

@@ -28,11 +28,16 @@ BoxDecoration boxDecorationNoShadow() {
 DottedBorder dottedBorderContainer(final childWidget) {
   return DottedBorder(
     borderType: BorderType.RRect,
-    color: colorEEE,
+    color: childWidget != 'assets/icons/pill.png' ? colorThemeGreen : colorEEE,
     radius: Radius.circular(20.0),
     dashPattern: [12,6],
     strokeWidth: 3.0,
-    child: Center(child: childWidget),
+    child: Center(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.0),
+        child: Image.asset(childWidget, width: 250, height: 250, fit: BoxFit.cover),
+      )
+    ),
   );
 }
 

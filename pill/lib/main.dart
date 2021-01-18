@@ -1,4 +1,5 @@
 import 'package:camera/camera.dart';
+import 'package:pill/model/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 //header
@@ -9,24 +10,11 @@ import 'components/body/maps/map_main.dart';
 import 'components/body/calendar/calendar_main.dart';
 import 'components/body/personal/personal_main.dart';
 
-// Future<void> main() async {
-  // WidgetsFlutterBinding.ensureInitialized(); // camera
-  // final cameras = await availableCameras();
-  // final firstCamera = cameras.first;
-  // runApp(
-  //     MultiProvider(
-  //         providers: [
-  //           Provider<CameraDescription>.value(value: firstCamera)
-  //         ],
-  //         child: App()));
-// }
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  PhotoSearchImageStore storage;
   runApp(App());
 }
-// void main() {
-//   runApp(App());
-// }
 
 class App extends StatefulWidget {
   App({Key key}) : super(key: key);
@@ -60,54 +48,62 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: '이건뭐약',
-        theme: ThemeData(primaryColor: Colors.white),
-        home: Scaffold(
-          appBar: customHeader(routePage[currentPageIndex]['title']),
-          body: GestureDetector(
-              onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: routePage[currentPageIndex]['screen'],
-              )),
-          bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: currentPageIndex,
-            onTap: (int index) => changePage(index),
-            selectedItemColor: Colors.black,
-            items: [
-              BottomNavigationBarItem(
-                  label: "홈",
-                  icon: ImageIcon(
-                      AssetImage('assets/icons/home-outline-black.png'),
-                      size: 25),
-                  activeIcon:
-                      ImageIcon(AssetImage('assets/icons/home.png'), size: 25)),
-              BottomNavigationBarItem(
-                  label: "지도",
-                  icon: ImageIcon(AssetImage('assets/icons/map-outline.png'),
-                      size: 25),
-                  activeIcon:
-                      ImageIcon(AssetImage('assets/icons/map.png'), size: 25)),
-              BottomNavigationBarItem(
-                  label: "캘린더",
-                  icon: ImageIcon(
-                      AssetImage('assets/icons/calendar-outline.png'),
-                      size: 25),
-                  activeIcon: ImageIcon(AssetImage('assets/icons/calendar.png'),
-                      size: 25)),
-              BottomNavigationBarItem(
-                  label: "나의 약",
-                  icon: ImageIcon(AssetImage('assets/icons/person.png'),
-                      size: 25),
-                  activeIcon: ImageIcon(
-                      AssetImage('assets/icons/person-outline.png'),
-                      size: 25))
-            ],
-          ),
-        ));
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<PhotoSearchImageStore>(
+              create: (context) => PhotoSearchImageStore())
+        ],
+        child: MaterialApp(
+            title: '이건뭐약',
+            theme: ThemeData(primaryColor: Colors.white),
+            home: Scaffold(
+              appBar: customHeader(routePage[currentPageIndex]['title']),
+              body: GestureDetector(
+                  onTap: () =>
+                      FocusScope.of(context).requestFocus(new FocusNode()),
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: Colors.white,
+                    child: routePage[currentPageIndex]['screen'],
+                  )),
+              bottomNavigationBar: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                currentIndex: currentPageIndex,
+                onTap: (int index) => changePage(index),
+                selectedItemColor: Colors.black,
+                items: [
+                  BottomNavigationBarItem(
+                      label: "홈",
+                      icon: ImageIcon(
+                          AssetImage('assets/icons/home-outline-black.png'),
+                          size: 25),
+                      activeIcon: ImageIcon(AssetImage('assets/icons/home.png'),
+                          size: 25)),
+                  BottomNavigationBarItem(
+                      label: "지도",
+                      icon: ImageIcon(
+                          AssetImage('assets/icons/map-outline.png'),
+                          size: 25),
+                      activeIcon: ImageIcon(AssetImage('assets/icons/map.png'),
+                          size: 25)),
+                  BottomNavigationBarItem(
+                      label: "캘린더",
+                      icon: ImageIcon(
+                          AssetImage('assets/icons/calendar-outline.png'),
+                          size: 25),
+                      activeIcon: ImageIcon(
+                          AssetImage('assets/icons/calendar.png'),
+                          size: 25)),
+                  BottomNavigationBarItem(
+                      label: "나의 약",
+                      icon: ImageIcon(AssetImage('assets/icons/person.png'),
+                          size: 25),
+                      activeIcon: ImageIcon(
+                          AssetImage('assets/icons/person-outline.png'),
+                          size: 25))
+                ],
+              ),
+            )));
   }
 
   pages(int index) {
