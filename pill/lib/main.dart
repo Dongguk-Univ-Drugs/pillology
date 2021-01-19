@@ -6,9 +6,10 @@ import 'components/body/home/home_main.dart';
 import 'components/body/maps/map_main.dart';
 import 'components/body/calendar/calendar_main.dart';
 import 'components/body/personal/personal_main.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() {
-  runApp(App());
+  initializeDateFormatting().then((_) => runApp(App()));
 }
 
 class App extends StatefulWidget {
@@ -26,8 +27,9 @@ class _AppState extends State<App> {
       pageIndex = index;
     });
   }
+
   @override
-  initState(){
+  initState() {
     _title = 'Some default value';
   }
 
@@ -38,7 +40,9 @@ class _AppState extends State<App> {
         theme: ThemeData(primaryColor: Colors.white),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          appBar: AppBar(title: Text(_title),),
+          appBar: AppBar(
+            title: Text(_title),
+          ),
           body: Center(
             child: pages(pageIndex),
           ),
@@ -82,19 +86,20 @@ class _AppState extends State<App> {
 
   pages(int index) {
     switch (index) {
-      case 0: {
-        _title = '이건뭐약';
-        return HomeScreen();
-      }
-      case 1: {
-        return Text("MAP SCREEN");
-
-      }
-      case 2:{
-        _title = '캘린더';
-        return CalendarPage();
-
-      }
+      case 0:
+        {
+          _title = '이건뭐약';
+          return HomeScreen();
+        }
+      case 1:
+        {
+          return Text("MAP SCREEN");
+        }
+      case 2:
+        {
+          _title = '캘린더';
+          return CalendarPage();
+        }
       case 3:
         return Text("PERSON SCREEN");
     }
