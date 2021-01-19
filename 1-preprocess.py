@@ -48,9 +48,12 @@ def preprocessing(dataframe):
     dataframe = dataframe.copy()
     dataframe.drop_duplicates(['품목일련번호'], keep='first', inplace=True)
     dataframe = dataframe[dataframe['표시앞'].isna() == False]
+    dataframe['색상뒤'] = dataframe['색상뒤'].fillna(dataframe['색상앞'])
     dataframe['shape'] = dataframe['의약품제형'].apply(reduce_shape)
-    dataframe['color'] = dataframe['색상앞'].apply(reduce_color)
-    dataframe = dataframe[dataframe['color'] != 'etc']
+    dataframe['front_color'] = dataframe['색상앞'].apply(reduce_color)
+    dataframe['back_color'] = dataframe['색상뒤'].apply(reduce_color)
+    dataframe = dataframe[dataframe['front_color'] != 'etc']
+    dataframe = dataframe[dataframe['back_color'] != 'etc']
     dataframe['path'] = dataframe['품목일련번호'].map(imageid_path_dict.get)
 
     """ 식품의약품안전처에서 이미지 제공에 에러가 발생하는 것들 """
@@ -58,7 +61,7 @@ def preprocessing(dataframe):
                    axis=0, inplace=True)
     dataframe.drop(dataframe[dataframe['품목일련번호'] == 201603799].index,
                    axis=0, inplace=True)
-    dataframe = dataframe[['품목일련번호', 'shape', 'color', 'path']]
+    dataframe = dataframe[['품목일련번호', 'shape', 'front_color', 'back_color', 'path']]
     return dataframe
 
 
