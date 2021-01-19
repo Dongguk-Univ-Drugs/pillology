@@ -37,13 +37,15 @@ def get_data():
     df = pd.read_csv(os.path.join(MAIN_DIR, 'dataframe.csv'))
     images = df['path']
     shapes = df['shape']
-    colors = df['color']
+    f_colors = df['front_color']
+    b_colors = df['back_color']
 
-    for img_dir, shape, color in zip(images, shapes, colors):
+    for img_dir, shape, f_color, b_color in zip(images, shapes, f_colors, b_colors):
         try:
             shape = shape_to_index[shape]
-            color = color_to_index[color]
-            outputs = (shape, color)
+            f_color = color_to_index[f_color]
+            b_color = color_to_index[b_color]
+            outputs = (shape, f_color, b_color)
             img = load_img(img_dir, target_size=(224, 224))
             img = img_to_array(img)
             img = preprocess_input(img)
@@ -55,8 +57,9 @@ def get_data():
 
 dataset = tf.data.Dataset.from_generator(
     get_data,
-    output_types=(tf.float32, (tf.int32, tf.int32)),
-    output_shapes=(tf.TensorShape([224, 224, 3]), (tf.TensorShape([]), tf.TensorShape([]))),
+    output_types=(tf.float32, (tf.int32, tf.int32, tf.int32)),
+    output_shapes=(tf.TensorShape([224, 224, 3]),
+                   (tf.TensorShape([]), tf.TensorShape([]), tf.TensorShape([]))),
 )
 
 
@@ -98,10 +101,11 @@ x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 
 shape_layer = tf.keras.layers.Dense(5, activation='softmax', name='shape_layer')(x)
-color_layer = tf.keras.layers.Dense(5, activation='softmax', name='color_layer')(x)
+f_color_layer = tf.keras.layers.Dense(5, activation='softmax', name='f_color_layer')(x)
+b_color_layer = tf.keras.layers.Dense(5, activation='softmax', name='b_color_layer')(x)
 
 model = tf.keras.models.Model(inputs=base_model.input,
-                              outputs=[shape_layer, color_layer])
+                              outputs=[shape_layer, f_color_layer, b_color_layer])
 
 for layer in base_model.layers:
     layer.trainable = False
@@ -111,8 +115,9 @@ optimizer = tf.keras.optimizers.Adam(LR)
 model.compile(
     optimizer=optimizer,
     loss={'shape_layer': tf.keras.losses.SparseCategoricalCrossentropy(),
-          'color_layer': tf.keras.losses.SparseCategoricalCrossentropy()},
-    metrics={'shape_layer': 'accuracy', 'color_layer': 'accuracy'}
+          'f_color_layer': tf.keras.losses.SparseCategoricalCrossentropy(),
+          'b_color_layer': tf.keras.losses.SparseCategoricalCrossentropy()},
+    metrics={'shape_layer': 'acc', 'f_color_layer': 'acc', 'b_color_layer': 'acc'}
 )
 
 history = model.fit(
