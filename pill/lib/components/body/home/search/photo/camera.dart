@@ -6,7 +6,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
-import 'package:pill/components/body/home/search/photo_main.dart';
+import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/loading.dart';
 import 'package:pill/model/provider.dart';
 import 'package:pill/utility/palette.dart';
@@ -184,7 +184,7 @@ class CameraState extends State<Camera> {
                                           await _controller.takePicture().then(
                                               (XFile file) =>
                                                   savedPath = file.path);
-
+                                          // 1080 p
                                           // 사진을 촬영하면, 새로운 화면으로 넘어갑니다.
                                           PhotoSearchImageStore storage = Provider.of<PhotoSearchImageStore>(context, listen: false);
                                           storage.store(savedPath, widget.isFront ? 0 : 1);

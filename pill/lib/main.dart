@@ -12,7 +12,6 @@ import 'components/body/personal/personal_main.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PhotoSearchImageStore storage;
   runApp(App());
 }
 

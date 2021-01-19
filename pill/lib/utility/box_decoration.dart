@@ -21,7 +21,7 @@ BoxDecoration boxDecorationNoShadow({Color color, int border}) {
   return BoxDecoration(
     color: color == null ? Colors.white : color,
     borderRadius: BorderRadius.circular(20),
-    border: border == 0 ? Border.all(color: colorEEE) : Border.all(color: Colors.transparent),
+    border: border == 0 || border == null ? Border.all(color: colorEEE) : Border.all(color: Colors.transparent),
   );
 }
 
