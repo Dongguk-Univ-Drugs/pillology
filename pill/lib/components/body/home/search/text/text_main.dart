@@ -26,7 +26,7 @@ class _TextSearchState extends State<TextSearch> {
     "복지부분류": "",
     "구분": ""
   };
-  var optionTextOpen = false;
+  var optionTextOpen = true;
 
   // 선택사항 - 모양 정보 -> total
   var shapeInfoJson = <String, dynamic>{
@@ -36,7 +36,7 @@ class _TextSearchState extends State<TextSearch> {
     '모양': '',
     '색상': ''
   };
-  var optionShapeOpen = false;
+  var optionShapeOpen = true;
 
   @override
   void initState() {
@@ -142,7 +142,7 @@ class _TextSearchState extends State<TextSearch> {
                               duration: Duration(milliseconds: 500),
                               top: !optionShapeOpen
                                   ? MediaQuery.of(context).size.width * 0.08
-                                  : MediaQuery.of(context).size.width * 0.16,
+                                  : MediaQuery.of(context).size.width * 0.12,
                               child: optionalInfoShapeContent(context),
                             ),
                             Positioned(
