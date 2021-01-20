@@ -38,6 +38,8 @@ class _TextSearchState extends State<TextSearch> {
   };
   var optionShapeOpen = true;
 
+  int _slidingVal = 0;
+
   @override
   void initState() {
     super.initState();
@@ -220,8 +222,13 @@ class _TextSearchState extends State<TextSearch> {
                 TextButton(
                   onPressed: () => _showPicker(
                       context, textInfoJson, index, textInfoSubDropDownItem),
-                  child: makeSemiTitle(
-                      title: textInfoJson[textInfoJson.keys.elementAt(index)]),
+                  child: textInfoJson[textInfoJson.keys.elementAt(index)]
+                              .length ==
+                          0
+                      ? makeSemiTitle(title: '선택하기')
+                      : makeSemiTitle(
+                          title:
+                              textInfoJson[textInfoJson.keys.elementAt(index)]),
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -234,8 +241,13 @@ class _TextSearchState extends State<TextSearch> {
                 TextButton(
                   onPressed: () => _showPicker(
                       context, textInfoJson, index, textInfoSubDropDownItem2),
-                  child: makeSemiTitle(
-                      title: textInfoJson[textInfoJson.keys.elementAt(index)]),
+                  child: textInfoJson[textInfoJson.keys.elementAt(index)]
+                              .length ==
+                          0
+                      ? makeSemiTitle(title: '선택하기')
+                      : makeSemiTitle(
+                          title:
+                              textInfoJson[textInfoJson.keys.elementAt(index)]),
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -307,8 +319,42 @@ class _TextSearchState extends State<TextSearch> {
                 TextButton(
                   onPressed: () => _showBottomSheetColorPicker(context),
                   child: makeSemiTitle(
-                      title:
+                      title: 'RGB ' +
                           shapeInfoJson[shapeInfoJson.keys.elementAt(index)]),
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      primary: colorThemeGreen),
+                ));
+          } else if (shapeInfoJson.keys.elementAt(index) == '제형') {
+            return inputFormRowItem(
+                shapeInfoJson.keys.elementAt(index),
+                CupertinoSlidingSegmentedControl(
+                    children: {
+                      0: makeSemiTitle(title: '정제'),
+                      1: makeSemiTitle(title: '경질캡슐'),
+                      2: makeSemiTitle(title: '연질캡슐')
+                    },
+                    groupValue: _slidingVal,
+                    onValueChanged: (value) {
+                      setState(() {
+                        shapeInfoJson[shapeInfoJson.keys.elementAt(index)] =
+                            shapeInfoSubSlidingSegmentedData[value];
+                        _slidingVal = value;
+                      });
+                    }));
+          } else if (shapeInfoJson.keys.elementAt(index) == '모양') {
+            return inputFormRowItem(
+                shapeInfoJson.keys.elementAt(index),
+                TextButton(
+                  onPressed: () => _showBottomSheetShapePicker(context),
+                  child: makeSemiTitle(
+                      title: shapeInfoJson[shapeInfoJson.keys.elementAt(index)]
+                                  .length ==
+                              0
+                          ? '선택하기'
+                          : shapeInfoJson[shapeInfoJson.keys.elementAt(index)]),
                   style: TextButton.styleFrom(
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
@@ -367,80 +413,147 @@ class _TextSearchState extends State<TextSearch> {
 
   _showBottomSheetColorPicker(BuildContext context) {
     showModalBottomSheet(
-      backgroundColor: Color(0x00000000),
-      context: context, 
-      builder: optionalInfoShapeContentColorPicker
-      );
+        backgroundColor: Color(0x00000000),
+        context: context,
+        builder: optionalInfoShapeContentColorPicker);
+  }
+
+  _showBottomSheetShapePicker(BuildContext context) {
+    showModalBottomSheet(
+        backgroundColor: Color(0x00000000),
+        context: context,
+        builder: optionalInfoShapeContentShapePicker);
   }
 
   Widget optionalInfoShapeContentColorPicker(BuildContext context) {
     return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.6,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20))),
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  makeBoldTitle(title: '색상 고르기', size: 16.0, color: color333),
-                  SizedBox(height: 20.0,),
-                  GridView.builder(
-                    scrollDirection: Axis.vertical,
-                    itemCount: shapeInfoSubDropDownItemColor.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4, childAspectRatio: 1),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Column(
-                          children: <Widget>[
-                            new FloatingActionButton(
-                              onPressed: () {
-                                setState(() {
-                                  shapeInfoJson['색상'] =
-                                      (shapeInfoSubDropDownItemColor[index]
-                                              .red
-                                              .toString() +
-                                          ',' +
-                                          shapeInfoSubDropDownItemColor[index]
-                                              .green
-                                              .toString() +
-                                          ',' +
-                                          shapeInfoSubDropDownItemColor[index]
-                                              .blue
-                                              .toString());
-                                });
-                                Navigator.pop(context);
-                              },
-                              child: Icon(Icons.done,
-                                  color: index == shapeInfoJson['색상']
-                                      ? Colors.white
-                                      : shapeInfoSubDropDownItemColor
-                                          .elementAt(index),
-                                  size: 24),
-                              backgroundColor: shapeInfoSubDropDownItemColor
-                                  .elementAt(index),
-                              elevation: 1.0,
-                              heroTag: null,
-                            ),
-                            Offstage(
-                              offstage: index != shapeInfoJson['색상'],
-                              child: Text("Color Name"),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    shrinkWrap: true,
-                  )
-                ],
-              ),
-            );
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.6,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      padding: EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          makeBoldTitle(title: '색상 고르기', size: 16.0, color: color333),
+          SizedBox(
+            height: 20.0,
+          ),
+          GridView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: shapeInfoSubDropDownItemColor.length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, childAspectRatio: 1),
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Column(
+                  children: <Widget>[
+                    new FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          shapeInfoJson['색상'] =
+                              (shapeInfoSubDropDownItemColor[index]
+                                      .red
+                                      .toString() +
+                                  ',' +
+                                  shapeInfoSubDropDownItemColor[index]
+                                      .green
+                                      .toString() +
+                                  ',' +
+                                  shapeInfoSubDropDownItemColor[index]
+                                      .blue
+                                      .toString());
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.done,
+                          color: index == shapeInfoJson['색상']
+                              ? Colors.white
+                              : shapeInfoSubDropDownItemColor.elementAt(index),
+                          size: 24),
+                      backgroundColor:
+                          shapeInfoSubDropDownItemColor.elementAt(index),
+                      elevation: 1.0,
+                      heroTag: null,
+                    ),
+                    Offstage(
+                      offstage: index != shapeInfoJson['색상'],
+                      child: Text("Color Name"),
+                    ),
+                  ],
+                ),
+              );
+            },
+            shrinkWrap: true,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget optionalInfoShapeContentShapePicker(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height * 0.5,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+      padding: EdgeInsets.all(20.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          makeBoldTitle(title: '모양 고르기', size: 16.0, color: color333),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.05,
+          ),
+          GridView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: shapeInfoSubDropDownItemShape.keys.toList().length,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4, childAspectRatio: 1),
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Column(
+                  children: <Widget>[
+                    new FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          shapeInfoJson['모양'] = shapeInfoSubDropDownItemShape
+                              .keys
+                              .elementAt(index);
+                        });
+                        Navigator.pop(context);
+                      },
+                      // child: Icon(Icons.done,
+                      //     color: shapeInfoSubDropDownItemShape.keys
+                      //                 .elementAt(index) ==
+                      //             shapeInfoJson['모양']
+                      //         ? colorThemeGreen
+                      //         : Colors.white,
+                      //     size: 24),
+                      child: shapeInfoSubDropDownItemShape.values.elementAt(index),
+                      backgroundColor: color777,
+                      elevation: 1.0,
+                      heroTag: null,
+                    ),
+                    SizedBox(height: 5.0,),
+                    makeSemiTitle(title : shapeInfoSubDropDownItemShape.keys.elementAt(index))
+                  ],
+                ),
+              );
+            },
+            shrinkWrap: true,
+          )
+        ],
+      ),
+    );
   }
 
   CupertinoPicker inputFromDropDown(

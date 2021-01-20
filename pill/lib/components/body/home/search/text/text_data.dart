@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pill/utility/palette.dart';
 
 var textInfoSubDropDownItem = <Text>[
   Text('100-신경계감각기관용 의약품'),
@@ -32,6 +33,19 @@ var shapeInfoSubDropDownItemColor = <Color>[
   Colors.deepOrangeAccent,
   Colors.lightBlueAccent
 ];
-var shapeInfoSubDropDownItemShape = [
-  
-];
+var shapeInfoSubDropDownItemShape = {
+  '원형' : ImageIcon(AssetImage('assets/shapes/circle.png'), size: 30),
+  '원반형' : ImageIcon(AssetImage('assets/shapes/disc-shaped.png'), size: 30),
+  '육각형' : ImageIcon(AssetImage('assets/shapes/hexagon.png'), size: 30),
+  '팔각형' : ImageIcon(AssetImage('assets/shapes/octagon.png'), size: 30),
+  '타원형' : ImageIcon(AssetImage('assets/shapes/oval.png'), size: 30),
+  '오각형' : ImageIcon(AssetImage('assets/shapes/pentagon.png'), size: 30),
+  '장방형' : ImageIcon(AssetImage('assets/shapes/rectangle.png'), size: 30),
+  '마름모형' : ImageIcon(AssetImage('assets/shapes/rhombus.png'), size: 30),
+  '삼각형' : ImageIcon(AssetImage('assets/shapes/triangle.png'), size: 30)
+};
+var shapeInfoSubSlidingSegmentedData = {
+  0 : '정제',
+  1 : '경질캡슐',
+  2 : '연질캡슐'
+};
