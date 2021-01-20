@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
 import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/body/home/search/text/text_main.dart';
 import 'package:pill/utility/box_decoration.dart';
@@ -174,7 +175,10 @@ Row searchTabs(BuildContext context) {
                     size: 30,
                     color: Colors.black87,
                   ),
-                  onPressed: () => print("barcode search !")),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BarcodeSearch()))),
               SizedBox(
                 height: 5.0,
               ),
