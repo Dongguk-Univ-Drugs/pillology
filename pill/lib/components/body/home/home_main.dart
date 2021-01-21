@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:pill/components/body/home/search/photo_main.dart';
+import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
+import 'package:pill/components/body/home/search/photo/photo_main.dart';
+import 'package:pill/components/body/home/search/text/text_main.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
@@ -126,7 +128,7 @@ Row searchTabs(BuildContext context) {
                     MaterialPageRoute(builder: (context) => PhotoSearch())),
               ),
               SizedBox(height: 5.0),
-              makeSemiTitle(title:"사진으로 검색하기")
+              makeSemiTitle(title: "사진으로 검색하기")
             ],
           )),
       Expanded(
@@ -136,20 +138,22 @@ Row searchTabs(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               TextButton(
-                  style: TextButton.styleFrom(
-                      primary: colorThemeGreen,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 30.0, vertical: 15.0),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: colorEEE))),
-                  child: ImageIcon(AssetImage('assets/icons/text-outline.png'),
-                      size: 30, color: Colors.black87),
-                  onPressed: () => print("text search !")),
+                style: TextButton.styleFrom(
+                    primary: colorThemeGreen,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(color: colorEEE))),
+                child: ImageIcon(AssetImage('assets/icons/text-outline.png'),
+                    size: 30, color: Colors.black87),
+                onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => TextSearch())),
+              ),
               SizedBox(
                 height: 5.0,
               ),
-              makeSemiTitle(title:"텍스트로 검색하기")
+              makeSemiTitle(title: "텍스트로 검색하기")
             ],
           )),
       Expanded(
@@ -171,11 +175,14 @@ Row searchTabs(BuildContext context) {
                     size: 30,
                     color: Colors.black87,
                   ),
-                  onPressed: () => print("barcode search !")),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BarcodeSearch()))),
               SizedBox(
                 height: 5.0,
               ),
-              makeSemiTitle(title:"바코드로 검색하기")
+              makeSemiTitle(title: "바코드로 검색하기")
             ],
           ))
     ],
