@@ -6,7 +6,7 @@ import 'package:pill/components/body/home/search/result.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/model/provider.dart';
 import 'package:pill/utility/box_decoration.dart';
-import 'package:pill/components/body/home/search/camera.dart';
+import 'package:pill/components/body/home/search/photo/camera.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
 import 'package:provider/provider.dart';

@@ -13,8 +13,8 @@ import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  PhotoSearchImageStore storage;
   initializeDateFormatting().then((_) => runApp(App()));
+
 }
 
 class App extends StatefulWidget {
