@@ -9,10 +9,12 @@ import 'components/body/home/home_main.dart';
 import 'components/body/maps/map_main.dart';
 import 'components/body/calendar/calendar_main.dart';
 import 'components/body/personal/personal_main.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(App());
+  initializeDateFormatting().then((_) => runApp(App()));
+
 }
 
 class App extends StatefulWidget {
@@ -35,7 +37,7 @@ class _AppState extends State<App> {
       "screen": HomeScreen()
     },
     {"pageIndex": 1, "title": "지도", "screen": Text("MAP SCREEN")},
-    {"pageIndex": 2, "title": "캘린더", "screen": Text("CALENDAR SCREEN")},
+    {"pageIndex": 2, "title": "캘린더", "screen": CalendarPage()},
     {"pageIndex": 3, "title": "나의약", "screen": Text("MYINFO SCREEN")}
   ];
 
@@ -53,6 +55,7 @@ class _AppState extends State<App> {
               create: (context) => PhotoSearchImageStore())
         ],
         child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: '이건뭐약',
             theme: ThemeData(primaryColor: Colors.white),
             home: Scaffold(
@@ -103,18 +106,5 @@ class _AppState extends State<App> {
                 ],
               ),
             )));
-  }
-
-  pages(int index) {
-    switch (index) {
-      case 0:
-        return HomeScreen();
-      case 1:
-        return Text("MAP SCREEN");
-      case 2:
-        return Text("CALENDAR SCREEN");
-      case 3:
-        return Text("PERSON SCREEN");
-    }
   }
 }
