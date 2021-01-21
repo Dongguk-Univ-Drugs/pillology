@@ -31,6 +31,9 @@ class _CalendarPageState extends State<CalendarPage>
   // Map<DateTime, Map<DateTime, List>> _events;
   Map<DateTime, List> _events;
   DateTime _selectedDay;
+//이벤트에. 날짜 추가..
+  //  final difference = date2.difference(birthday).inDays;
+  var difference;
 
   @override
   void initState() {
@@ -43,7 +46,7 @@ class _CalendarPageState extends State<CalendarPage>
     PersonalPillInfo pilldetail = new PersonalPillInfo(
         '타이레놀',
         DateTime(2021, 1, 21),
-        DateTime(2021, 1, 21),
+        DateTime(2021, 1, 23),
         '9:00',
         '13:00',
         '17:00',
@@ -51,7 +54,6 @@ class _CalendarPageState extends State<CalendarPage>
         true,
         true);
     _pillInfo.add(pilldetail);
-
     _events = {
       _pillInfo[0].startDate: [_pillInfo[0].pillName],
     };
@@ -161,7 +163,6 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   Widget _buildEventList() {
-    print("selectedEvents : $_selectedEvents");
     return ListView(
       children: _selectedEvents
           .map((pillName) => Container(
@@ -215,27 +216,44 @@ class _CalendarPageState extends State<CalendarPage>
                               normalEnd: "알림 설정",
                               color: colorThemeGreen),
                           FlatButton(
-                              onPressed: () {                                
-                                if (_events[_pillInfo[index].startDate] ==
-                                    null) {
-                                  _events.putIfAbsent(
-                                      _pillInfo[index].startDate,
-                                      () => [_pillNameController.text.trim()]);
-                                } else {
-                                  _events.update(
-                                      _pillInfo[index].startDate,
-                                      (value) =>
-                                          value +
-                                          [_pillNameController.text.trim()]);
+                              onPressed: () {
+                                difference = _pillInfo[index]
+                                    .endDate
+                                    .difference(_pillInfo[index].startDate)
+                                    .inDays;
+                                for (int i = 0; i <= difference; i++) {
+                                  if (_events[DateTime(
+                                          _pillInfo[index].startDate.year,
+                                          _pillInfo[index].startDate.month,
+                                          _pillInfo[index].startDate.day +
+                                              i)] ==
+                                      null) {
+                                    _events.putIfAbsent(
+                                        DateTime(
+                                            _pillInfo[index].startDate.year,
+                                            _pillInfo[index].startDate.month,
+                                            _pillInfo[index].startDate.day + i),
+                                        () =>
+                                            [_pillNameController.text.trim()]);
+                                  } else {
+                                    _events.update(
+                                        DateTime(
+                                            _pillInfo[index].startDate.year,
+                                            _pillInfo[index].startDate.month,
+                                            _pillInfo[index].startDate.day + i),
+                                        (value) =>
+                                            value +
+                                            [_pillNameController.text.trim()]);
+                                  }
                                 }
-                                print("11: ${_events[_selectedDay]}");
 
                                 this.setState(() {
-                                  this._pillInfo[index].pillName = _pillNameController.text.trim();
-                                  this._selectedEvents = _events[_selectedDay] ?? [];
+                                  this._pillInfo[index].pillName =
+                                      _pillNameController.text.trim();
+                                  this._selectedEvents =
+                                      _events[_selectedDay] ?? [];
                                   this._events = _events;
                                 });
-                                print("22: ${_events[_selectedDay]}");
                                 Navigator.of(context).pop();
                               },
                               child: Text("저장")),
@@ -349,7 +367,6 @@ class _CalendarPageState extends State<CalendarPage>
                                                     onChanged: (date) {},
                                                     onConfirm: (date) {
                                                   setState(() {
-                                                    
                                                     _pillInfo[index]
                                                             .morningTime =
                                                         "${date.hour}:${date.minute}";
@@ -381,6 +398,106 @@ class _CalendarPageState extends State<CalendarPage>
                                     ),
                                   ],
                                 )),
+                            Expanded(
+                                flex: 5,
+                                child: Row(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text("점심"),
+                                        FlatButton(
+                                            onPressed: () {
+                                              // TODO: 원래 있는 거 수정한다면 length가 아니라 index로
+                                              if (_pillInfo[index]
+                                                  .isAfternoonTimeSet) {
+                                                DatePicker.showTime12hPicker(
+                                                    context,
+                                                    showTitleActions: true,
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  setState(() {
+                                                    _pillInfo[index]
+                                                            .afternoonTime =
+                                                        "${date.hour}:${date.minute}";
+                                                  });
+                                                }, currentTime: DateTime.now());
+                                              }
+                                            },
+                                            child: Text(
+                                              _pillInfo[index].afternoonTime,
+                                              style: _pillInfo[index]
+                                                      .isAfternoonTimeSet
+                                                  ? TextStyle(
+                                                      color: Colors.black)
+                                                  : TextStyle(
+                                                      color: Colors.grey),
+                                            )),
+                                        FlutterSwitch(
+                                          value: _pillInfo[index]
+                                              .isAfternoonTimeSet,
+                                          onToggle: (val) {
+                                            setState(() {
+                                              _pillInfo[index]
+                                                  .isAfternoonTimeSet = val;
+                                            });
+                                          },
+                                          activeColor: colorThemeGreen,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )),
+                            Expanded(
+                                flex: 5,
+                                child: Row(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text("저녁"),
+                                        FlatButton(
+                                            onPressed: () {
+                                              // TODO: 원래 있는 거 수정한다면 length가 아니라 index로
+                                              if (_pillInfo[index]
+                                                  .isEveningTimeSet) {
+                                                DatePicker.showTime12hPicker(
+                                                    context,
+                                                    showTitleActions: true,
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  setState(() {
+                                                    _pillInfo[index]
+                                                            .eveningTime =
+                                                        "${date.hour}:${date.minute}";
+                                                  });
+                                                }, currentTime: DateTime.now());
+                                              }
+                                            },
+                                            child: Text(
+                                              _pillInfo[index].eveningTime,
+                                              style: _pillInfo[index]
+                                                      .isEveningTimeSet
+                                                  ? TextStyle(
+                                                      color: Colors.black)
+                                                  : TextStyle(
+                                                      color: Colors.grey),
+                                            )),
+                                        FlutterSwitch(
+                                          value:
+                                              _pillInfo[index].isEveningTimeSet,
+                                          onToggle: (val) {
+                                            setState(() {
+                                              _pillInfo[index]
+                                                  .isEveningTimeSet = val;
+                                            });
+                                          },
+                                          activeColor: colorThemeGreen,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )),
                           ],
                         )),
                   ],
@@ -390,11 +507,9 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   void showPillDetail(BuildContext context, String pillName) {
-    print(_events);
     var index = _pillInfo.length - 1;
-    print("pillName: $pillName");
-    for(int i=0;i<_pillInfo.length;i++){
-      if(pillName == _pillInfo[i].pillName){
+    for (int i = 0; i < _pillInfo.length; i++) {
+      if (pillName == _pillInfo[i].pillName) {
         index = i;
       }
     }
@@ -423,6 +538,35 @@ class _CalendarPageState extends State<CalendarPage>
                               color: colorThemeGreen),
                           FlatButton(
                               onPressed: () {
+                                difference = _pillInfo[index]
+                                    .endDate
+                                    .difference(_pillInfo[index].startDate)
+                                    .inDays;
+                                for (int i = 0; i <= difference; i++) {
+                                  if (_events[DateTime(
+                                          _pillInfo[index].startDate.year,
+                                          _pillInfo[index].startDate.month,
+                                          _pillInfo[index].startDate.day +
+                                              i)] ==
+                                      null) {
+                                    _events.putIfAbsent(
+                                        DateTime(
+                                            _pillInfo[index].startDate.year,
+                                            _pillInfo[index].startDate.month,
+                                            _pillInfo[index].startDate.day + i),
+                                        () => [pillName]);
+                                  } else {
+                                    _events.update(
+                                        DateTime(
+                                            _pillInfo[index].startDate.year,
+                                            _pillInfo[index].startDate.month,
+                                            _pillInfo[index].startDate.day + i),
+                                        (value) => value + [pillName]);
+                                  }
+                                }
+                                this.setState(() {
+                                  this._events = _events;
+                                });
                                 Navigator.of(context).pop();
                               },
                               child: Text("완료")),
@@ -472,6 +616,7 @@ class _CalendarPageState extends State<CalendarPage>
                         ],
                       ),
                     ),
+                    // 복용 기간 설정
                     Expanded(
                       flex: 3,
                       child: Row(
@@ -518,6 +663,7 @@ class _CalendarPageState extends State<CalendarPage>
                         ],
                       ),
                     ),
+                    // 복용 시간 설정
                     Expanded(
                         flex: 7,
                         child: Column(
@@ -573,6 +719,106 @@ class _CalendarPageState extends State<CalendarPage>
                                             setState(() {
                                               _pillInfo[index]
                                                   .isMorningTimeSet = val;
+                                            });
+                                          },
+                                          activeColor: colorThemeGreen,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )),
+                            Expanded(
+                                flex: 5,
+                                child: Row(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text("점심"),
+                                        FlatButton(
+                                            onPressed: () {
+                                              // TODO: 원래 있는 거 수정한다면 length가 아니라 index로
+                                              if (_pillInfo[index]
+                                                  .isAfternoonTimeSet) {
+                                                DatePicker.showTime12hPicker(
+                                                    context,
+                                                    showTitleActions: true,
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  setState(() {
+                                                    _pillInfo[index]
+                                                            .afternoonTime =
+                                                        "${date.hour}:${date.minute}";
+                                                  });
+                                                }, currentTime: DateTime.now());
+                                              }
+                                            },
+                                            child: Text(
+                                              _pillInfo[index].afternoonTime,
+                                              style: _pillInfo[index]
+                                                      .isAfternoonTimeSet
+                                                  ? TextStyle(
+                                                      color: Colors.black)
+                                                  : TextStyle(
+                                                      color: Colors.grey),
+                                            )),
+                                        FlutterSwitch(
+                                          value: _pillInfo[index]
+                                              .isAfternoonTimeSet,
+                                          onToggle: (val) {
+                                            setState(() {
+                                              _pillInfo[index]
+                                                  .isAfternoonTimeSet = val;
+                                            });
+                                          },
+                                          activeColor: colorThemeGreen,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )),
+                            Expanded(
+                                flex: 5,
+                                child: Row(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Text("저녁"),
+                                        FlatButton(
+                                            onPressed: () {
+                                              // TODO: 원래 있는 거 수정한다면 length가 아니라 index로
+                                              if (_pillInfo[index]
+                                                  .isEveningTimeSet) {
+                                                DatePicker.showTime12hPicker(
+                                                    context,
+                                                    showTitleActions: true,
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  setState(() {
+                                                    _pillInfo[index]
+                                                            .eveningTime =
+                                                        "${date.hour}:${date.minute}";
+                                                  });
+                                                }, currentTime: DateTime.now());
+                                              }
+                                            },
+                                            child: Text(
+                                              _pillInfo[index].eveningTime,
+                                              style: _pillInfo[index]
+                                                      .isEveningTimeSet
+                                                  ? TextStyle(
+                                                      color: Colors.black)
+                                                  : TextStyle(
+                                                      color: Colors.grey),
+                                            )),
+                                        FlutterSwitch(
+                                          value:
+                                              _pillInfo[index].isEveningTimeSet,
+                                          onToggle: (val) {
+                                            setState(() {
+                                              _pillInfo[index]
+                                                  .isEveningTimeSet = val;
                                             });
                                           },
                                           activeColor: colorThemeGreen,
