@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
-    show CalendarCarousel;
-import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/classes/event_list.dart';
-import 'package:intl/intl.dart';
+import 'package:pill/model/personal_pill_info.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/input_decoration.dart';
 import 'package:pill/utility/palette.dart';
@@ -30,35 +26,40 @@ class _CalendarPageState extends State<CalendarPage>
   CalendarController _calendarController;
   TextEditingController _pillNameController;
   List _selectedEvents;
+  List<PersonalPillInfo> _pillInfo;
 
   // Map<DateTime, Map<DateTime, List>> _events;
   Map<DateTime, List> _events;
   DateTime _selectedDay;
-  DateTime _confirmedMorningTime;
-  DateTime _confirmedAfternoonTime;
-  DateTime _confirmedEveningTime;
-  bool _isMorningTimeSet;
-  bool _isAfternoonTimeSet;
-  bool _isEveningTimeSet;
+
   @override
   void initState() {
     super.initState();
-
     _calendarController = CalendarController();
     _pillNameController = TextEditingController();
-    _confirmedMorningTime = DateTime.now();
-    _confirmedAfternoonTime = DateTime.now();
-    _confirmedEveningTime = DateTime.now();
 
-    _isMorningTimeSet = false;
-    _isAfternoonTimeSet = false;
-    _isEveningTimeSet = false;
+    _pillInfo = List<PersonalPillInfo>();
+    // TODO: initialize
+    PersonalPillInfo pilldetail = new PersonalPillInfo(
+        '타이레놀',
+        DateTime(2021, 1, 21),
+        DateTime(2021, 1, 21),
+        '9:20',
+        '13:20',
+        '17:20',
+        true,
+        true,
+        true);
+    _pillInfo.add(pilldetail);
+
     _events = {
-      _currentDate: ['타이레놀', '아스피린'],
+      _pillInfo[0].startDate: [_pillInfo[0].pillName],
     };
+
     _selectedEvents = _events[_currentDate] ?? [];
     _calendarController = CalendarController();
     _selectedDay = _currentDate;
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -115,11 +116,12 @@ class _CalendarPageState extends State<CalendarPage>
                       normalEnd: "",
                       color: colorThemeGreen),
                   IconButton(
-                    icon: Image.asset('assets/icons/settings-outline.png'),
-                    iconSize: 20,
-                    onPressed: () {addPillDetail(context);
-                    _pillNameController.text = "";}
-                  )
+                      icon: Image.asset('assets/icons/settings-outline.png'),
+                      iconSize: 20,
+                      onPressed: () {
+                        addPillDetail(context);
+                        _pillNameController.text = "";
+                      })
                 ],
               ),
               Expanded(child: _buildEventList()),
@@ -159,6 +161,7 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   Widget _buildEventList() {
+    print("selectedEvents : $_selectedEvents");
     return ListView(
       children: _selectedEvents
           .map((pillName) => Container(
@@ -175,6 +178,19 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   void addPillDetail(BuildContext context) {
+    PersonalPillInfo pilldetail = new PersonalPillInfo(
+        '타이레놀',
+        DateTime(2021, 1, 21),
+        DateTime(2021, 1, 21),
+        '9:00',
+        '13:00',
+        '17:00',
+        false,
+        false,
+        false);
+    var index = _pillInfo.length;
+    _pillInfo.add(pilldetail);
+
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -200,21 +216,28 @@ class _CalendarPageState extends State<CalendarPage>
                               color: colorThemeGreen),
                           FlatButton(
                               onPressed: () {
-                                if (_events[_selectedDay] == null) {
-                                  _events.putIfAbsent(_selectedDay,
+                                if (_events[
+                                        _pillInfo[index].startDate] ==
+                                    null) {
+                                  // TODO: pillInfo 마지막에 추가
+                                  _events.putIfAbsent(
+                                      _pillInfo[index].startDate,
                                       () => [_pillNameController.text.trim()]);
                                 } else {
                                   _events.update(
-                                      _selectedDay,
+                                      _pillInfo[index].startDate,
                                       (value) =>
                                           value +
                                           [_pillNameController.text.trim()]);
                                 }
+                                print("11: ${_events[_selectedDay]}");
+
                                 this.setState(() {
                                   this._selectedEvents =
                                       _events[_selectedDay] ?? [];
                                   this._events = _events;
                                 });
+                                print("22: ${_events[_selectedDay]}");
                                 Navigator.of(context).pop();
                               },
                               child: Text("저장")),
@@ -273,7 +296,9 @@ class _CalendarPageState extends State<CalendarPage>
                                         Text("아침"),
                                         FlatButton(
                                             onPressed: () {
-                                              if (_isMorningTimeSet) {
+                                              // TODO: 원래 있는 거 수정한다면 length가 아니라 index로
+                                              if (_pillInfo[index]
+                                                  .isMorningTimeSet) {
                                                 DatePicker.showDateTimePicker(
                                                     context,
                                                     showTitleActions: true,
@@ -281,115 +306,30 @@ class _CalendarPageState extends State<CalendarPage>
                                                     onChanged: (date) {},
                                                     onConfirm: (date) {
                                                   setState(() {
-                                                    _confirmedMorningTime =
-                                                        date;
+                                                    _pillInfo[index].startDate = DateTime(date.year, date.month, date.day);
+                                                    _pillInfo[index]
+                                                            .morningTime =
+                                                        "${date.hour}:${date.minute}";
                                                   });
                                                 }, locale: LocaleType.ko);
                                               }
                                             },
                                             child: Text(
-                                              '${_confirmedMorningTime.hour.toString()}:${_confirmedMorningTime.minute.toString()}',
-                                              style: _isMorningTimeSet
+                                              _pillInfo[index].morningTime,
+                                              style: _pillInfo[index]
+                                                      .isMorningTimeSet
                                                   ? TextStyle(
                                                       color: Colors.black)
                                                   : TextStyle(
                                                       color: Colors.grey),
                                             )),
                                         FlutterSwitch(
-                                          value: _isMorningTimeSet,
+                                          value:
+                                              _pillInfo[index].isMorningTimeSet,
                                           onToggle: (val) {
                                             setState(() {
-                                              _isMorningTimeSet = val;
-                                            });
-                                          },
-                                          activeColor: colorThemeGreen,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Expanded(
-                                flex: 5,
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text("점심"),
-                                        FlatButton(
-                                            onPressed: () {
-                                              if (_isAfternoonTimeSet) {
-                                                DatePicker.showDateTimePicker(
-                                                    context,
-                                                    showTitleActions: true,
-                                                    minTime: DateTime.now(),
-                                                    onChanged: (date) {},
-                                                    onConfirm: (date) {
-                                                  setState(() {
-                                                    _confirmedAfternoonTime =
-                                                        date;
-                                                  });
-                                                }, locale: LocaleType.ko);
-                                              }
-                                            },
-                                            child: Text(
-                                              '${_confirmedAfternoonTime.hour.toString()}:${_confirmedAfternoonTime.minute.toString()}',
-                                              style: _isAfternoonTimeSet
-                                                  ? TextStyle(
-                                                      color: Colors.black)
-                                                  : TextStyle(
-                                                      color: Colors.grey),
-                                            )),
-                                        FlutterSwitch(
-                                          value: _isAfternoonTimeSet,
-                                          onToggle: (val) {
-                                            setState(() {
-                                              _isAfternoonTimeSet = val;
-                                            });
-                                          },
-                                          activeColor: colorThemeGreen,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Expanded(
-                                flex: 5,
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text("저녁"),
-                                        FlatButton(
-                                            onPressed: () {
-                                              if (_isEveningTimeSet) {
-                                                DatePicker.showDateTimePicker(
-                                                    context,
-                                                    showTitleActions: true,
-                                                    minTime: DateTime.now(),
-                                                    onChanged: (date) {},
-                                                    onConfirm: (date) {
-                                                  setState(() {
-                                                    _confirmedEveningTime =
-                                                        date;
-                                                  });
-                                                }, locale: LocaleType.ko);
-                                              }
-                                            },
-                                            child: Text(
-                                              '${_confirmedEveningTime.hour.toString()}:${_confirmedEveningTime.minute.toString()}',
-                                              style: _isEveningTimeSet
-                                                  ? TextStyle(
-                                                      color: Colors.black)
-                                                  : TextStyle(
-                                                      color: Colors.grey),
-                                            )),
-                                        FlutterSwitch(
-                                          value: _isEveningTimeSet,
-                                          onToggle: (val) {
-                                            setState(() {
-                                              _isEveningTimeSet = val;
+                                              _pillInfo[index]
+                                                  .isMorningTimeSet = val;
                                             });
                                           },
                                           activeColor: colorThemeGreen,
@@ -407,6 +347,8 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   void showPillDetail(BuildContext context, String pillName) {
+        var index = _pillInfo.length;
+
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20.0),
@@ -417,208 +359,122 @@ class _CalendarPageState extends State<CalendarPage>
               builder: (BuildContext context, StateSetter setState) {
             return Container(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          makeTitleWithColor(
-                              normalStart: "",
-                              emphasize: "약",
-                              normalEnd: "알림 설정",
-                              color: colorThemeGreen),
-                        ],
-                      ),
+                child: Column(children: [
+                  Expanded(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        makeTitleWithColor(
+                            normalStart: "",
+                            emphasize: "약",
+                            normalEnd: "알림 설정",
+                            color: colorThemeGreen),
+                      ],
                     ),
-                    Expanded(
-                      flex: 3,
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                            flex: 1,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                pillName,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              margin: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: colorEEE),
+                                color: colorThemeGreen,
+                              ),
+                            )),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                      flex: 7,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Expanded(
                               flex: 1,
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  pillName,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                margin: EdgeInsets.all(20),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: colorEEE),
-                                  color: colorThemeGreen,
-                                ),
+                              child: Text(
+                                "복용 시간",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               )),
                           Expanded(
-                            flex: 1,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [],
-                            ),
-                          )
+                              flex: 5,
+                              child: Row(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      Text("아침"),
+                                      FlatButton(
+                                         onPressed: () {
+                                              // TODO: 원래 있는 거 수정한다면 length가 아니라 index로
+                                              if (_pillInfo[index]
+                                                  .isMorningTimeSet) {
+                                                DatePicker.showDateTimePicker(
+                                                    context,
+                                                    showTitleActions: true,
+                                                    minTime: DateTime.now(),
+                                                    onChanged: (date) {},
+                                                    onConfirm: (date) {
+                                                  setState(() {
+                                                    _pillInfo[index]
+                                                            .morningTime =
+                                                        "${date.hour}:${date.minute}";
+                                                  });
+                                                }, locale: LocaleType.ko);
+                                              }
+                                            },
+                                            child: Text(
+                                              _pillInfo[index].morningTime,
+                                              style: _pillInfo[index]
+                                                      .isMorningTimeSet
+                                                  ? TextStyle(
+                                                      color: Colors.black)
+                                                  : TextStyle(
+                                                      color: Colors.grey),
+                                            )),
+                                        FlutterSwitch(
+                                          value:
+                                              _pillInfo[index].isMorningTimeSet,
+                                          onToggle: (val) {
+                                            setState(() {
+                                              _pillInfo[index]
+                                                  .isMorningTimeSet = val;
+                                            });
+                                          },
+                                          activeColor: colorThemeGreen,
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              )),
                         ],
-                      ),
-                    ),
-                    Expanded(
-                        flex: 7,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Expanded(
-                                flex: 1,
-                                child: Text(
-                                  "복용 시간",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )),
-                            Expanded(
-                                flex: 5,
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text("아침"),
-                                        FlatButton(
-                                            onPressed: () {
-                                              if (_isMorningTimeSet) {
-                                                DatePicker.showDateTimePicker(
-                                                    context,
-                                                    showTitleActions: true,
-                                                    minTime: DateTime.now(),
-                                                    onChanged: (date) {},
-                                                    onConfirm: (date) {
-                                                  setState(() {
-                                                    _confirmedMorningTime =
-                                                        date;
-                                                  });
-                                                }, locale: LocaleType.ko);
-                                              }
-                                            },
-                                            child: Text(
-                                              '${_confirmedMorningTime.hour.toString()}:${_confirmedMorningTime.minute.toString()}',
-                                              style: _isMorningTimeSet
-                                                  ? TextStyle(
-                                                      color: Colors.black)
-                                                  : TextStyle(
-                                                      color: Colors.grey),
-                                            )),
-                                        FlutterSwitch(
-                                          value: _isMorningTimeSet,
-                                          onToggle: (val) {
-                                            setState(() {
-                                              _isMorningTimeSet = val;
-                                            });
-                                          },
-                                          activeColor: colorThemeGreen,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Expanded(
-                                flex: 5,
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text("점심"),
-                                        FlatButton(
-                                            onPressed: () {
-                                              if (_isAfternoonTimeSet) {
-                                                DatePicker.showDateTimePicker(
-                                                    context,
-                                                    showTitleActions: true,
-                                                    minTime: DateTime.now(),
-                                                    onChanged: (date) {},
-                                                    onConfirm: (date) {
-                                                  setState(() {
-                                                    _confirmedAfternoonTime =
-                                                        date;
-                                                  });
-                                                }, locale: LocaleType.ko);
-                                              }
-                                            },
-                                            child: Text(
-                                              '${_confirmedAfternoonTime.hour.toString()}:${_confirmedAfternoonTime.minute.toString()}',
-                                              style: _isAfternoonTimeSet
-                                                  ? TextStyle(
-                                                      color: Colors.black)
-                                                  : TextStyle(
-                                                      color: Colors.grey),
-                                            )),
-                                        FlutterSwitch(
-                                          value: _isAfternoonTimeSet,
-                                          onToggle: (val) {
-                                            setState(() {
-                                              _isAfternoonTimeSet = val;
-                                            });
-                                          },
-                                          activeColor: colorThemeGreen,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                            Expanded(
-                                flex: 5,
-                                child: Row(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Text("저녁"),
-                                        FlatButton(
-                                            onPressed: () {
-                                              if (_isEveningTimeSet) {
-                                                DatePicker.showDateTimePicker(
-                                                    context,
-                                                    showTitleActions: true,
-                                                    minTime: DateTime.now(),
-                                                    onChanged: (date) {},
-                                                    onConfirm: (date) {
-                                                  setState(() {
-                                                    _confirmedEveningTime =
-                                                        date;
-                                                  });
-                                                }, locale: LocaleType.ko);
-                                              }
-                                            },
-                                            child: Text(
-                                              '${_confirmedEveningTime.hour.toString()}:${_confirmedEveningTime.minute.toString()}',
-                                              style: _isEveningTimeSet
-                                                  ? TextStyle(
-                                                      color: Colors.black)
-                                                  : TextStyle(
-                                                      color: Colors.grey),
-                                            )),
-                                        FlutterSwitch(
-                                          value: _isEveningTimeSet,
-                                          onToggle: (val) {
-                                            setState(() {
-                                              _isEveningTimeSet = val;
-                                            });
-                                          },
-                                          activeColor: colorThemeGreen,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )),
-                          ],
-                        )),
-                  ],
-                ));
+                      ))
+                ]));
           });
         });
   }

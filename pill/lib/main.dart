@@ -11,7 +11,6 @@ import 'components/body/calendar/calendar_main.dart';
 import 'components/body/personal/personal_main.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PhotoSearchImageStore storage;
@@ -26,8 +25,6 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int pageIndex = 0;
-  String _title;
   int currentPageIndex = 0;
 
   List<Map<String, dynamic>> routePage = [
@@ -40,30 +37,25 @@ class _AppState extends State<App> {
       "screen": HomeScreen()
     },
     {"pageIndex": 1, "title": "지도", "screen": Text("MAP SCREEN")},
-    {"pageIndex": 2, "title": "캘린더", "screen": Text("CALENDAR SCREEN")},
+    {"pageIndex": 2, "title": "캘린더", "screen": CalendarPage()},
     {"pageIndex": 3, "title": "나의약", "screen": Text("MYINFO SCREEN")}
   ];
 
   changePage(int index) {
     setState(() {
-      pageIndex = index;
+      currentPageIndex = index;
     });
   }
 
   @override
-  initState() {
-    _title = 'Some default value';
-  }
-
-  @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<PhotoSearchImageStore>(
               create: (context) => PhotoSearchImageStore())
         ],
         child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: '이건뭐약',
             theme: ThemeData(primaryColor: Colors.white),
             home: Scaffold(
@@ -114,26 +106,5 @@ class _AppState extends State<App> {
                 ],
               ),
             )));
-  }
-
-  pages(int index) {
-    switch (index) {
-      case 0:
-        {
-          _title = '이건뭐약';
-          return HomeScreen();
-        }
-      case 1:
-        {
-          return Text("MAP SCREEN");
-        }
-      case 2:
-        {
-          _title = '캘린더';
-          return CalendarPage();
-        }
-      case 3:
-        return Text("PERSON SCREEN");
-    }
   }
 }
