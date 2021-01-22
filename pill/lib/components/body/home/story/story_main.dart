@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/components/loading.dart';
+import 'package:pill/model/response_data.dart';
 import 'package:pill/utility/textify.dart';
 
 class Story extends StatefulWidget {
@@ -10,9 +14,22 @@ class Story extends StatefulWidget {
 }
 
 class _StoryState extends State<Story> {
+  var data;
 
-  Future<http.Response> fetchData() {
-    return http.get('https://localhost/index');
+  fetchData() async {
+    final response = await http.get('http://127.0.0.1:3000/index');
+
+    if (response.statusCode == 200) {
+      return JsonArray.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('FAILED TO FETCH');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    data = fetchData();
   }
 
   @override
@@ -21,20 +38,19 @@ class _StoryState extends State<Story> {
       appBar: customHeader(makeAppTitle('약 이야기')),
       body: Center(
         child: FutureBuilder(
-          future: fetchData(),
+          future: data,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if(snapshot.hasError) {
+            if (snapshot.hasError) {
               return Text('404 - NOT FOUND');
-            } else if(!snapshot.hasData) {
+            } else if (!snapshot.hasData) {
               return loadingPage(context);
             } else {
-              print(snapshot.data);
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text('fetched!'),
-                ],
+              JsonArray data = snapshot.data;
+              return ListView.builder(
+                itemCount: data.result.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Text(data.result[index].title);
+                },
               );
             }
           },

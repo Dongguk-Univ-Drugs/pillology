@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
         .then((result) => {
             if (!result.length)
                 return res.status(404).send({ err: 'not found !' });
-            res.send(`result : ${result}`);
+            res.send(result);
         })
         .catch((err) => res.status(500).send(err));
 })
