@@ -82,25 +82,34 @@ base_model = MobileNetV2(
 head_model = base_model.output
 head_model = tf.keras.layers.GlobalMaxPooling2D()(head_model)
 
-x = tf.keras.layers.Dense(1024)(head_model)
-x = tf.keras.layers.BatchNormalization()(x)
-x = tf.keras.layers.Activation('relu')(x)
-shape_layer = tf.keras.layers.Dense(1, activation='sigmoid', name='shape_layer')(x)
+y = tf.keras.layers.Dense(512)(head_model)
+y = tf.keras.layers.BatchNormalization()(y)
+y = tf.keras.layers.Activation('relu')(y)
 
-x = tf.keras.layers.concatenate([head_model, x])
-x = tf.keras.layers.Dense(1024)(x)
-x = tf.keras.layers.BatchNormalization()(x)
-x = tf.keras.layers.Activation('relu')(x)
-
-x = tf.keras.layers.Dense(256)(x)
+x = tf.keras.layers.concatenate([head_model, y])
+x = tf.keras.layers.Dense(512)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 
+y = tf.keras.layers.Dense(128)(y)
+y = tf.keras.layers.BatchNormalization()(y)
+y = tf.keras.layers.Activation('relu')(y)
+
+x = tf.keras.layers.concatenate([x, y])
 x = tf.keras.layers.Dense(128)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 
+y = tf.keras.layers.Dense(64)(y)
+y = tf.keras.layers.BatchNormalization()(y)
+y = tf.keras.layers.Activation('relu')(y)
 
+x = tf.keras.layers.concatenate([x, y])
+x = tf.keras.layers.Dense(64)(x)
+x = tf.keras.layers.BatchNormalization()(x)
+x = tf.keras.layers.Activation('relu')(x)
+
+shape_layer = tf.keras.layers.Dense(1, activation='sigmoid', name='shape_layer')(y)
 f_color_layer = tf.keras.layers.Dense(5, activation='softmax', name='f_color_layer')(x)
 b_color_layer = tf.keras.layers.Dense(5, activation='softmax', name='b_color_layer')(x)
 
