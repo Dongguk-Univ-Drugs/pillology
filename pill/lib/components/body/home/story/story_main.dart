@@ -73,7 +73,7 @@ class _StoryState extends State<Story> {
                               : 'not found',
                           height: data.result[index].height != null
                               ? data.result[index].height
-                              : 6400
+                              : 6400  // TODO : 안 먹히는 거 같음>...
                           );
                     },
                   ));
