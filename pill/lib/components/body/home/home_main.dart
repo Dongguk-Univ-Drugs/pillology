@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
 import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/body/home/search/text/text_main.dart';
+import 'package:pill/components/body/home/story/story_main.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
@@ -191,7 +192,7 @@ Row searchTabs(BuildContext context) {
 
 GestureDetector drugStory(BuildContext context) {
   return GestureDetector(
-      onTap: () => print("drugs clicked"),
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Story())),
       child: Container(
           decoration: boxDecorationNoShadow(),
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
