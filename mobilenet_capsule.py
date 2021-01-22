@@ -15,7 +15,7 @@ BATCH_SIZE = 32
 """ Hyper parameter """
 MAIN_DIR = './data'
 
-dataframe = pd.read_csv(os.path.join(MAIN_DIR, 'df_capsule.csv'))
+dataframe = pd.read_csv(os.path.join(MAIN_DIR, 'dataframe.csv'))
 DATASET_SIZE = len(dataframe)
 
 
@@ -23,9 +23,9 @@ def get_data():
     shape_to_index = {
         '원형': 0,
         '장방형': 1,
-        '타원형': 2,
-        '각형': 3,
-        '기타': 4
+        '타원형': 1,
+        '각형': 0,
+        '기타': 0
     }
     color_to_index = {
         'white': 0,
@@ -78,14 +78,17 @@ base_model = MobileNetV2(
     input_tensor=tf.keras.layers.Input(shape=(224, 224, 3))
 )
 
+
 head_model = base_model.output
-x = tf.keras.layers.GlobalAveragePooling2D()(head_model)
+x = tf.keras.layers.GlobalMaxPooling2D()(head_model)
 
 x = tf.keras.layers.Dense(1024)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
+shape_layer = tf.keras.layers.Dense(1, activation='sigmoid', name='shape_layer')(x)
 
-x = tf.keras.layers.Dense(512)(x)
+x = tf.keras.layers.Concatenate([head_model, x])
+x = tf.keras.layers.Dense(1024)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 
@@ -97,7 +100,7 @@ x = tf.keras.layers.Dense(128)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 
-shape_layer = tf.keras.layers.Dense(5, activation='softmax', name='shape_layer')(x)
+
 f_color_layer = tf.keras.layers.Dense(5, activation='softmax', name='f_color_layer')(x)
 b_color_layer = tf.keras.layers.Dense(5, activation='softmax', name='b_color_layer')(x)
 
@@ -111,9 +114,9 @@ for layer in base_model.layers:
 optimizer = tf.keras.optimizers.Adam(LR)
 model.compile(
     optimizer=optimizer,
-    loss={'shape_layer': tf.keras.losses.CategoricalCrossentropy(),
-          'f_color_layer': tf.keras.losses.CategoricalCrossentropy(),
-          'b_color_layer': tf.keras.losses.CategoricalCrossentropy()},
+    loss={'shape_layer': tf.keras.losses.BinaryCrossentropy(),
+          'f_color_layer': tf.keras.losses.SparseCategoricalCrossentropy(),
+          'b_color_layer': tf.keras.losses.SparseCategoricalCrossentropy()},
     metrics={'shape_layer': 'acc', 'f_color_layer': 'acc', 'b_color_layer': 'acc'}
 )
 
