@@ -118,7 +118,7 @@ class _CalendarPageState extends State<CalendarPage>
                       normalEnd: "",
                       color: colorThemeGreen),
                   IconButton(
-                      icon: Image.asset('assets/icons/settings-outline.png'),
+                      icon: Image.asset('assets/icons/add-outline.png'),
                       iconSize: 20,
                       onPressed: () {
                         addPillDetail(context);

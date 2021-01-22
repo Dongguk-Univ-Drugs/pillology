@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pill/components/body/personal/personal_health_info.dart';
+import 'package:pill/components/body/personal/question.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
@@ -15,9 +16,11 @@ class PersonalInfoPage extends StatefulWidget {
 class _PersonalInfoPageState extends State<PersonalInfoPage> {
   File _image;
   final picker = ImagePicker();
-
+  List _bookmarkCategory;
   @override
-  void initState() {}
+  void initState() {
+    _bookmarkCategory = ['약 이야기', '약품'];
+  }
 
   Future _imgFromCamera() async {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
@@ -54,6 +57,15 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                   flex: 5,
                   child: bookmark(context),
                 ),
+                Expanded(
+                  flex: 1,
+                    child: TextButton(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => QuestionPage())),
+                  child: Text("문의하기",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black)),
+                )),
               ],
             )));
   }
@@ -135,10 +147,46 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
 
   Container bookmark(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+        padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
         child: Column(
-          children: [Expanded(child: Text("북마크"))],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Column(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          makeBoldTitle(
+                              title: '북마크', size: 18.0, color: Colors.black),
+                        ],
+                      )),
+                  Expanded(flex: 6, child: _bookmarkCategories())
+                ],
+              ),
+            ),
+            Expanded(flex: 2, child: SizedBox())
+          ],
         ));
+  }
+
+  Widget _bookmarkCategories() {
+    return ListView(
+      children: _bookmarkCategory
+          .map((diseaseName) => Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: ListTile(
+                  title: Text(diseaseName.toString()),
+                  onTap: () => null,
+                ),
+              ))
+          .toList(),
+    );
   }
 
   Widget buildBottomSheet(BuildContext context) {
