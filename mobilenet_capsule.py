@@ -80,14 +80,14 @@ base_model = MobileNetV2(
 
 
 head_model = base_model.output
-x = tf.keras.layers.GlobalMaxPooling2D()(head_model)
+head_model = tf.keras.layers.GlobalMaxPooling2D()(head_model)
 
-x = tf.keras.layers.Dense(1024)(x)
+x = tf.keras.layers.Dense(1024)(head_model)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 shape_layer = tf.keras.layers.Dense(1, activation='sigmoid', name='shape_layer')(x)
 
-x = tf.keras.layers.Concatenate([head_model, x])
+x = tf.keras.layers.concatenate([head_model, x])
 x = tf.keras.layers.Dense(1024)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)

@@ -9,7 +9,7 @@ import pandas as pd
 
 """ Hyper parameter """
 LR = 0.0001
-EPOCHS = 5
+EPOCHS = 20
 BATCH_SIZE = 32
 """ Hyper parameter """
 MAIN_DIR = './data'
