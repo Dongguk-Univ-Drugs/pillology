@@ -70,7 +70,7 @@ packages:
       name: cupertino_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.2"
   custom_switch:
     dependency: "direct main"
     description:
@@ -128,9 +128,11 @@ packages:
   flutter_datetime_picker:
     dependency: "direct main"
     description:
-      name: flutter_datetime_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "2e8d5ceaf7f99fe5c8d0aca5576b77f2f7fa1444"
+      url: "https://github.com/espresso3389/flutter_datetime_picker"
+    source: git
     version: "1.4.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
@@ -152,7 +154,7 @@ packages:
     source: sdk
     version: "0.0.0"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       url: "https://pub.dartlang.org"
