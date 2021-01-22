@@ -14,10 +14,19 @@ class JsonArray {
 class Data {
   final String title;
   final String url;
+  final String date;
+  final String category;
+  final int height;
 
-  Data({this.title, this.url});
+  Data({this.title, this.url, this.category, this.date, this.height});
 
   factory Data.fromJson(Map<dynamic, dynamic> parsedJson) {
-    return Data(title: parsedJson['title'], url: parsedJson['url']);
+    return Data(
+        title: parsedJson['title'],
+        url: parsedJson['url'],
+        category: parsedJson['category'],
+        date: parsedJson['date'],
+        height: parsedJson['height'] != null ? parsedJson['height'] : 6400
+    );
   }
 }
