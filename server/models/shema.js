@@ -15,7 +15,7 @@ const schema = new mongoose.Schema({
 schema.statics.findAll = function () {
     // return promise
     return this.find({});
-};
+}
 
 // create model and export
 module.exports = mongoose.model('images', schema);
