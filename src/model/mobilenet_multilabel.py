@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-from tensorflow.keras.preprocessing.image import img_to_array, load_img, ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 from sklearn.model_selection import train_test_split
 import os
@@ -15,7 +15,7 @@ BATCH_SIZE = 32
 """ Hyper parameter """
 MAIN_DIR = '../../data'
 
-dataframe = pd.read_csv(os.path.join(MAIN_DIR, 'dataframe.csv'))
+dataframe = pd.read_csv(os.path.join(MAIN_DIR, 'dataframe_multilabel.csv'))
 # DATASET_SIZE = len(dataframe)
 train_df, test_df = train_test_split(dataframe, test_size=0.2)
 
