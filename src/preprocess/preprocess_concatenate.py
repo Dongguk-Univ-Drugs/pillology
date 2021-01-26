@@ -3,7 +3,7 @@ import re
 import pandas as pd
 from glob import glob
 
-MAIN_DIR = './data'
+MAIN_DIR = '../../data'
 
 """ Set your Image directory """
 IMAGE_DIR = 'D:/drug/image'
@@ -76,7 +76,7 @@ def preprocessing(dataframe):
 
 
 if __name__ == '__main__':
-    data = data = pd.read_excel(
+    data = pd.read_excel(
         os.path.join(MAIN_DIR, '공공데이터개방_낱알식별목록.xlsx'),
         sheet_name='Sheet0', engine='openpyxl'
     )

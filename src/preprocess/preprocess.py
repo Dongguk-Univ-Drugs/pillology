@@ -3,7 +3,7 @@ import re
 import pandas as pd
 from glob import glob
 
-MAIN_DIR = './data'
+MAIN_DIR = '../../data'
 
 """ Set your Image directory """
 IMAGE_DIR = 'D:/drug/image'
