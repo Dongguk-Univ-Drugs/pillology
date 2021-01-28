@@ -40,11 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       flex: 2,
                       child: searchTabs(context),
                     ),
-                    Expanded(flex: 3, child: drugStory(context)),
+                    Expanded(flex: 1, child: foodStory(context)),
+                    Expanded(flex: 1, child: drugStory(context)),
                     Expanded(
                       flex: 3,
                       child: emergency(context),
                     ),
+                    blankBox(flex: 1)
                   ],
                 ))));
   }
@@ -190,71 +192,50 @@ Row searchTabs(BuildContext context) {
   );
 }
 
-GestureDetector drugStory(BuildContext context) {
+GestureDetector foodStory(BuildContext context) {
   return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Story())),
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Story())),
       child: Container(
           decoration: boxDecorationNoShadow(),
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-          child: Column(
+          margin: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.015),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                flex: 2,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    makeTitleWithColor(
-                        normalStart: "오늘의 ",
-                        emphasize: "약",
-                        normalEnd: " 이야기",
-                        color: colorThemeGreen),
-                    ImageIcon(
-                        AssetImage('assets/icons/chevron-forward-outline.png'),
-                        size: 20,
-                        color: Colors.black87),
-                  ],
-                ),
-              ),
-              Expanded(
-                  flex: 1,
-                  child: SizedBox(
-                    height: 5.0,
-                  )),
-              Expanded(
-                flex: 7,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                        flex: 5,
-                        child: Container(
-                          child: Image.asset('assets/icons/pill.png'),
-                          margin: EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: colorEEE)),
-                        )),
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          makeTitleWithColor(
-                              normalStart: "",
-                              emphasize: "카페인",
-                              normalEnd: "",
-                              color: colorThemeGreen),
-                          makeContent(
-                              "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, "),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )
+              makeTitleWithColor(
+                  normalStart: "오늘의 ",
+                  emphasize: "식품안전지식",
+                  normalEnd: "",
+                  color: colorThemeGreen),
+              ImageIcon(AssetImage('assets/icons/chevron-forward-outline.png'),
+                  size: 20, color: Colors.black87),
+            ],
+          )));
+}
+
+GestureDetector drugStory(BuildContext context) {
+  return GestureDetector(
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Story())),
+      child: Container(
+          decoration: boxDecorationNoShadow(),
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+          margin: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.015),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              makeTitleWithColor(
+                  normalStart: "오늘의 ",
+                  emphasize: "안전사용정보",
+                  normalEnd: "",
+                  color: colorThemeGreen),
+              ImageIcon(AssetImage('assets/icons/chevron-forward-outline.png'),
+                  size: 20, color: Colors.black87),
             ],
           )));
 }
