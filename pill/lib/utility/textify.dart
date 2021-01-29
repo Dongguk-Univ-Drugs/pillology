@@ -60,9 +60,9 @@ Text makeContent(String content) {
   );
 }
 
-Text makeAppTitle(String title) {
+Text makeAppTitle(String title, {double size}) {
   return Text(
     title,
-    style: TextStyle(color: Colors.black, fontSize: 17.0, fontFamily: 'Gimpo'),
+    style: TextStyle(color: Colors.black, fontSize: size != null ? size : 17.0, fontFamily: 'Gimpo'),
   );
 }
