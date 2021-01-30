@@ -17,7 +17,7 @@ BATCH_SIZE = 32
 """ Hyper parameter """
 MAIN_DIR = '../../data'
 
-dataframe = pd.read_csv(os.path.join(MAIN_DIR, 'dataframe_multilabel.csv'))
+dataframe = pd.read_csv(os.path.join(MAIN_DIR, 'dataframe_multilabel_many.csv'))
 # DATASET_SIZE = len(dataframe)
 train_df, test_df = train_test_split(dataframe, test_size=0.2)
 
@@ -69,7 +69,7 @@ x = tf.keras.layers.Dense(64)(x)
 x = tf.keras.layers.BatchNormalization()(x)
 x = tf.keras.layers.Activation('relu')(x)
 
-output_layer = tf.keras.layers.Dense(6, activation='sigmoid')(x)
+output_layer = tf.keras.layers.Dense(len(columns), activation='sigmoid')(x)
 
 model = tf.keras.models.Model(inputs=base_model.input,
                               outputs=output_layer)
