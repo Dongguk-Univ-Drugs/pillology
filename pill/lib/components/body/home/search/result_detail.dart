@@ -1,166 +1,79 @@
-// packages
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // components
 import 'package:pill/components/body/home/search/result_tabview.dart';
 import 'package:pill/components/header/header.dart';
-import 'package:pill/components/loading.dart';
+// models
+import 'package:pill/model/text_search_result.dart';
 // utility
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
-// model
-import 'package:pill/model/text_search_result.dart';
 
-class SearchResult extends StatefulWidget {
-  final String entpName, itemName;
+class ResultDetail extends StatefulWidget {
+  final TextSearchResult details;
 
-  SearchResult({this.entpName, this.itemName});
+  ResultDetail({this.details});
 
   @override
-  SearchResultState createState() => SearchResultState();
+  _ResultDetailState createState() => _ResultDetailState();
 }
 
-class SearchResultState extends State<SearchResult>
+class _ResultDetailState extends State<ResultDetail>
     with SingleTickerProviderStateMixin {
   final _controller = ScrollController();
   TabController tabController;
-
-  // text search
-  var url =
-      'http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?';
-  var _serviceKey =
-      'xCmiTrdFK8b1d4tNOWt%2Fjs%2BYo7TQcd%2BJqb3KxAib7iDWO%2B3aGkevwya5zHvIv%2FJ6pyrjjHGwSbjOR%2FnTQ%2B5zfA%3D%3D';
-  var _entpName;
-  var _itemName;
-  /*
-      serviceKey  : 인증키, 공공데이터포럼에서 받은 인증키
-      pageNo      : 페이지 번호
-      numOfRows   : 한 페이지 결과 수
-      entpName    : 업체명, ex) 한미약품
-      itemName    : 제품명
-      itemSeq     : 품목기준코드
-      type        : xml(default) / json
-  */
-
-  Future<dynamic> futureResult;
-
-  Future<dynamic> fetchTextSearchResult() async {
-    String _getURL = url + 'serviceKey=' + _serviceKey + _entpName != null
-        ? 'entpName=' + _entpName
-        : '' + _itemName != null
-            ? 'itemName=' + _itemName
-            : '' + '&type=json';
-
-    final response = await http.get(
-        "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=" +
-            _serviceKey +
-            "&trustEntpName=한미약품(주)&pageNo=1&startPage=1&numOfRows=3&type=json");
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-
-      // print(json.decode(response.body));
-      // print(json.decode(response.body)['body']['items']);
-      // Response _re = Response.fromJson(json.decode(response.body));
-      // ResponseBody _bd = ResponseBody.fromJson(_re.body);
-      return json.decode(response.body);
-      // return Response.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load text search result');
-    }
-  }
+  TextSearchResult _result;
 
   @override
   void initState() {
     super.initState();
-    tabController = TabController(vsync: this, length: 5);
-    _itemName = widget.itemName;
-    _entpName = widget.entpName;
-    futureResult = fetchTextSearchResult();
+    setState(() {
+      _result = widget.details;
+      tabController = TabController(vsync: this, length: 5);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customHeader("약품 검색 결과"),
-        body: FutureBuilder(
-          future: futureResult, // TODO: data fetch !!!
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: makeBoldTitleWithSize(
-                    '찾을 수 없습니다. 🧐', 16.0, TextAlign.center),
-              );
-            } else if (!snapshot.hasData) {
-              return loadingPage(context);
-            } else {
-              Response _response =
-                  Response.fromJson(Map<String, dynamic>.from(snapshot.data));
-              // Response _response =
-              //     Response.fromJson(json.decode(snapshot.data));
-              ResponseHeader _responseHeader =
-                  ResponseHeader.fromJson(_response.header);
-              ResponseBody _responseBody =
-                  ResponseBody.fromJson(_response.body);
-              List<TextSearchResult> _items = List.from(_responseBody.items);
-
-              return SingleChildScrollView(
-                  controller: _controller,
-                  child: SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _items.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            decoration: boxDecorationNoShadow(),
-                            child: Text(_items[index].itemName),
-                          );
-                        },
-                      )));
-            }
-          },
-        )
-        // body: SingleChildScrollView(
-        //   controller: _controller,
-        //   child: SizedBox(
-        //     width: MediaQuery.of(context).size.width,
-        //     height: MediaQuery.of(context).size.height,
-        //     child: Column(
-        //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //       crossAxisAlignment: CrossAxisAlignment.stretch,
-        //       children: [
-        //         Expanded(
-        //           flex: 1,
-        //           child: SizedBox(),
-        //         ),
-        //         Expanded(
-        //             // title : name, product, images -> row
-        //             flex: 1,
-        //             child: resultTitle(context)),
-        //         Expanded(
-        //             // only text : desc1, name(colored Bold), desc2
-        //             flex: 2,
-        //             child: resultAlert(context)),
-        //         Expanded(
-        //             // tab view : 5 tabs required
-        //             flex: 5,
-        //             child: resultTabView(context, tabController)),
-        //         Expanded(
-        //             // bookmark button
-        //             flex: 1,
-        //             child: resultBookmark(context)),
-        //       ],
-        //     ),
-        //   ),
-        // )
-        );
+      appBar: customHeader("약품 검색 상세 결과"),
+      body: SingleChildScrollView(
+        controller: _controller,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.025,
+              vertical: MediaQuery.of(context).size.height * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              blankBox(flex: 1),
+              Expanded(
+                  // title : name, product, images -> row
+                  flex: 1,
+                  child: resultTitle(context,
+                      name: _result.itemName, 
+                      manufacturer: _result.entpName,
+                      imagePath: _result.itemImage)),
+              Expanded(
+                  // only text : desc1, name(colored Bold), desc2
+                  flex: 2,
+                  child: resultAlert(context)),
+              Expanded(
+                  // tab view : 5 tabs required
+                  flex: 5,
+                  child: resultTabView(context, tabController)),
+              Expanded(
+                  // bookmark button
+                  flex: 1,
+                  child: resultBookmark(context)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -199,12 +112,19 @@ Widget resultTitle(BuildContext context,
           flex: 2,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20.0),
-            child: Image.asset(
-              imagePath == null ? 'assets/icons/pill.png' : imagePath,
-              fit: BoxFit.cover,
-              width: 200,
-              height: 200,
-            ),
+            child: imagePath == null
+                ? Image.asset(
+                    'assets/icons/pill.png',
+                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200,
+                  )
+                : Image.network(
+                    imagePath,
+                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200
+                  ),
           ),
         )
       ],
