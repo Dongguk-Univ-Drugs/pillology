@@ -451,20 +451,30 @@ class _TextSearchState extends State<TextSearch> {
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     new FloatingActionButton(
                       onPressed: () {
                         setState(() {
                           shapeInfoJson['색상'] =
-                              (
-                                shapeInfoSubDropDownItemColor[index]['name']
-                              );
+                              (shapeInfoSubDropDownItemColor[index]['name']);
                         });
                         Navigator.pop(context);
                       },
-                      child: shapeInfoSubDropDownItemColor[index]['name'],
-                      backgroundColor:
-                          shapeInfoSubDropDownItemColor[index]['color'],
+                      child: Center(
+                        child: makeSemiTitle(
+                            title: shapeInfoSubDropDownItemColor[index]['name'],
+                            size: MediaQuery.of(context).size.width * 0.035,
+                            color: shapeInfoSubDropDownItemColor[index]
+                                            ['name'] ==
+                                        '하양'
+                                ? color777
+                                : Colors.white,
+                            textAlign: TextAlign.center),
+                      ),
+                      backgroundColor: shapeInfoSubDropDownItemColor[index]
+                          ['color'],
                       elevation: 1.0,
                       heroTag: null,
                     ),
@@ -526,13 +536,18 @@ class _TextSearchState extends State<TextSearch> {
                       //         ? colorThemeGreen
                       //         : Colors.white,
                       //     size: 24),
-                      child: shapeInfoSubDropDownItemShape.values.elementAt(index),
+                      child:
+                          shapeInfoSubDropDownItemShape.values.elementAt(index),
                       backgroundColor: color777,
                       elevation: 1.0,
                       heroTag: null,
                     ),
-                    SizedBox(height: 5.0,),
-                    makeSemiTitle(title : shapeInfoSubDropDownItemShape.keys.elementAt(index))
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    makeSemiTitle(
+                        title:
+                            shapeInfoSubDropDownItemShape.keys.elementAt(index))
                   ],
                 ),
               );
