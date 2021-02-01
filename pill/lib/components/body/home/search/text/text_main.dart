@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pill/components/body/home/search/result.dart';
 import 'package:pill/components/body/home/search/text/text_data.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/utility/box_decoration.dart';
@@ -167,9 +168,13 @@ class _TextSearchState extends State<TextSearch> {
                             primary: colorThemeGreen),
                         child: makeBoldTitle(
                             title: '검색하기', size: 18.0, color: Colors.white),
-                        onPressed: () => print(textInfoJson.toString() +
-                            '\n' +
-                            shapeInfoJson.toString()),
+                        // TODO : textInfoJson이랑 shapeInfoJson 두 개 api로 넘기기
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResult(
+                          entpName: textInfoJson['회사명'], itemName: pillNameController.text,
+                        ),))
+                        // print(textInfoJson.toString() +
+                        //     '\n' +
+                        //     shapeInfoJson.toString()),
                       ),
                       blankBox(flex: 1)
                     ])),
@@ -194,7 +199,7 @@ class _TextSearchState extends State<TextSearch> {
                 Expanded(
                     flex: 7,
                     child:
-                        makeSemiTitle(title: '선택사항 - 의약품 정보', color: color333)),
+                        makeSemiTitle(title: '선택사항 - 의약품 정보', color: color333, size: MediaQuery.of(context).size.width * 0.035)),
                 blankBox(flex: 2),
                 Expanded(
                     flex: 1,
@@ -291,7 +296,7 @@ class _TextSearchState extends State<TextSearch> {
                 Expanded(
                     flex: 7,
                     child:
-                        makeSemiTitle(title: '선택사항 - 모형 정보', color: color333)),
+                        makeSemiTitle(title: '선택사항 - 모형 정보', color: color333, size: MediaQuery.of(context).size.width * 0.035)),
                 blankBox(flex: 2),
                 Expanded(
                     flex: 1,
@@ -451,33 +456,36 @@ class _TextSearchState extends State<TextSearch> {
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     new FloatingActionButton(
                       onPressed: () {
                         setState(() {
                           shapeInfoJson['색상'] =
-                              (shapeInfoSubDropDownItemColor[index]
-                                      .red
-                                      .toString() +
-                                  ',' +
-                                  shapeInfoSubDropDownItemColor[index]
-                                      .green
-                                      .toString() +
-                                  ',' +
-                                  shapeInfoSubDropDownItemColor[index]
-                                      .blue
-                                      .toString());
+                              (shapeInfoSubDropDownItemColor[index]['name']);
                         });
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.done,
-                          color: index == shapeInfoJson['색상']
-                              ? Colors.white
-                              : shapeInfoSubDropDownItemColor.elementAt(index),
-                          size: 24),
-                      backgroundColor:
-                          shapeInfoSubDropDownItemColor.elementAt(index),
-                      elevation: 1.0,
+                      child: Center(
+                        child: makeSemiTitle(
+                            title: shapeInfoSubDropDownItemColor[index]['name'],
+                            size: MediaQuery.of(context).size.width * 0.035,
+                            color: shapeInfoSubDropDownItemColor[index]
+                                            ['name'] ==
+                                        '하양'
+                                        ||
+                                        shapeInfoSubDropDownItemColor[index]
+                                            ['name'] ==
+                                        '투명'
+                                ? color777
+                                : Colors.white,
+                            textAlign: TextAlign.center),
+                      ),
+                      backgroundColor: shapeInfoSubDropDownItemColor[index]
+                          ['color'],
+                      elevation:shapeInfoSubDropDownItemColor[index]
+                          ['color'] == Colors.transparent ? 0.0 : 1.0,
                       heroTag: null,
                     ),
                     Offstage(
@@ -538,13 +546,18 @@ class _TextSearchState extends State<TextSearch> {
                       //         ? colorThemeGreen
                       //         : Colors.white,
                       //     size: 24),
-                      child: shapeInfoSubDropDownItemShape.values.elementAt(index),
+                      child:
+                          shapeInfoSubDropDownItemShape.values.elementAt(index),
                       backgroundColor: color777,
                       elevation: 1.0,
                       heroTag: null,
                     ),
-                    SizedBox(height: 5.0,),
-                    makeSemiTitle(title : shapeInfoSubDropDownItemShape.keys.elementAt(index))
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    makeSemiTitle(
+                        title:
+                            shapeInfoSubDropDownItemShape.keys.elementAt(index))
                   ],
                 ),
               );
