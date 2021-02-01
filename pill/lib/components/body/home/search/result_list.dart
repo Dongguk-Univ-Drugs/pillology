@@ -25,10 +25,8 @@ class SearchResult extends StatefulWidget {
 
 class SearchResultState extends State<SearchResult> {
   final _controller = ScrollController();
-  
+
   // text search
-  var url =
-      'http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?';
   var _serviceKey =
       'xCmiTrdFK8b1d4tNOWt%2Fjs%2BYo7TQcd%2BJqb3KxAib7iDWO%2B3aGkevwya5zHvIv%2FJ6pyrjjHGwSbjOR%2FnTQ%2B5zfA%3D%3D';
   var _entpName;
@@ -46,25 +44,17 @@ class SearchResultState extends State<SearchResult> {
   Future<dynamic> futureResult;
 
   Future<dynamic> fetchTextSearchResult() async {
-    String _getURL = url + 'serviceKey=' + _serviceKey + _entpName != null
-        ? 'entpName=' + _entpName
-        : '' + _itemName != null
-            ? 'itemName=' + _itemName
-            : '' + '&type=json';
-
+    print(_entpName + "\t" + _itemName);
+    // TODO: api 가 이상한듯 ...
     final response = await http.get(
         "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=" +
             _serviceKey +
-            "&trustEntpName=한미약품(주)&pageNo=1&startPage=1&numOfRows=3&type=json");
+            _itemName + _entpName + 
+            "&pageNo=1&startPage=1&numOfRows=10&type=json");
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
-
-      // print(json.decode(response.body));
-      // print(json.decode(response.body)['body']['items']);
-      // Response _re = Response.fromJson(json.decode(response.body));
-      // ResponseBody _bd = ResponseBody.fromJson(_re.body);
       return json.decode(response.body);
       // return Response.fromJson(jsonDecode(response.body));
     } else {
@@ -75,8 +65,10 @@ class SearchResultState extends State<SearchResult> {
   @override
   void initState() {
     super.initState();
-    _itemName = widget.itemName;
-    _entpName = widget.entpName;
+    setState(() {
+      _itemName = widget.itemName != null ? "&itemName=" + widget.itemName : "";
+      _entpName = widget.entpName != null ? "&trustEntpName=" + widget.entpName : "";
+    });
     futureResult = fetchTextSearchResult();
   }
 
@@ -123,8 +115,7 @@ class SearchResultState extends State<SearchResult> {
                                   onTap: () => Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              ResultDetail(
+                                          builder: (context) => ResultDetail(
                                                 details: _items[index],
                                               ))),
                                   child: Container(

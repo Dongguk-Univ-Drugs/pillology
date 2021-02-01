@@ -84,6 +84,7 @@ Widget resultTitle(BuildContext context,
     margin: EdgeInsets.symmetric(
       horizontal: MediaQuery.of(context).size.width * 0.05,
     ),
+    
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -96,7 +97,7 @@ Widget resultTitle(BuildContext context,
             children: [
               makeTitleWithColor(
                   emphasize: name != null ? name : '알악이름이오는곳00mg',
-                  color: colorThemeGreen),
+                  color: colorThemeGreen, empSize: 14.0),
               makeSemiTitle(
                   title: engName != null ? engName : '알약영어이름 00mg',
                   color: color777,
