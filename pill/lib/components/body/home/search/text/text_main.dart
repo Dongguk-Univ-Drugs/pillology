@@ -456,27 +456,15 @@ class _TextSearchState extends State<TextSearch> {
                       onPressed: () {
                         setState(() {
                           shapeInfoJson['색상'] =
-                              (shapeInfoSubDropDownItemColor[index]
-                                      .red
-                                      .toString() +
-                                  ',' +
-                                  shapeInfoSubDropDownItemColor[index]
-                                      .green
-                                      .toString() +
-                                  ',' +
-                                  shapeInfoSubDropDownItemColor[index]
-                                      .blue
-                                      .toString());
+                              (
+                                shapeInfoSubDropDownItemColor[index]['name']
+                              );
                         });
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.done,
-                          color: index == shapeInfoJson['색상']
-                              ? Colors.white
-                              : shapeInfoSubDropDownItemColor.elementAt(index),
-                          size: 24),
+                      child: shapeInfoSubDropDownItemColor[index]['name'],
                       backgroundColor:
-                          shapeInfoSubDropDownItemColor.elementAt(index),
+                          shapeInfoSubDropDownItemColor[index]['color'],
                       elevation: 1.0,
                       heroTag: null,
                     ),
