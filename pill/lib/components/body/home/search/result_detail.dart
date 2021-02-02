@@ -49,12 +49,12 @@ class _ResultDetailState extends State<ResultDetail>
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              blankBox(flex: 1),
               Expanded(
                   // title : name, product, images -> row
-                  flex: 1,
+                  flex: 2,
                   child: resultTitle(context,
-                      name: _result.itemName, 
+                      name: _result.itemName,
+                      engName: _result.itemEngName,
                       manufacturer: _result.entpName,
                       imagePath: _result.itemImage)),
               Expanded(
@@ -84,20 +84,20 @@ Widget resultTitle(BuildContext context,
     margin: EdgeInsets.symmetric(
       horizontal: MediaQuery.of(context).size.width * 0.05,
     ),
-    
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           flex: 8,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               makeTitleWithColor(
                   emphasize: name != null ? name : '알악이름이오는곳00mg',
-                  color: colorThemeGreen, empSize: 14.0),
+                  color: colorThemeGreen,
+                  empSize: name.length > 30 ? 12.0 : 14.0),
               makeSemiTitle(
                   title: engName != null ? engName : '알약영어이름 00mg',
                   color: color777,
@@ -111,21 +111,28 @@ Widget resultTitle(BuildContext context,
         ),
         Expanded(
           flex: 2,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: imagePath == null
-                ? Image.asset(
-                    'assets/icons/pill.png',
-                    fit: BoxFit.cover,
-                    width: 200,
-                    height: 200,
-                  )
-                : Image.network(
-                    imagePath,
-                    fit: BoxFit.cover,
-                    width: 200,
-                    height: 200
-                  ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              blankBox(flex: 3),
+              Expanded(
+                flex: 4,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: imagePath == null
+                      ? Image.asset(
+                          'assets/icons/pill.png',
+                          fit: BoxFit.cover,
+                          width: 200,
+                          height: 200,
+                        )
+                      : Image.network(imagePath,
+                          fit: BoxFit.cover, width: 200, height: 200),
+                )
+              ),
+              blankBox(flex: 3)
+            ],
           ),
         )
       ],

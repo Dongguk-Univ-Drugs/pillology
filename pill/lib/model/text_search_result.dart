@@ -1,6 +1,7 @@
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
+  final String itemEngName; // 의약품 영어 이름
   final String itemSeq; // 품목기준코드
   final String efcyQesitm; // 효능
   final String useMethodQesitm; // 사용법
@@ -16,6 +17,7 @@ class TextSearchResult {
   TextSearchResult(
       {this.entpName,
       this.itemName,
+      this.itemEngName,
       this.itemSeq,
       this.efcyQesitm,
       this.useMethodQesitm,
@@ -29,9 +31,23 @@ class TextSearchResult {
       this.itemImage});
 
   factory TextSearchResult.fromJson(Map<String, dynamic> parsedJson) {
+
+    String _itemName = parsedJson['itemName'].toString();
+
+    String _korName, _engName;
+    if(_itemName.contains('(수출명:')) {
+      // parse : KOR
+      _korName = _itemName.substring(0,_itemName.indexOf('(수출명:'));
+      // parse : ENG
+      _engName = _itemName.substring(_itemName.indexOf('(수출명:'), _itemName.length);
+    } else {
+      _korName = _itemName;
+      _engName = "";
+    }
     return TextSearchResult(
         entpName: parsedJson['entpName'],
-        itemName: parsedJson['itemName'],
+        itemName: _korName,
+        itemEngName: _engName,
         efcyQesitm: parsedJson['efcyQesitm'],
         useMethodQesitm: parsedJson['useMethodQesitm'],
         atpnWarnQesitm: parsedJson['atpnWarnQesitm'],

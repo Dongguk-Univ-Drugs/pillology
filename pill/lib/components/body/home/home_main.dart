@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
 import 'package:pill/components/body/home/search/photo/photo_main.dart';
+import 'package:pill/components/body/home/search/result_list.dart';
 import 'package:pill/components/body/home/search/text/text_main.dart';
 import 'package:pill/components/body/home/story/story_main.dart';
 import 'package:pill/utility/box_decoration.dart';
@@ -94,7 +95,7 @@ class _SearchBarState extends State<SearchBar> {
                 'assets/icons/search-grey.png',
                 color: color777,
               ),
-              onTap: () => print("search pressed"),
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResult(itemName: searchController.text)))
             ))
       ],
     );
