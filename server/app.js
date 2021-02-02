@@ -23,5 +23,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 .catch((e) => console.error(e));
 
 // router
-app.use('/index', require('./routes/index'));
+const routes = require('./routes');
+
+app.use('/', routes);
 app.listen(port, () => console.log(`server listening on port ${port}`));

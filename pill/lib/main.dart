@@ -36,8 +36,8 @@ class _AppState extends State<App> {
       ),
       "screen": HomeScreen()
     },
-    {"pageIndex": 1, "title": "지도", "screen": Text("MAP SCREEN")},
-    {"pageIndex": 2, "title": "캘린더", "screen": CalendarPage()},
+    {"pageIndex": 1, "title": "지도", "screen": MapPage()},
+    {"pageIndex": 2, "title": "캘린더", "screen": Text("Calendar")},
     {"pageIndex": 3, "title": "나의약", "screen": PersonalInfoPage()}
   ];
 
