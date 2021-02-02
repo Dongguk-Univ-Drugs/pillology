@@ -1,7 +1,7 @@
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
-  final String itemEngName; // 의약품 영어 이름
+  final String itemEngName; // 의약품 영어이름
   final String itemSeq; // 품목기준코드
   final String efcyQesitm; // 효능
   final String useMethodQesitm; // 사용법
@@ -31,19 +31,18 @@ class TextSearchResult {
       this.itemImage});
 
   factory TextSearchResult.fromJson(Map<String, dynamic> parsedJson) {
-
-    String _itemName = parsedJson['itemName'].toString();
-
+    String name = parsedJson['itemName'];
     String _korName, _engName;
-    if(_itemName.contains('(수출명:')) {
-      // parse : KOR
-      _korName = _itemName.substring(0,_itemName.indexOf('(수출명:'));
-      // parse : ENG
-      _engName = _itemName.substring(_itemName.indexOf('(수출명:'), _itemName.length);
+    if (name.contains("(수출명:")) {
+      // kor name
+      _korName = name.substring(0, name.indexOf("(수출명:"));
+      // eng name
+      _engName = name.substring(name.indexOf("(수출명:") + 1, name.length - 1);
     } else {
-      _korName = _itemName;
-      _engName = "";
+      _korName = name;
+      _engName = '';
     }
+
     return TextSearchResult(
         entpName: parsedJson['entpName'],
         itemName: _korName,
@@ -93,14 +92,22 @@ class ResponseBody {
   ResponseBody({this.items, this.numOfRows, this.pageNo, this.totalCount});
 
   factory ResponseBody.fromJson(Map<dynamic, dynamic> json) {
-
     var itemList = json['items'] as List;
-    List<TextSearchResult> _itemList = itemList.map((element) => TextSearchResult.fromJson(element)).toList();
+    var _itemList = [];
+    // list parsing
+    itemList.asMap().forEach((index, value) {
+      if(index + 1 < itemList.length) {
+        if(value['itemName'] != itemList[index + 1]['itemName']) _itemList.add(value);
+      }
+    });
+
+    List<TextSearchResult> parsedList =
+        _itemList.map((element) => TextSearchResult.fromJson(element)).toList();
 
     return ResponseBody(
         numOfRows: json['numOfRows'],
         pageNo: json['pageNo'],
         totalCount: json['totalCount'],
-        items: _itemList);
+        items: parsedList);
   }
 }
