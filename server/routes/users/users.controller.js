@@ -1,5 +1,10 @@
 const PillModel = require('../../models/pillSchema');
-
+var getData = function (result){
+    var data = {
+        'pillname': result.pillname
+    }
+    return data;
+}
 exports.users = (req, res, next) => {
     res.send('respond with a resource');
 }
