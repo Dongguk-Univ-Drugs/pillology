@@ -10,9 +10,9 @@ var pillSchema = new mongoose.Schema({
     morningTime: { type: String, default: "9:00" },
     afternoonTime: { type: String, default: "13:00" },
     eveningTime: { type: String, default: "18:00" },
-    isMorningTimeSet: { type: Boolean },
-    isAfternoonTimeSet: { type: Boolean },
-    isEveningTimeSet: { type: Boolean },
+    isMorningTimeSet: { type: String },
+    isAfternoonTimeSet: { type: String },
+    isEveningTimeSet: { type: String },
 });
 
 

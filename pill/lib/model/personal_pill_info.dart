@@ -10,9 +10,9 @@ class PersonalPillInfo {
   String morningTime;
   String afternoonTime;
   String eveningTime;
-  bool isMorningTimeSet;
-  bool isAfternoonTimeSet;
-  bool isEveningTimeSet;
+  String isMorningTimeSet;
+  String isAfternoonTimeSet;
+  String isEveningTimeSet;
 
   PersonalPillInfo(
       {this.pillname,
