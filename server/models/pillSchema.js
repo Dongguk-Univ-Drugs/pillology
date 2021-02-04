@@ -15,7 +15,6 @@ var pillSchema = new mongoose.Schema({
     isEveningTimeSet: { type: String },
 });
 
-
 // find all
 pillSchema.statics.findAll = function () {
     // return promise
