@@ -49,7 +49,8 @@ Future<PersonalPillInfo> saveData(Map pillinfo) async {
   }
 }
 
-class _CalendarPageState extends State<CalendarPage> with TickerProviderStateMixin {
+class _CalendarPageState extends State<CalendarPage>
+    with TickerProviderStateMixin {
   AnimationController _animationController;
   CalendarController _calendarController;
   TextEditingController _pillNameController;
@@ -95,16 +96,28 @@ class _CalendarPageState extends State<CalendarPage> with TickerProviderStateMix
               index < snapshot.data.length;
               index++) {
             _pillInfo.add(snapshot.data[index]);
-            DateTime dateTime = DateTime.parse(snapshot.data[index].startDate).toLocal();
-            if (_events[dateTime] == null) {
-              _events.putIfAbsent(
-                  dateTime, () => [snapshot.data[index].pillname]);
-            } else {
-              _events.update(
-                  dateTime, (value) => value + [snapshot.data[index].pillname]);
+            DateTime dateTime =
+                DateTime.parse(snapshot.data[index].startDate).toLocal();
+            var difference = DateTime.parse(_pillInfo[index].endDate)
+                .difference(DateTime.parse(_pillInfo[index].startDate))
+                .inDays;
+
+            for (int i = 0; i <= difference; i++) {
+              if (_events[DateTime(
+                      dateTime.year, dateTime.month, dateTime.day + i)] ==
+                  null) {
+                _events.putIfAbsent(
+                    DateTime(dateTime.year, dateTime.month, dateTime.day + i),
+                    () => [snapshot.data[index].pillname]);
+              } else {
+                _events.update(
+                    DateTime(dateTime.year, dateTime.month, dateTime.day + i),
+                    (value) => value + [snapshot.data[index].pillname]);
+              }
             }
             _selectedEvents = _events[_currentDate] ?? [];
           }
+
           return Column(
             children: [
               Expanded(
@@ -628,7 +641,8 @@ class _CalendarPageState extends State<CalendarPage> with TickerProviderStateMix
                                   this._events = _events;
                                 });
                                 // 추가한 데이터 저장
-                                                                  print("_pillInfo[index].startDate: ${_pillInfo[index].startDate}");
+                                print(
+                                    "_pillInfo[index].startDate: ${_pillInfo[index].startDate}");
 
                                 saveData(_pillInfo[index].toJson());
                                 Navigator.of(context).pop();
