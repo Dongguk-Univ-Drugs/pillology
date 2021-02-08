@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
 import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/body/home/search/result_list.dart';
 import 'package:pill/components/body/home/search/text/text_main.dart';
 import 'package:pill/components/body/home/story/story_main.dart';
+import 'package:pill/model/text_search.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
+import 'package:sqflite/sqflite.dart';
 // util
 import '../../../utility/input_decoration.dart';
 // packages
@@ -42,24 +45,27 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: searchTabs(context),
                     ),
                     Expanded(flex: 1, child: foodStory(context)),
-                    Expanded(flex: 1, child: drugStory(context)),
-                    Expanded(
-                      flex: 3,
-                      child: emergency(context),
-                    ),
+                    Expanded(flex: 3, child: drugStory(context)),
                     blankBox(flex: 1)
                   ],
                 ))));
   }
 }
 
+// ---------------------------------------------------------------------- 검색창
 class SearchBar extends StatefulWidget {
   @override
   _SearchBarState createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
+  // text editing controller
   TextEditingController searchController = new TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,29 +80,60 @@ class _SearchBarState extends State<SearchBar> {
                 child: TextFormField(
                   controller: searchController,
                   decoration: inputDecoration("검색하려는 약품명을 입력해주세요."),
+                  onTap: () async {
+                    List<TextSearchData> data =
+                        await TextSearchDataProvider().getAllTexts();
+                    for (int i = 0; i < data.length; ++i) {
+                      print(data[i].toString());
+                    }
+                  },
                 ))),
         Expanded(
             flex: 2,
             child: ImageButton(
-              mainAxisAlignment: MainAxisAlignment.end,
-              height: 30,
-              width: 30,
-              children: [
-                Image.asset(
+                mainAxisAlignment: MainAxisAlignment.end,
+                height: 30,
+                width: 30,
+                children: [
+                  Image.asset(
+                    'assets/icons/search-grey.png',
+                    color: color777,
+                  )
+                ],
+                pressedImage: Image.asset(
+                  'assets/icons/search-grey.png',
+                  color: colorThemeGreen,
+                ), // TODO: 다른 색 아이콘으로 변경하기 !
+                unpressedImage: Image.asset(
                   'assets/icons/search-grey.png',
                   color: color777,
-                )
-              ],
-              pressedImage: Image.asset(
-                'assets/icons/search-grey.png',
-                color: colorThemeGreen,
-              ), // TODO: 다른 색 아이콘으로 변경하기 !
-              unpressedImage: Image.asset(
-                'assets/icons/search-grey.png',
-                color: color777,
-              ),
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResult(itemName: searchController.text)))
-            ))
+                ),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchResult(
+                              itemName: searchController.text))).then((value) {
+                    String _mm, _dd;
+                    // month
+                    if (DateTime.now().month < 10)
+                      _mm = '0' + DateTime.now().month.toString();
+                    else
+                      _mm = DateTime.now().month.toString();
+
+                    // date
+                    if (DateTime.now().day < 10)
+                      _dd = '0' + DateTime.now().day.toString();
+                    else
+                      _dd = DateTime.now().day.toString();
+
+                    String _date =
+                        DateTime.now().year.toString() + '-' + _mm + '-' + _dd;
+
+                    TextSearchDataProvider().createData(new TextSearchData(
+                        name: searchController.text, date: _date));
+                  });
+                }))
       ],
     );
   }
@@ -231,8 +268,8 @@ GestureDetector drugStory(BuildContext context) {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               makeTitleWithColor(
-                  normalStart: "오늘의 ",
-                  emphasize: "안전사용정보",
+                  normalStart: "오늘 ",
+                  emphasize: "나의 약 점수는?",
                   normalEnd: "",
                   color: colorThemeGreen),
               ImageIcon(AssetImage('assets/icons/chevron-forward-outline.png'),
