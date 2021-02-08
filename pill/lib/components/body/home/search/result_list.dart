@@ -49,7 +49,8 @@ class SearchResultState extends State<SearchResult> {
     final response = await http.get(
         "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=" +
             _serviceKey +
-            _itemName + _entpName + 
+            _itemName +
+            _entpName +
             "&pageNo=1&startPage=1&numOfRows=10&type=json");
 
     if (response.statusCode == 200) {
@@ -67,7 +68,8 @@ class SearchResultState extends State<SearchResult> {
     super.initState();
     setState(() {
       _itemName = widget.itemName != null ? "&itemName=" + widget.itemName : "";
-      _entpName = widget.entpName != null ? "&trustEntpName=" + widget.entpName : "";
+      _entpName =
+          widget.entpName != null ? "&trustEntpName=" + widget.entpName : "";
     });
     futureResult = fetchTextSearchResult();
   }
@@ -108,34 +110,44 @@ class SearchResultState extends State<SearchResult> {
                                   MediaQuery.of(context).size.width * 0.05,
                               vertical:
                                   MediaQuery.of(context).size.height * 0.025),
-                          child: ListView.builder(
-                            itemCount: _items.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                  onTap: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ResultDetail(
-                                                details: _items[index],
-                                              ))),
-                                  child: Container(
-                                    decoration: boxDecorationNoShadow(),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            MediaQuery.of(context).size.width *
-                                                0.05,
-                                        vertical:
-                                            MediaQuery.of(context).size.height *
-                                                0.025),
-                                    margin: EdgeInsets.symmetric(
-                                        vertical:
-                                            MediaQuery.of(context).size.height *
-                                                0.005),
-                                    child: makeSemiTitle(
-                                        title: _items[index].itemName),
-                                  ));
-                            },
-                          ))));
+                          child: _items.length != 0
+                              ? ListView.builder(
+                                  itemCount: _items.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return GestureDetector(
+                                        onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ResultDetail(
+                                                      details: _items[index],
+                                                    ))),
+                                        child: Container(
+                                          decoration: boxDecorationNoShadow(),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05,
+                                              vertical: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.025),
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.005),
+                                          child: makeSemiTitle(
+                                              title: _items[index].itemName),
+                                        ));
+                                  },
+                                )
+                              : Center(
+                                  child: makeBoldTitleWithSize(
+                                      '찾을 수 없습니다. 🧐', 16.0, TextAlign.center),
+                                ))));
             }
           },
         ));

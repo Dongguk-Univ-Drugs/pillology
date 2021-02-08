@@ -5,6 +5,7 @@ import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/body/home/search/result_list.dart';
 import 'package:pill/components/body/home/search/text/text_main.dart';
 import 'package:pill/components/body/home/story/story_main.dart';
+import 'package:pill/components/loading.dart';
 import 'package:pill/model/text_search.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
@@ -23,52 +24,205 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   ScrollController mainScrollController = new ScrollController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: SingleChildScrollView(
-            controller: mainScrollController,
-            child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.9,
-                padding: EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: SearchBar(),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: searchTabs(context),
-                    ),
-                    Expanded(flex: 1, child: foodStory(context)),
-                    Expanded(flex: 3, child: drugStory(context)),
-                    blankBox(flex: 1)
-                  ],
-                ))));
-  }
-}
-
-// ---------------------------------------------------------------------- 검색창
-class SearchBar extends StatefulWidget {
-  @override
-  _SearchBarState createState() => _SearchBarState();
-}
-
-class _SearchBarState extends State<SearchBar> {
   // text editing controller
   TextEditingController searchController = new TextEditingController();
+
+  // sqlite data
+  var fetchedData;
+
+  // optional screen
+  bool showHistory = false;
 
   @override
   void initState() {
     super.initState();
+    fetchedData = TextSearchDataProvider().getAllTexts();
   }
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: fetchedData,
+        builder: (BuildContext context,
+            AsyncSnapshot<List<TextSearchData>> snapshot) {
+          if (snapshot.hasData) {
+            
+            return Center(
+                child: SingleChildScrollView(
+                    controller: mainScrollController,
+                    child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        padding: EdgeInsets.all(20.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: searchBar(context),
+                            ),
+                            Expanded(
+                              flex: 9,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      top: 0.0,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: searchTabs(context),
+                                          ),
+                                          Expanded(
+                                              flex: 1,
+                                              child: foodStory(context)),
+                                          Expanded(
+                                              flex: 3,
+                                              child: drugStory(context)),
+                                          blankBox(flex: 4)
+                                        ],
+                                      )),
+                                  // ---------------------------------------------------------------------- 검색창
+                                  AnimatedPositioned(
+                                      curve: Curves.fastOutSlowIn,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.9,
+                                      height: !showHistory
+                                          ? 0
+                                          : MediaQuery.of(context).size.width *
+                                              0.5,
+                                      duration: Duration(milliseconds: 500),
+                                      top: 0,
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 15.0, vertical: 20.0),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height:
+                                              MediaQuery.of(context).size.width,
+                                          decoration: boxDecorationNoShadow(),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: makeBoldTitle(
+                                                    title: '최근 검색어',
+                                                    color: color333,
+                                                    size: MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.04),
+                                              ),
+                                              Expanded(
+                                                flex: 8,
+                                                child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  itemCount:
+                                                      snapshot.data.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    TextSearchData data =
+                                                        snapshot.data[snapshot
+                                                                .data.length -
+                                                            index -
+                                                            1];
+                                                    DateTime parsedTime =
+                                                        DateTime.tryParse(
+                                                            data.date);
+                                                    int diff;
+                                                    if (parsedTime != null) {
+                                                      diff = DateTime(
+                                                              DateTime.now()
+                                                                  .year,
+                                                              DateTime.now()
+                                                                  .month,
+                                                              DateTime.now()
+                                                                  .day)
+                                                          .difference(DateTime(
+                                                              parsedTime.year,
+                                                              parsedTime.month,
+                                                              parsedTime.day))
+                                                          .inDays;
+                                                    }
+                                                    return Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 6,
+                                                            child:
+                                                                makeSemiTitle(
+                                                                    title: data
+                                                                        .name),
+                                                          ),
+                                                          blankBox(flex: 1),
+                                                          Expanded(
+                                                            flex: 2,
+                                                            child: makeSemiTitle(
+                                                                title: diff == 0
+                                                                    ? '오늘'
+                                                                    : diff != null
+                                                                        ? diff.toString() + '일전'
+                                                                        : 'x',
+                                                                textAlign: TextAlign.center),
+                                                          ),
+                                                          Expanded(
+                                                            flex: 1,
+                                                            child: TextButton(
+                                                              onPressed: () {
+                                                                TextSearchDataProvider()
+                                                                    .deleteText(snapshot
+                                                                            .data
+                                                                            .length -
+                                                                        index);
+                                                                setState(() {
+                                                                  fetchedData =
+                                                                      TextSearchDataProvider()
+                                                                          .getAllTexts();
+                                                                });
+                                                              },
+                                                              child: Icon(
+                                                                  Icons.close,
+                                                                  size: 20.0,
+                                                                  color:
+                                                                      colorAAA),
+                                                            ),
+                                                          )
+                                                        ]);
+                                                  },
+                                                ),
+                                              )
+                                            ],
+                                          )))
+                                ],
+                              ),
+                            ),
+                          ],
+                        ))));
+          } else
+            return loadingPage(context);
+        });
+  }
+
+  Widget searchBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -80,12 +234,12 @@ class _SearchBarState extends State<SearchBar> {
                 child: TextFormField(
                   controller: searchController,
                   decoration: inputDecoration("검색하려는 약품명을 입력해주세요."),
-                  onTap: () async {
-                    List<TextSearchData> data =
-                        await TextSearchDataProvider().getAllTexts();
-                    for (int i = 0; i < data.length; ++i) {
-                      print(data[i].toString());
-                    }
+                  onTap: () {
+                    setState(() {
+                      showHistory = !showHistory;
+                      fetchedData = TextSearchDataProvider().getAllTexts();
+                    });
+                    print(showHistory);
                   },
                 ))),
         Expanded(
@@ -129,10 +283,11 @@ class _SearchBarState extends State<SearchBar> {
 
                     String _date =
                         DateTime.now().year.toString() + '-' + _mm + '-' + _dd;
-
+                    
                     TextSearchDataProvider().createData(new TextSearchData(
                         name: searchController.text, date: _date));
                   });
+                  
                 }))
       ],
     );

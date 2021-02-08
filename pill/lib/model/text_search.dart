@@ -34,7 +34,7 @@ class TextSearchData {
 
   @override
   String toString() {
-    return 'Data >> name : $name, date : $date';
+    return 'Data >> id : $id, name : $name, date : $date';
   }
 }
 
@@ -59,7 +59,7 @@ class TextSearchDataProvider {
     return await openDatabase(path, version: 1, onCreate: (db, version) async {
       await db.execute('''
           CREATE TABLE $tableSearch(
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
             name TEXT,
             date TEXT
           )
@@ -67,9 +67,21 @@ class TextSearchDataProvider {
     }, onUpgrade: (db, oldVersion, newVersion) {});
   }
 
-//Create
+  //Create
   createData(TextSearchData data) async {
     final db = await database;
+
+    // check update
+    var _list = await getAllTexts();
+    if(_list.asMap() != null) {
+      int keyIdx = -1;
+      _list.asMap().forEach((key, value) {
+        if(value.name == data.name) keyIdx = key;
+      });
+      if(keyIdx != -1)
+        deleteText(keyIdx);        
+    }
+
     var res = await db.rawInsert(
         'INSERT INTO $tableSearch(name, date) VALUES(?, ?)',
         [data.name, data.date]);

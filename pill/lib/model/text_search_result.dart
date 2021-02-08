@@ -95,11 +95,14 @@ class ResponseBody {
     var itemList = json['items'] as List;
     var _itemList = [];
     // list parsing
-    itemList.asMap().forEach((index, value) {
-      if(index + 1 < itemList.length) {
-        if(value['itemName'] != itemList[index + 1]['itemName']) _itemList.add(value);
-      }
-    });
+    if (itemList.asMap() != null) {
+      itemList.asMap().forEach((index, value) {
+        if (index + 1 < itemList.length) {
+          if (value['itemName'] != itemList[index + 1]['itemName'])
+            _itemList.add(value);
+        }
+      });
+    }
 
     List<TextSearchResult> parsedList =
         _itemList.map((element) => TextSearchResult.fromJson(element)).toList();
