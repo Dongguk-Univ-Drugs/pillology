@@ -1,27 +1,11 @@
+const { get } = require('mongoose');
+const { collection } = require('../../models/pillSchema');
 const PillModel = require('../../models/pillSchema');
-var getData = function (result){
-    var data = {
-        'pillname': result.pillname
-    }
-    return data;
-}
-function getCurrentDate() {
-    var date = new Date();
-    var year = date.getFullYear();
-    var month = date.getMonth();
-    var today = date.getDate();
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var seconds = date.getSeconds();
-    var milliseconds = date.getMilliseconds();
-    return new Date(Date.UTC(year, month, today, hours, minutes, seconds, milliseconds));
-}
 
 exports.users = (req, res, next) => {
     res.send('respond with a resource');
 }
 
-// find all
 exports.pills = (req, res) => {
     PillModel.findAll()
         .then((result) => {
@@ -31,7 +15,6 @@ exports.pills = (req, res) => {
         })
         .catch((err) => res.status(500).send(err));
 }
-
 exports.postPills = async (req, res) => {
     try {
         const { pillname, startDate, endDate, morningTime, afternoonTime, eveningTime,
@@ -42,12 +25,55 @@ exports.postPills = async (req, res) => {
             startDate: startDate, endDate: endDate, morningTime: morningTime, afternoonTime: afternoonTime, eveningTime: eveningTime,
             isMorningTimeSet: isMorningTimeSet, isAfternoonTimeSet: isAfternoonTimeSet, isEveningTimeSet: isEveningTimeSet
         });
-        await pill.save();
+
+        await collection.insertOne(pill);
     } catch (e) {
         console.log(e)
         res.status(500).send('There was a problem posting pill info');
     }
 }
+
+exports.view = function (req, res) {
+    PillModel.findById(req.params.id, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        res.json(result);
+    })
+}
+
+exports.update = (req, res) => {
+    PillModel.findById(req.params.id, function (err, result) {
+        if (err){
+            res.json({
+                status: 'err',
+                code: 500,
+                message: err
+            })
+        }
+            
+        result.pillname = req.body.pillname
+        result.startDate = req.body.startDate
+        result.endDate = req.body.endDate
+        result.isMorningTimeSet = req.body.isMorningTimeSet
+        result.isAfternoonTimeSet = req.body.isAfternoonTimeSet
+        result.isEveningTimeSet = req.body.isEveningTimeSet
+        result.morningTime = req.body.morningTime
+        result.afternoonTime = req.body.afternoonTime
+        result.eveningTime = req.body.eveningTime
+
+        result.save(function (err) {
+            if (err)
+                res.json({
+                    status: 'err',
+                    code: 500,
+                    message: err
+                })
+            res.json(result);
+        })
+    })
+}
+
 exports.condition = async (req, res) => {
     try {
         console.log('Request Id:', req.params.id);

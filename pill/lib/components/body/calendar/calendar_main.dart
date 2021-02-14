@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pill/components/body/calendar/calendar_db.dart';
 import 'package:pill/model/personal_pill_info.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/input_decoration.dart';
@@ -23,19 +24,10 @@ class CalendarPage extends StatefulWidget {
   _CalendarPageState createState() => _CalendarPageState();
 }
 
-Future<List<PersonalPillInfo>> getData() async {
-  final response = await http.get('http://localhost:27017/user');
-  if (response.statusCode == 200) {
-    final userMap = json.decode(response.body);
-    List<PersonalPillInfo> result = [];
-    for (int i = 0; i < userMap.length; i++) {
-      result.add(PersonalPillInfo.fromJson(userMap[i]));
-    }
-    return result;
-  } else {}
-}
 
-Future<PersonalPillInfo> saveData(Map pillinfo) async {
+
+
+Future<PersonalPillInfo> updateData(Map pillinfo) async {
   var jsonResponse = null;
   var response =
       await http.post("http://localhost:27017/user/pilldb", body: pillinfo);
@@ -58,6 +50,7 @@ class _CalendarPageState extends State<CalendarPage>
   List<PersonalPillInfo> _pillInfo;
   Map<DateTime, List> _events;
   DateTime _selectedDay;
+  CalendarDatabase calendarDatabase = new CalendarDatabase();
 
   @override
   void initState() {
@@ -80,7 +73,7 @@ class _CalendarPageState extends State<CalendarPage>
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: getData(),
+      future: calendarDatabase.getData(),
       builder: (context, snapshot) {
         if (snapshot.data == null) {
           return Container(
@@ -305,8 +298,9 @@ class _CalendarPageState extends State<CalendarPage>
                                       _events[_selectedDay] ?? [];
                                   this._events = _events;
                                 });
+                                
                                 // 추가한 데이터 저장
-                                saveData(_pillInfo[index].toJson());
+                                calendarDatabase.saveData(_pillInfo[index].toJson());
                                 Navigator.of(context).pop();
                               },
                               child: Text("저장")),
@@ -572,6 +566,7 @@ class _CalendarPageState extends State<CalendarPage>
         });
   }
 
+// TODO: 추가할 때, db에서 post 가 아니라 update 해야 함. 수정 필요함.
   void showPillDetail(BuildContext context, String pillname) {
     var difference;
     var index;
@@ -644,7 +639,7 @@ class _CalendarPageState extends State<CalendarPage>
                                 print(
                                     "_pillInfo[index].startDate: ${_pillInfo[index].startDate}");
 
-                                saveData(_pillInfo[index].toJson());
+                                calendarDatabase.editPillInfo(_pillInfo[index]);
                                 Navigator.of(context).pop();
                               },
                               child: Text("저장")),
