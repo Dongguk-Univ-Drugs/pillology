@@ -1,6 +1,7 @@
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
+  final String itemEngName; // 의약품 영어이름
   final String itemSeq; // 품목기준코드
   final String efcyQesitm; // 효능
   final String useMethodQesitm; // 사용법
@@ -16,6 +17,7 @@ class TextSearchResult {
   TextSearchResult(
       {this.entpName,
       this.itemName,
+      this.itemEngName,
       this.itemSeq,
       this.efcyQesitm,
       this.useMethodQesitm,
@@ -29,9 +31,22 @@ class TextSearchResult {
       this.itemImage});
 
   factory TextSearchResult.fromJson(Map<String, dynamic> parsedJson) {
+    String name = parsedJson['itemName'];
+    String _korName, _engName;
+    if (name.contains("(수출명:")) {
+      // kor name
+      _korName = name.substring(0, name.indexOf("(수출명:"));
+      // eng name
+      _engName = name.substring(name.indexOf("(수출명:") + 1, name.length - 1);
+    } else {
+      _korName = name;
+      _engName = '';
+    }
+
     return TextSearchResult(
         entpName: parsedJson['entpName'],
-        itemName: parsedJson['itemName'],
+        itemName: _korName,
+        itemEngName: _engName,
         efcyQesitm: parsedJson['efcyQesitm'],
         useMethodQesitm: parsedJson['useMethodQesitm'],
         atpnWarnQesitm: parsedJson['atpnWarnQesitm'],
@@ -77,14 +92,25 @@ class ResponseBody {
   ResponseBody({this.items, this.numOfRows, this.pageNo, this.totalCount});
 
   factory ResponseBody.fromJson(Map<dynamic, dynamic> json) {
-
     var itemList = json['items'] as List;
-    List<TextSearchResult> _itemList = itemList.map((element) => TextSearchResult.fromJson(element)).toList();
+    var _itemList = [];
+    // list parsing
+    if (itemList.asMap() != null) {
+      itemList.asMap().forEach((index, value) {
+        if (index + 1 < itemList.length) {
+          if (value['itemName'] != itemList[index + 1]['itemName'])
+            _itemList.add(value);
+        }
+      });
+    }
+
+    List<TextSearchResult> parsedList =
+        _itemList.map((element) => TextSearchResult.fromJson(element)).toList();
 
     return ResponseBody(
         numOfRows: json['numOfRows'],
         pageNo: json['pageNo'],
         totalCount: json['totalCount'],
-        items: _itemList);
+        items: parsedList);
   }
 }

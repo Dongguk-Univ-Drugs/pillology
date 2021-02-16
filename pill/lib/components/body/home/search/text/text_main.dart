@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pill/components/body/home/search/result.dart';
+import 'package:pill/components/body/home/search/result_list.dart';
 import 'package:pill/components/body/home/search/text/text_data.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/utility/box_decoration.dart';
