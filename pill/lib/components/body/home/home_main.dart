@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+
 import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
 import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/body/home/search/result_list.dart';
@@ -10,7 +10,7 @@ import 'package:pill/model/text_search.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
-import 'package:sqflite/sqflite.dart';
+
 // util
 import '../../../utility/input_decoration.dart';
 // packages
@@ -168,10 +168,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         children: [
                                                           Expanded(
                                                             flex: 6,
-                                                            child:
-                                                                makeSemiTitle(
+                                                            child: GestureDetector(
+                                                              onTap: () => searchController.text = data.name,
+                                                              child:   makeSemiTitle(
                                                                     title: data
                                                                         .name),
+                                                            )
                                                           ),
                                                           blankBox(flex: 1),
                                                           Expanded(
@@ -411,8 +413,9 @@ GestureDetector foodStory(BuildContext context) {
 
 GestureDetector drugStory(BuildContext context) {
   return GestureDetector(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Story())),
+      // onTap: () => Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => Story())),
+      onTap: () => print('TODO: 오늘 나의 약 점수는?'),
       child: Container(
           decoration: boxDecorationNoShadow(),
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
