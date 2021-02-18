@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // components
-import 'package:pill/components/body/home/search/result_tabview.dart';
+import 'package:pill/components/body/home/search/result_detail_tabview.dart';
 import 'package:pill/components/header/header.dart';
 // models
 import 'package:pill/model/text_search_result.dart';
@@ -64,7 +64,7 @@ class _ResultDetailState extends State<ResultDetail>
               Expanded(
                   // tab view : 5 tabs required
                   flex: 5,
-                  child: resultTabView(context, tabController)),
+                  child: resultTabView(context, tabController, data: _result)),
               Expanded(
                   // bookmark button
                   flex: 1,
@@ -161,7 +161,7 @@ Widget resultAlert(BuildContext context, {String bewareDrug}) {
 
 // 결과화면 탭 뷰
 Widget resultTabView(BuildContext context, TabController tabController,
-    {final data}) {
+    {TextSearchResult data}) {
   return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -207,7 +207,7 @@ Widget resultTabView(BuildContext context, TabController tabController,
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  tabInformation(context),
+                  tabInformation(context, data: data),
                   tabInformation(context),
                   tabInformation(context),
                   tabInformation(context),

@@ -40,13 +40,13 @@ Container tabInformation(BuildContext context, {final data}) {
             // 약품명 : ↓↓↓ list
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              tabInformationSubItem(title : '약품명', content: '가나모티에스알정15mg'),
-              tabInformationSubItem(title : '성분/함량', content: '가나모티에스알정15mg'),
-              tabInformationSubItem(title : '전문/일반', content: '가나모티에스알정15mg'),
-              tabInformationSubItem(title : '식약처분류', content: '가나모티에스알정15mg'),
-              tabInformationSubItem(title : 'ATC코드', content: '가나모티에스알정15mg'),
-              tabInformationSubItem(title : '투여경로', content: '가나모티에스알정15mg'),
-              tabInformationSubItem(title : '보험정보', content: '가나모티에스알정15mg'),
+              tabInformationSubItem(title : '약품명', content: data != null ? data.itemName : 'name'),
+              tabInformationSubItem(title : '성분/함량', content: '준비중'),
+              tabInformationSubItem(title : '전문/일반', content: '준비중'),
+              tabInformationSubItem(title : '식약처분류', content: '준비중'),
+              tabInformationSubItem(title : 'ATC코드', content: data != null ? data.itemSeq : 'code'),
+              tabInformationSubItem(title : '투여경로', content: data != null ? data.useMethodQesitm : 'how to'),
+              tabInformationSubItem(title : '보험정보', content: '준비중'),
             ],
           ),
         )

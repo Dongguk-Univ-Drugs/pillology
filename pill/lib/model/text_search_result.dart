@@ -1,3 +1,5 @@
+import 'package:xml/xml.dart';
+
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
@@ -43,12 +45,15 @@ class TextSearchResult {
       _engName = '';
     }
 
+    // replace pattern <p>---</p>
+    String useMethodQesitmString = parsedJson['useMethodQesitm'].replaceAll(new RegExp(r"[(<p>)(</p>)]"), '');
+
     return TextSearchResult(
         entpName: parsedJson['entpName'],
         itemName: _korName,
         itemEngName: _engName,
         efcyQesitm: parsedJson['efcyQesitm'],
-        useMethodQesitm: parsedJson['useMethodQesitm'],
+        useMethodQesitm: useMethodQesitmString,
         atpnWarnQesitm: parsedJson['atpnWarnQesitm'],
         atpnQesitm: parsedJson['atpnQesitm'],
         intrcQesitm: parsedJson['intrcQesitm'],
