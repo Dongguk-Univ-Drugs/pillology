@@ -1,6 +1,7 @@
 // packages
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,8 @@ class SearchResult extends StatefulWidget {
 class SearchResultState extends State<SearchResult> {
   final _controller = ScrollController();
 
-  // TODO : env 처리하기
   // text search
-  var _serviceKey =
-      'xCmiTrdFK8b1d4tNOWt%2Fjs%2BYo7TQcd%2BJqb3KxAib7iDWO%2B3aGkevwya5zHvIv%2FJ6pyrjjHGwSbjOR%2FnTQ%2B5zfA%3D%3D';
+  var _serviceKey = env['SERVICE_KEY'];
   var _entpName;
   var _itemName;
   /*
