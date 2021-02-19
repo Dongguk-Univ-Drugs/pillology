@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 // components
 import 'package:pill/components/body/home/search/result_detail_tabview.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/components/loading.dart';
+import 'package:pill/model/dur_search_result.dart';
 // models
 import 'package:pill/model/text_search_result.dart';
 // utility
@@ -27,7 +29,7 @@ class _ResultDetailState extends State<ResultDetail>
   TabController tabController;
 
   TextSearchResult _result;
-  // TODO : env 처리하기
+  
   // text search
   var _serviceKey = env['SERVICE_KEY'];
   // DUR 성분
@@ -38,11 +40,13 @@ class _ResultDetailState extends State<ResultDetail>
     final usjntRes = await http.get(
         "http://apis.data.go.kr/1470000/DURPrdlstInfoService/getUsjntTabooInfoList?ServiceKey=" +
             _serviceKey +
-            _result.itemName +
+            "&itemName="+_result.itemName +
             "&pageNo=1&numOfRows=3&type=json");
 
     if (usjntRes.statusCode == 200) {
-      print(usjntRes.body);
+       return json.decode(usjntRes.body)['body'];
+    } else {
+      throw Exception('Failed to load DUR information');
     }
   }
 
@@ -71,6 +75,12 @@ class _ResultDetailState extends State<ResultDetail>
           } else if (!snapshot.hasData) {
             return loadingPage(context);
           } else {
+            TotalDurSearchResult _total = TotalDurSearchResult.fromJson(snapshot.data);
+            List<DurSearchResult> _list = List.from(_total.items);
+            
+            // set one result
+            DurSearchResult _item = _list[0]; // latest !
+
             return SingleChildScrollView(
               controller: _controller,
               child: Container(
@@ -99,7 +109,7 @@ class _ResultDetailState extends State<ResultDetail>
                         // tab view : 5 tabs required
                         flex: 5,
                         child: resultTabView(context, tabController,
-                            data: _result)),
+                            data: _result, durData: _item)),
                     Expanded(
                         // bookmark button
                         flex: 1,
@@ -198,7 +208,7 @@ Widget resultAlert(BuildContext context, {String bewareDrug}) {
 
 // 결과화면 탭 뷰
 Widget resultTabView(BuildContext context, TabController tabController,
-    {TextSearchResult data}) {
+    {TextSearchResult data, DurSearchResult durData}) {
   return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -244,7 +254,7 @@ Widget resultTabView(BuildContext context, TabController tabController,
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  tabInformation(context, data: data),
+                  tabInformation(context, data: data, durData: durData),
                   tabEfcy(context, data: data),
                   tabUsage(context, data: data),
                   tabNotion(context, data: data),

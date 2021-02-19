@@ -22,7 +22,7 @@ Row tabInformationSubItem({String title, String content}) {
       ]);
 }
 
-Container tabInformation(BuildContext context, {final data}) {
+Container tabInformation(BuildContext context, {final data, final durData}) {
   return Container(
     padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
     decoration: boxDecorationNoShadow(),
@@ -44,7 +44,7 @@ Container tabInformation(BuildContext context, {final data}) {
             children: [
               tabInformationSubItem(
                   title: '약품명', content: data != null ? data.itemName : 'name'),
-              tabInformationSubItem(title: '성분/함량', content: '준비중'),
+              tabInformationSubItem(title: '성분/함량', content: durData != null ? durData.etcOtcName : 'expert/general'),
               tabInformationSubItem(title: '전문/일반', content: '준비중'),
               tabInformationSubItem(title: '식약처분류', content: '준비중'),
               tabInformationSubItem(
