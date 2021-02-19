@@ -118,18 +118,43 @@ class _HomeScreenState extends State<HomeScreen> {
                                             children: [
                                               Expanded(
                                                 flex: 2,
-                                                child: makeBoldTitle(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 7,
+                                                      child: makeBoldTitle(
                                                     title: '최근 검색어',
                                                     color: color333,
                                                     size: MediaQuery.of(context)
                                                             .size
                                                             .width *
-                                                        0.04),
+                                                        0.04)
+                                                    ),
+                                                    blankBox(flex:1),
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: TextButton(
+                                                        child: Icon(Icons.delete_outline_rounded, size: 22, color: colorAAA,),
+                                                        onPressed: () { 
+                                                          TextSearchDataProvider().deleteAllTexts();
+                                                          setState(() {
+                                                                  fetchedData =
+                                                                      TextSearchDataProvider()
+                                                                          .getAllTexts();
+                                                                });
+                                                        },
+                                                      ),
+                                                    )   
+                                                  ],
+                                                )
                                               ),
                                               Expanded(
                                                 flex: 8,
                                                 child: ListView.builder(
                                                   shrinkWrap: true,
+                                                  reverse: true,
                                                   itemCount:
                                                       snapshot.data.length,
                                                   itemBuilder:
@@ -192,6 +217,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               onPressed: () {
                                                                 TextSearchDataProvider()
                                                                     .deleteText(snapshot
+                                                                            .data
+                                                                            .length -
+                                                                        index);
+                                                                        print(snapshot
                                                                             .data
                                                                             .length -
                                                                         index);

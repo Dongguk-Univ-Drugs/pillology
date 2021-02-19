@@ -1,5 +1,3 @@
-import 'package:xml/xml.dart';
-
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
