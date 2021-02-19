@@ -92,7 +92,7 @@ _showBottomSheetTabDURInfo(BuildContext context, final data,
   showModalBottomSheet(
       backgroundColor: Color(0x00000000),
       context: context,
-      builder: (_) => zoomInTabNotion(context, data, imagePath: imagePath),
+      builder: (_) => zoomInTabDUR(context, data, imagePath: imagePath),
       isScrollControlled: true);
 }
 
