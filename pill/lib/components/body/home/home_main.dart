@@ -154,7 +154,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 flex: 8,
                                                 child: ListView.builder(
                                                   shrinkWrap: true,
-                                                  reverse: true,
                                                   itemCount:
                                                       snapshot.data.length,
                                                   itemBuilder:

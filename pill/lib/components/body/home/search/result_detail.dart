@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 // components
 import 'package:pill/components/body/home/search/result_detail_tabview.dart';
 import 'package:pill/components/header/header.dart';
+import 'package:pill/components/loading.dart';
 // models
 import 'package:pill/model/text_search_result.dart';
 // utility
@@ -22,7 +24,27 @@ class _ResultDetailState extends State<ResultDetail>
     with SingleTickerProviderStateMixin {
   final _controller = ScrollController();
   TabController tabController;
+
   TextSearchResult _result;
+  // TODO : env 처리하기
+  // text search
+  var _serviceKey =
+      'xCmiTrdFK8b1d4tNOWt%2Fjs%2BYo7TQcd%2BJqb3KxAib7iDWO%2B3aGkevwya5zHvIv%2FJ6pyrjjHGwSbjOR%2FnTQ%2B5zfA%3D%3D';
+  // DUR 성분
+  Future<dynamic> _durResult;
+  Future<dynamic> fetchDURResult() async {
+    // API 명칭 : DUR 성분정보
+    // 범용금기
+    final usjntRes = await http.get(
+        "http://apis.data.go.kr/1470000/DURPrdlstInfoService/getUsjntTabooInfoList?ServiceKey=" +
+            _serviceKey +
+            _result.itemName +
+            "&pageNo=1&numOfRows=3&type=json");
+
+    if (usjntRes.statusCode == 200) {
+      print(usjntRes.body);
+    }
+  }
 
   @override
   void initState() {
@@ -31,47 +53,63 @@ class _ResultDetailState extends State<ResultDetail>
       _result = widget.details;
       tabController = TabController(vsync: this, length: 5);
     });
+    _durResult = fetchDURResult();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customHeader("약품 검색 상세 결과"),
-      body: SingleChildScrollView(
-        controller: _controller,
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.025,
-              vertical: MediaQuery.of(context).size.height * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                  // title : name, product, images -> row
-                  flex: 2,
-                  child: resultTitle(context,
-                      name: _result.itemName,
-                      engName: _result.itemEngName,
-                      manufacturer: _result.entpName,
-                      imagePath: _result.itemImage)),
-              Expanded(
-                  // only text : desc1, name(colored Bold), desc2
-                  flex: 2,
-                  child: resultAlert(context)),
-              Expanded(
-                  // tab view : 5 tabs required
-                  flex: 5,
-                  child: resultTabView(context, tabController, data: _result)),
-              Expanded(
-                  // bookmark button
-                  flex: 1,
-                  child: resultBookmark(context)),
-            ],
-          ),
-        ),
+      body: FutureBuilder(
+        future: _durResult,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: makeBoldTitleWithSize(
+                  '찾을 수 없습니다. 🧐', 16.0, TextAlign.center),
+            );
+          } else if (!snapshot.hasData) {
+            return loadingPage(context);
+          } else {
+            return SingleChildScrollView(
+              controller: _controller,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.025,
+                    vertical: MediaQuery.of(context).size.height * 0.05),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                        // title : name, product, images -> row
+                        flex: 2,
+                        child: resultTitle(context,
+                            name: _result.itemName,
+                            engName: _result.itemEngName,
+                            manufacturer: _result.entpName,
+                            imagePath: _result.itemImage)),
+                    Expanded(
+                        // only text : desc1, name(colored Bold), desc2
+                        flex: 2,
+                        child: resultAlert(context)),
+                    Expanded(
+                        // tab view : 5 tabs required
+                        flex: 5,
+                        child: resultTabView(context, tabController,
+                            data: _result)),
+                    Expanded(
+                        // bookmark button
+                        flex: 1,
+                        child: resultBookmark(context)),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -117,20 +155,19 @@ Widget resultTitle(BuildContext context,
             children: [
               blankBox(flex: 3),
               Expanded(
-                flex: 4,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: imagePath == null
-                      ? Image.asset(
-                          'assets/icons/pill.png',
-                          fit: BoxFit.cover,
-                          width: 200,
-                          height: 200,
-                        )
-                      : Image.network(imagePath,
-                          fit: BoxFit.cover, width: 200, height: 200),
-                )
-              ),
+                  flex: 4,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: imagePath == null
+                        ? Image.asset(
+                            'assets/icons/pill.png',
+                            fit: BoxFit.cover,
+                            width: 200,
+                            height: 200,
+                          )
+                        : Image.network(imagePath,
+                            fit: BoxFit.cover, width: 200, height: 200),
+                  )),
               blankBox(flex: 3)
             ],
           ),
@@ -208,9 +245,9 @@ Widget resultTabView(BuildContext context, TabController tabController,
                 controller: tabController,
                 children: [
                   tabInformation(context, data: data),
-                  tabInformation(context),
-                  tabInformation(context),
-                  tabInformation(context),
+                  tabEfcy(context, data: data),
+                  tabUsage(context, data: data),
+                  tabNotion(context, data: data),
                   tabInformation(context),
                 ],
               ))
