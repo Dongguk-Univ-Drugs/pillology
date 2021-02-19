@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 // components
-import 'package:pill/components/body/home/search/result_tabview.dart';
+import 'package:pill/components/body/home/search/result_detail_tabview.dart';
 import 'package:pill/components/header/header.dart';
+import 'package:pill/components/loading.dart';
+import 'package:pill/model/dur_search_result.dart';
 // models
 import 'package:pill/model/text_search_result.dart';
 // utility
@@ -22,7 +27,29 @@ class _ResultDetailState extends State<ResultDetail>
     with SingleTickerProviderStateMixin {
   final _controller = ScrollController();
   TabController tabController;
+
   TextSearchResult _result;
+
+  // text search
+  var _serviceKey = env['SERVICE_KEY'];
+  // DUR 성분
+  Future<dynamic> _durResult;
+  Future<dynamic> fetchDURResult() async {
+    // API 명칭 : DUR 성분정보
+    // 병용금기
+    final usjntRes = await http.get(
+        "http://apis.data.go.kr/1470000/DURPrdlstInfoService/getUsjntTabooInfoList?ServiceKey=" +
+            _serviceKey +
+            "&itemName=" +
+            _result.itemName +
+            "&pageNo=1&numOfRows=3&type=json");
+
+    if (usjntRes.statusCode == 200) {
+      return json.decode(usjntRes.body)['body'];
+    } else {
+      throw Exception('Failed to load DUR information');
+    }
+  }
 
   @override
   void initState() {
@@ -31,47 +58,70 @@ class _ResultDetailState extends State<ResultDetail>
       _result = widget.details;
       tabController = TabController(vsync: this, length: 5);
     });
+    _durResult = fetchDURResult();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customHeader("약품 검색 상세 결과"),
-      body: SingleChildScrollView(
-        controller: _controller,
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.025,
-              vertical: MediaQuery.of(context).size.height * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                  // title : name, product, images -> row
-                  flex: 2,
-                  child: resultTitle(context,
-                      name: _result.itemName,
-                      engName: _result.itemEngName,
-                      manufacturer: _result.entpName,
-                      imagePath: _result.itemImage)),
-              Expanded(
-                  // only text : desc1, name(colored Bold), desc2
-                  flex: 2,
-                  child: resultAlert(context)),
-              Expanded(
-                  // tab view : 5 tabs required
-                  flex: 5,
-                  child: resultTabView(context, tabController)),
-              Expanded(
-                  // bookmark button
-                  flex: 1,
-                  child: resultBookmark(context)),
-            ],
-          ),
-        ),
+      body: FutureBuilder(
+        future: _durResult,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: makeBoldTitleWithSize(
+                  '찾을 수 없습니다. 🧐', 16.0, TextAlign.center),
+            );
+          } else if (!snapshot.hasData) {
+            return loadingPage(context);
+          } else {
+            TotalDurSearchResult _total =
+                TotalDurSearchResult.fromJson(snapshot.data);
+            List<DurSearchResult> _list = List.from(_total.items);
+
+            // set one result
+            DurSearchResult _item = _list[0]; // latest !
+
+            return SingleChildScrollView(
+              controller: _controller,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.025,
+                    vertical: MediaQuery.of(context).size.height * 0.05),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                        // title : name, product, images -> row
+                        flex: 2,
+                        child: resultTitle(context,
+                            name: _result.itemName,
+                            engName: _result.itemEngName,
+                            manufacturer: _result.entpName,
+                            imagePath: _result.itemImage)),
+                    Expanded(
+                        // only text : desc1, name(colored Bold), desc2
+                        flex: 1,
+                        child: resultAlert(context)),
+                    Expanded(
+                        // tab view : 5 tabs required
+                        flex: 7,
+                        child: resultTabView(context, tabController,
+                            data: _result, durData: _item, imagePath: _result.itemImage)),
+                    Expanded(
+                        // bookmark button
+                        flex: 1,
+                        child: resultBookmark(context)),
+                  ],
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -117,20 +167,19 @@ Widget resultTitle(BuildContext context,
             children: [
               blankBox(flex: 3),
               Expanded(
-                flex: 4,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: imagePath == null
-                      ? Image.asset(
-                          'assets/icons/pill.png',
-                          fit: BoxFit.cover,
-                          width: 200,
-                          height: 200,
-                        )
-                      : Image.network(imagePath,
-                          fit: BoxFit.cover, width: 200, height: 200),
-                )
-              ),
+                  flex: 4,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: imagePath == null
+                        ? Image.asset(
+                            'assets/icons/pill.png',
+                            fit: BoxFit.cover,
+                            width: 200,
+                            height: 200,
+                          )
+                        : Image.network(imagePath,
+                            fit: BoxFit.cover, width: 200, height: 200),
+                  )),
               blankBox(flex: 3)
             ],
           ),
@@ -143,25 +192,27 @@ Widget resultTitle(BuildContext context,
 // 결과화면 사용자별 알림
 Widget resultAlert(BuildContext context, {String bewareDrug}) {
   return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: MediaQuery.of(context).size.width * 0.04,
-      ),
-      alignment: Alignment.center,
-      decoration: boxDecorationNoShadow(),
-      margin: EdgeInsets.symmetric(
-          horizontal: MediaQuery.of(context).size.width * 0.05,
-          vertical: MediaQuery.of(context).size.width * 0.05),
-      child: makeTitleWithColor(
-          normalStart: bewareDrug != null ? '검색하신 약은' : '로그인 / 회원가입 을 해주세요 !\n',
-          emphasize: bewareDrug != null ? bewareDrug : '병명\n',
-          normalEnd: bewareDrug != null ? '와 병용 투여시 주의해주세요 !' : '텍스트2',
-          color: colorThemeGreen,
-          textAlign: TextAlign.center));
+    padding: EdgeInsets.symmetric(
+      vertical: MediaQuery.of(context).size.width * 0.02,
+    ),
+    alignment: Alignment.center,
+    decoration: boxDecorationNoShadow(),
+    margin: EdgeInsets.symmetric(
+        horizontal: MediaQuery.of(context).size.width * 0.05,
+        vertical: MediaQuery.of(context).size.width * 0.05),
+    // child: makeTitleWithColor(
+    //     normalStart: bewareDrug != null ? '검색하신 약은' : '로그인 / 회원가입 을 해주세요 !\n',
+    //     emphasize: bewareDrug != null ? bewareDrug : '병명\n',
+    //     normalEnd: bewareDrug != null ? '와 병용 투여시 주의해주세요 !' : '텍스트2',
+    //     color: colorThemeGreen,
+    //     textAlign: TextAlign.center)
+    child: Text('준 비 중', style: TextStyle(fontSize: 14.0),),
+  );
 }
 
 // 결과화면 탭 뷰
 Widget resultTabView(BuildContext context, TabController tabController,
-    {final data}) {
+    {TextSearchResult data, DurSearchResult durData, String imagePath}) {
   return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -198,20 +249,17 @@ Widget resultTabView(BuildContext context, TabController tabController,
               ],
             ),
           ),
+          blankBox(flex: 1),
           Expanded(
-            flex: 1,
-            child: SizedBox(),
-          ),
-          Expanded(
-              flex: 8,
+              flex: 9,
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  tabInformation(context),
-                  tabInformation(context),
-                  tabInformation(context),
-                  tabInformation(context),
-                  tabInformation(context),
+                  tabInformation(context, data: data, durData: durData),
+                  tabEfcy(context, data: data),
+                  tabUsage(context, data: data),
+                  tabNotion(context, data: data, imagePath: imagePath),
+                  tabDURInformation(context, durData: durData, imagePath: imagePath),
                 ],
               ))
         ],

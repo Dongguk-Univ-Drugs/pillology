@@ -1,4 +1,5 @@
-import 'package:camera/camera.dart';
+// packages
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:pill/model/provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:intl/date_symbol_data_local.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DotEnv.load();
   initializeDateFormatting().then((_) => runApp(App()));
 
 }
