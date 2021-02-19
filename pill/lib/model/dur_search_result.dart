@@ -49,13 +49,13 @@ class DurSearchResult {
       className, // 약효 분류
       mainIngr, // 주성분
       mixtureDurSeq, // 병용금기 DUR 번호
-      mixtureMix, // 범용금기복합체
-      mixtureIngrCode, // 범용금기 DUR 성분코드
-      mixtureIngrKorName, // 범용금기 DUR 성분
-      mixtureIngrEngName, // 범용금기 DUR 성분 (영문)
+      mixtureMix, // 병용금기복합체
+      mixtureIngrCode, // 병용금기 DUR 성분코드
+      mixtureIngrKorName, // 병용금기 DUR 성분
+      mixtureIngrEngName, // 병용금기 DUR 성분 (영문)
       mixtureItemSeq, // 범용 금기 품목 기준 코드
-      mixtureItemName, // 범용금기품목명
-      mixtureEntpName, // 범용금기업체명
+      mixtureItemName, // 병용금기품목명
+      mixtureEntpName, // 병용금기업체명
       mixtureFormCode, // 범용 금기 제형 구분 코드
       mixtureEtcOtcCode, // 범용 금기 전문 / 일반 구분 코드
       mixtureClassCode, // 범용 금기 약효 분류 코드
@@ -149,7 +149,7 @@ class DurSearchResult {
         itemPermitDate: returnNonEmpty(json['ITEM_PERMIT_DATE']),
         remark: returnNonEmpty(json['REMARK']),
         changeDate: returnNonEmpty(json['CHANGE_DATE']),
-        // only for 범용금기 사항
+        // only for 병용금기 사항
         mixtureDurSeq: returnNonEmpty(json['MIXTURE_DUR_SEQ']),
         mixtureMix: returnNonEmpty(json['MIXTURE_MIX']),
         mixtureIngrCode: returnNonEmpty(json['MIXTURE_INGR_CODE']),
