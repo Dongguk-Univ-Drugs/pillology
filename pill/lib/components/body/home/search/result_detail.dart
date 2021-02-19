@@ -111,7 +111,7 @@ class _ResultDetailState extends State<ResultDetail>
                         // tab view : 5 tabs required
                         flex: 7,
                         child: resultTabView(context, tabController,
-                            data: _result, durData: _item)),
+                            data: _result, durData: _item, imagePath: _result.itemImage)),
                     Expanded(
                         // bookmark button
                         flex: 1,
@@ -212,7 +212,7 @@ Widget resultAlert(BuildContext context, {String bewareDrug}) {
 
 // 결과화면 탭 뷰
 Widget resultTabView(BuildContext context, TabController tabController,
-    {TextSearchResult data, DurSearchResult durData}) {
+    {TextSearchResult data, DurSearchResult durData, String imagePath}) {
   return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -258,8 +258,8 @@ Widget resultTabView(BuildContext context, TabController tabController,
                   tabInformation(context, data: data, durData: durData),
                   tabEfcy(context, data: data),
                   tabUsage(context, data: data),
-                  tabNotion(context, data: data),
-                  tabDURInformation(context, durData: durData),
+                  tabNotion(context, data: data, imagePath: imagePath),
+                  tabDURInformation(context, durData: durData, imagePath: imagePath),
                 ],
               ))
         ],
