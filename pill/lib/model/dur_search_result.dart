@@ -13,10 +13,17 @@ class TotalDurSearchResult {
       this.resultMsg,
       this.totalCount});
 
-  factory TotalDurSearchResult.fromJson(Map<String, dynamic> parsedJson) {
+  // flag : 0 → 병용금기, 특정연령금기, 임부금기, 용량주의, 투여기간주의, 노인주의, 효능군 중복조회, ...
+  // flag : 1 → DUR 품목조회
+  factory TotalDurSearchResult.fromJson(
+      Map<String, dynamic> parsedJson, int flag) {
     var itemList = parsedJson['items'] as List;
-    List<DurSearchResult> _itemList =
-        itemList.map((e) => DurSearchResult.fromJson(e)).toList();
+    var _itemList;
+    if (flag == 0) {
+      _itemList = itemList.map((e) => DurSearchResult.fromJson(e)).toList();
+    } else if (flag == 1) {
+      _itemList = itemList.map((e) => DurPrdSearchResult.fromJson(e)).toList();
+    }
 
     return TotalDurSearchResult(
         resultCode: parsedJson['resultCode'],
@@ -26,6 +33,10 @@ class TotalDurSearchResult {
         totalCount: parsedJson['totalCount'],
         items: _itemList);
   }
+}
+
+String returnNonEmpty(final data) {
+  return data != null ? data : 'null';
 }
 
 class DurSearchResult {
@@ -118,10 +129,6 @@ class DurSearchResult {
       this.remark});
 
   factory DurSearchResult.fromJson(Map<String, dynamic> json) {
-    String returnNonEmpty(final data) {
-      return data != null ? data : 'null';
-    }
-
     return DurSearchResult(
         // DUR info
         durSeq: returnNonEmpty(json['DUR_SEQ']),
@@ -168,5 +175,81 @@ class DurSearchResult {
         mixtureClassName: returnNonEmpty(json['MIXTURE_CLASS_NAME']),
         mixtureChart: returnNonEmpty(json['MIXTURE_CHART']),
         mixtureChangeDate: returnNonEmpty(json['MIXTURE_CHANGE_DATE']));
+  }
+}
+
+// DUR 품목 조회
+class DurPrdSearchResult {
+  final String itemSeq, // 품목기준코드
+      itemName, // 품목명
+      entpName, // 업체명
+      itemPermitDate, // 허가일자
+      etcOtcCode, // 전문 / 일반
+      classNo, // 분류
+      chart, // 성상
+      barCode, // 표준코드
+      materialName, // 원료성분
+      eeDocId, // 제조방법 : url
+      udDocId, // 용법용량 : url
+      nbDocId, // 주의사항 : url
+      insertFile, // 첨부문서 : url
+      storageMethod, // 저장방법
+      validTerm, // 유효기간
+      reexamTarget, // 재심사대상
+      reexamDate, // 재심사기간
+      packUnit, // 포장단위
+      ediCode, // 보험코드
+      cancelDate, // 취소일자
+      cancelName, // 상태
+      changeDate; // 변경일자
+  DurPrdSearchResult(
+      {this.barCode,
+      this.cancelDate,
+      this.cancelName,
+      this.changeDate,
+      this.chart,
+      this.classNo,
+      this.ediCode,
+      this.eeDocId,
+      this.entpName,
+      this.etcOtcCode,
+      this.insertFile,
+      this.itemName,
+      this.itemPermitDate,
+      this.itemSeq,
+      this.materialName,
+      this.nbDocId,
+      this.packUnit,
+      this.reexamDate,
+      this.reexamTarget,
+      this.storageMethod,
+      this.udDocId,
+      this.validTerm});
+
+  factory DurPrdSearchResult.fromJson(Map<String, dynamic> json) {
+    return DurPrdSearchResult(
+      itemSeq: returnNonEmpty(json['ITEM_SEQ']),
+      itemName: returnNonEmpty(json['ITEM_NAME']),
+      entpName: returnNonEmpty(json['ENTP_NAME']),
+      itemPermitDate: returnNonEmpty(json['ITEM_PERMIT_DATE']),
+      etcOtcCode: returnNonEmpty(json['ETC_OTC_CODE']),
+      classNo: returnNonEmpty(json['CLASS_NO']),
+      chart: returnNonEmpty(json['CHART']),
+      barCode: returnNonEmpty(json['BAR_CODE']),
+      materialName: returnNonEmpty(json['MATERIAL_NAME']),
+      eeDocId: returnNonEmpty(json['EE_DOC_ID']),
+      udDocId: returnNonEmpty(json['UD_DOC_ID']),
+      nbDocId: returnNonEmpty(json['NB_DOC_ID']),
+      insertFile: returnNonEmpty(json['INSERT_FILE']),
+      storageMethod: returnNonEmpty(json['STORAGE_METHOD']),
+      validTerm: returnNonEmpty(json['VALID_TERM']),
+      reexamTarget: returnNonEmpty(json['REEXAM_TARGET']),
+      reexamDate: returnNonEmpty(json['REEXAM_DATE']),
+      packUnit: returnNonEmpty(json['PACK_UNIT']),
+      ediCode: returnNonEmpty(json['EDI_DATE']),
+      cancelDate: returnNonEmpty(json['CANCEL_DATE']),
+      cancelName: returnNonEmpty(json['CANCEL_NAME']),
+      changeDate: returnNonEmpty(json['CHANGE_DATE']),
+    );
   }
 }

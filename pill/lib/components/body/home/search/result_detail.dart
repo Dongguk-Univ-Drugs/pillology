@@ -36,6 +36,7 @@ class _ResultDetailState extends State<ResultDetail>
   Future<dynamic> _durResult;
   Future<dynamic> fetchDURResult() async {
     // API 명칭 : DUR 성분정보
+    String usjntAPI = '';
     // 병용금기
     final usjntRes = await http.get(
         "http://apis.data.go.kr/1470000/DURPrdlstInfoService/getUsjntTabooInfoList?ServiceKey=" +
@@ -43,6 +44,24 @@ class _ResultDetailState extends State<ResultDetail>
             "&itemName=" +
             _result.itemName +
             "&pageNo=1&numOfRows=3&type=json");
+    // 특정 연령 금기
+    String spcifyagAPI = 'getSpcifyAgrdeTabooInfoList';
+    // 임부 금기
+    String prgntAPI ='getPwnmTabooInfoList';
+    // 용량 주의
+    String cpctyAPI ='getCpctyAtentInfoList';
+    // 투여 기간 주의
+    String mdlatAPI = 'getMdctnPdAtentInfoList';
+    // 노인 주의
+    String oldmanAPI = 'getOdsnAtentInfoList';
+    // 효능군 중복 조회
+    String efcyDulAPI = 'getEfcyDplctInfoList';
+    // 서방정 분할 주의 정보조회
+    String seodivAPI = 'getSeobangjeongPartitnAtentInfoList';
+    // ★ DUR 품목 조회 → 모델이 다름...
+    String durinfoAPI = 'getDurPrdlstInfoList';
+
+
 
     if (usjntRes.statusCode == 200) {
       return json.decode(usjntRes.body)['body'];
@@ -77,7 +96,7 @@ class _ResultDetailState extends State<ResultDetail>
             return loadingPage(context);
           } else {
             TotalDurSearchResult _total =
-                TotalDurSearchResult.fromJson(snapshot.data);
+                TotalDurSearchResult.fromJson(snapshot.data, 0);
             List<DurSearchResult> _list = List.from(_total.items);
 
             // set one result

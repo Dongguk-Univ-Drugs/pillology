@@ -259,30 +259,35 @@ Container tabDURInformation(BuildContext context,
             child: SingleChildScrollView(
                 controller: _controller,
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      tabInformationSubItem(
-                          title: 'DUR 일련번호',
-                          content:
-                              durData != null ? durData.durSeq : '정보가 없습니다.'),
-                      tabInformationSubItem(
-                          title: '단일 / 복합',
-                          content: durData != null ? durData.mix : '정보가 없습니다.'),
-                      tabInformationSubItem(
-                          title: 'DUR 성분명',
-                          content: durData != null
-                              ? durData.ingrKorName
-                              : '정보가 없습니다.'),
-                      tabInformationSubItem(
-                          title: '금기 내용',
-                          content: durData != null
-                              ? durData.prohbtContent
-                              : '정보가 없습니다.'),
-                      tabInformationSubItem(
-                          title: '복합체',
-                          content:
-                              durData != null ? durData.mixIngr : '정보가 없습니다.'),
+                      Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              tabInformationSubItem(
+                                  title: 'DUR 일련번호',
+                                  content: durData != null
+                                      ? durData.durSeq
+                                      : '정보가 없습니다.'),
+                              tabInformationSubItem(
+                                  title: '단일 / 복합',
+                                  content: durData != null
+                                      ? durData.mix
+                                      : '정보가 없습니다.'),
+                              tabInformationSubItem(
+                                  title: 'DUR 성분명',
+                                  content: durData != null
+                                      ? durData.ingrKorName + " (${durData.ingrEngName})"
+                                      : '정보가 없습니다.'),
+                              tabInformationSubItem(
+                                  title: '금기 내용',
+                                  content: durData != null
+                                      ? durData.prohbtContent
+                                      : '정보가 없습니다.')
+                            ],
+                          )),
                       SizedBox(
                         height: 10.0,
                       ),
@@ -296,9 +301,9 @@ Container tabDURInformation(BuildContext context,
                       // 병용금기 관련 내용
                       durData.typeName == '병용금기'
                           ? Container(
-                              padding: EdgeInsets.only(
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.05),
+                              // padding: EdgeInsets.only(
+                              //     left:
+                              //         MediaQuery.of(context).size.width * 0.025),
                               child: Column(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
