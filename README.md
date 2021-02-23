@@ -22,6 +22,14 @@ project
 └───model
 ```
 
+### Model
+* Requirements
+requirements
+  + tensorflow 2.x
+  + pandas
+  + scikit-learn
+  + openpyxl
+
 ### Scrapper : using **Python**
 * Requirements 
 ```python
