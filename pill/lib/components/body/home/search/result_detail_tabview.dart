@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pill/components/body/home/search/result_detail_bottom_sheet.dart';
-import 'package:pill/model/text_search_result.dart';
+import 'package:pill/model/search/text_search_result.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
@@ -25,7 +25,7 @@ Row tabInformationSubItem({String title, String content, double size}) {
                 size: size == null ? null : size)),
       ]);
 }
-
+// 탭뷰 - '정보'
 Container tabInformation(BuildContext context, {final data, final durData}) {
   return Container(
     padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),

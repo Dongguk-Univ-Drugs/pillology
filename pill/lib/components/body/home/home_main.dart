@@ -6,7 +6,7 @@ import 'package:pill/components/body/home/search/result_list.dart';
 import 'package:pill/components/body/home/search/text/text_main.dart';
 import 'package:pill/components/body/home/story/story_main.dart';
 import 'package:pill/components/loading.dart';
-import 'package:pill/model/text_search.dart';
+import 'package:pill/utility/search_bar.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';

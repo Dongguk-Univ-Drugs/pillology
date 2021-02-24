@@ -72,7 +72,7 @@ class TextSearchResult {
         String temp = parsedJson[item];
         _inJson["_" + item] = temp.replaceAll(new RegExp(r"<p>"), '');
         _inJson["_" + item] =
-            _inJson["_" + item].replaceAll(new RegExp(r"</p>"), '\n');
+            _inJson["_" + item].replaceAll(new RegExp(r"</p>"), '\n\n');
       } else {
         _inJson["_" + item] = parsedJson[item];
       }

@@ -6,9 +6,9 @@ import 'dart:convert';
 import 'package:pill/components/body/home/search/result_detail_tabview.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/components/loading.dart';
-import 'package:pill/model/dur_search_result.dart';
+import 'package:pill/model/search/dur_search_result.dart';
 // models
-import 'package:pill/model/text_search_result.dart';
+import 'package:pill/model/search/text_search_result.dart';
 // utility
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
@@ -130,6 +130,20 @@ class _ResultDetailState extends State<ResultDetail>
             // set one result
             DurSearchResult _item = _list[0]; // latest !
             DurPrdSearchResult _itemPrd = _listDUR[0];
+
+            // into One Object
+
+            print(_itemPrd.materialName);
+            print(_itemPrd.chart);
+            print(_itemPrd.storageMethod);
+            print(_itemPrd.validTerm);
+            print(_itemPrd.ediCode);
+
+            print(_item.formName);
+            print(_item.mix);
+            print(_item.mixIngr);
+            print(_item.remark);
+            print(_item.prohbtContent);
 
             return SingleChildScrollView(
               controller: _controller,
