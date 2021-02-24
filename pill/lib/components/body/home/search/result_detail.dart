@@ -37,14 +37,13 @@ class _ResultDetailState extends State<ResultDetail>
 
   // api call function
   Future<http.Response> apiCall(String api) {
-    return http.get(
-        "http://apis.data.go.kr/1470000/DURPrdlstInfoService/" +
-            api +
-            "?ServiceKey=" +
-            _serviceKey +
-            "&itemName=" +
-            _result.itemName +
-            "&pageNo=1&numOfRows=3&type=json");
+    return http.get("http://apis.data.go.kr/1470000/DURPrdlstInfoService/" +
+        api +
+        "?ServiceKey=" +
+        _serviceKey +
+        "&itemName=" +
+        _result.itemName +
+        "&pageNo=1&numOfRows=3&type=json");
   }
 
   Future<dynamic> fetchDURResult() async {
@@ -72,11 +71,11 @@ class _ResultDetailState extends State<ResultDetail>
     final usjntRes = await apiCall(usjntAPI);
     // prd another model
     final durinfoRes = await apiCall(durinfoAPI);
-    
+
     if (usjntRes.statusCode == 200) {
       var usjntJson = json.decode(usjntRes.body)['body'];
       var durinfoJson = json.decode(durinfoRes.body)['body'];
-      
+
       var sendResult = [usjntJson, durinfoJson];
       // var sendResult = {
       //   0 : usjntJson,
@@ -117,7 +116,7 @@ class _ResultDetailState extends State<ResultDetail>
             // TotalDurSearchResult _total =
             //     TotalDurSearchResult.fromJson(snapshot.data, 0);
             var totalList = snapshot.data;
-            // total data            
+            // total data
             TotalDurSearchResult _total =
                 TotalDurSearchResult.fromJson(totalList[0], 0);
             TotalDurSearchResult _durInfoTotal =
@@ -132,18 +131,8 @@ class _ResultDetailState extends State<ResultDetail>
             DurPrdSearchResult _itemPrd = _listDUR[0];
 
             // into One Object
-
-            print(_itemPrd.materialName);
-            print(_itemPrd.chart);
-            print(_itemPrd.storageMethod);
-            print(_itemPrd.validTerm);
-            print(_itemPrd.ediCode);
-
-            print(_item.formName);
-            print(_item.mix);
-            print(_item.mixIngr);
-            print(_item.remark);
-            print(_item.prohbtContent);
+            ParsedSearchResult psd = new ParsedSearchResult(
+                txt: _result, dur: _item, durPrd: _itemPrd);
 
             return SingleChildScrollView(
               controller: _controller,
@@ -172,10 +161,7 @@ class _ResultDetailState extends State<ResultDetail>
                     Expanded(
                         // tab view : 5 tabs required
                         flex: 7,
-                        child: resultTabView(context, tabController,
-                            data: _result,
-                            durData: _item,
-                            imagePath: _result.itemImage)),
+                        child: resultTabView(context, tabController, res: psd)),
                     Expanded(
                         // bookmark button
                         flex: 1,
@@ -279,7 +265,7 @@ Widget resultAlert(BuildContext context, {String bewareDrug}) {
 
 // 결과화면 탭 뷰
 Widget resultTabView(BuildContext context, TabController tabController,
-    {TextSearchResult data, DurSearchResult durData, String imagePath}) {
+    {ParsedSearchResult res}) {
   return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -322,12 +308,11 @@ Widget resultTabView(BuildContext context, TabController tabController,
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  tabInformation(context, data: data, durData: durData),
-                  tabEfcy(context, data: data),
-                  tabUsage(context, data: data),
-                  tabNotion(context, data: data, imagePath: imagePath),
-                  tabDURInformation(context,
-                      durData: durData, imagePath: imagePath),
+                  tabInformation(context, data: res),
+                  tabEfcy(context, data: res),
+                  tabUsage(context, data: res),
+                  tabNotion(context, data: res),
+                  tabDURInformation(context, data: res),
                 ],
               ))
         ],

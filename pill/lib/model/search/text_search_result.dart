@@ -1,3 +1,14 @@
+// parsed Data
+import 'package:pill/model/search/dur_search_result.dart';
+
+class ParsedSearchResult {
+  final TextSearchResult txt;
+  final DurSearchResult dur;
+  final DurPrdSearchResult durPrd;
+
+  ParsedSearchResult({this.dur, this.durPrd, this.txt});
+}
+
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
