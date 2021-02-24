@@ -35,12 +35,12 @@ class CalendarDatabase {
   // edit pill data
   void editPillInfo(PersonalPillInfo pillinfo) async {
     String myUrl =
-        "http://localhost:27017/user/pilldb/6026a85093f3c9990bf9db0e";
+        "http://localhost:27017/user/pilldb/601b9b30e763c78789064316";
 
-    print("pillinfo : " + pillinfo.pillname);
     http.put(myUrl, body: pillinfo.toJson()).then((response) {
       print('Response status : ${response.statusCode}');
       print('Response body : ${response.body}');
     });
+    
   }
 }

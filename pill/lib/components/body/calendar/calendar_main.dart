@@ -24,9 +24,6 @@ class CalendarPage extends StatefulWidget {
   _CalendarPageState createState() => _CalendarPageState();
 }
 
-
-
-
 Future<PersonalPillInfo> updateData(Map pillinfo) async {
   var jsonResponse = null;
   var response =
@@ -298,9 +295,10 @@ class _CalendarPageState extends State<CalendarPage>
                                       _events[_selectedDay] ?? [];
                                   this._events = _events;
                                 });
-                                
+
                                 // 추가한 데이터 저장
-                                calendarDatabase.saveData(_pillInfo[index].toJson());
+                                calendarDatabase
+                                    .saveData(_pillInfo[index].toJson());
                                 Navigator.of(context).pop();
                               },
                               child: Text("저장")),
@@ -566,9 +564,8 @@ class _CalendarPageState extends State<CalendarPage>
         });
   }
 
-// TODO: 추가할 때, db에서 post 가 아니라 update 해야 함. 수정 필요함.
   void showPillDetail(BuildContext context, String pillname) {
-    var difference;
+    var original_difference, difference;
     var index;
     for (int i = 0; i < _pillInfo.length; i++) {
       if (pillname == _pillInfo[i].pillname) {
@@ -601,15 +598,23 @@ class _CalendarPageState extends State<CalendarPage>
                           FlatButton(
                               onPressed: () {
                                 // 달력에 표시
+                                // TODO: 이중으로 표시되는 문제 해결해야 함.
                                 difference =
                                     DateTime.parse(_pillInfo[index].endDate)
                                         .difference(DateTime.parse(
                                             _pillInfo[index].startDate))
                                         .inDays;
+                                        print(pillname);
+                                        print("before : $_events");
+                                      
+                                _events.removeWhere(
+                                    (key, value) => value[0].toString() == pillname);
+                                        print("after:  $_events");
 
                                 for (int i = 0; i <= difference; i++) {
                                   DateTime dateTime = DateTime.parse(
                                       _pillInfo[index].startDate);
+                                  print("dateTime : $dateTime");
                                   if (_events[DateTime(dateTime.year,
                                           dateTime.month, dateTime.day + i)] ==
                                       null) {
@@ -627,22 +632,19 @@ class _CalendarPageState extends State<CalendarPage>
                                             [_pillNameController.text.trim()]);
                                   }
                                 }
-
                                 this.setState(() {
                                   this._pillInfo[index].pillname =
                                       _pillNameController.text.trim();
+                                  this._events = _events;
                                   this._selectedEvents =
                                       _events[_selectedDay] ?? [];
-                                  this._events = _events;
                                 });
-                                // 추가한 데이터 저장
-                                print(
-                                    "_pillInfo[index].startDate: ${_pillInfo[index].startDate}");
 
+                                // 추가한 데이터 저장
                                 calendarDatabase.editPillInfo(_pillInfo[index]);
                                 Navigator.of(context).pop();
                               },
-                              child: Text("저장")),
+                              child: Text("완료")),
                         ],
                       ),
                     ),

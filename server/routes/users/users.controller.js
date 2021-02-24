@@ -26,7 +26,7 @@ exports.postPills = async (req, res) => {
             isMorningTimeSet: isMorningTimeSet, isAfternoonTimeSet: isAfternoonTimeSet, isEveningTimeSet: isEveningTimeSet
         });
 
-        await collection.insertOne(pill);
+        await PillModel.insertOne(pill);
     } catch (e) {
         console.log(e)
         res.status(500).send('There was a problem posting pill info');
@@ -51,7 +51,7 @@ exports.update = (req, res) => {
                 message: err
             })
         }
-            
+        console.log(req.params.id);
         result.pillname = req.body.pillname
         result.startDate = req.body.startDate
         result.endDate = req.body.endDate
