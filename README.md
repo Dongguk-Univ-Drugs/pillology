@@ -1,3 +1,11 @@
+⚠️  App 실행 시 주의사항
+**root 디렉토리**에 .env 파일을 생성해야 앱이 작동합니다.
+```
+SERVICE_KEY='API인증키'
+```
+인증키는 @seunghwanly 에게 문의해주세요.
+
+---
 <h1 align="center">
   2021 동국대학교 약품개발 프로젝트
 </h1>
@@ -21,6 +29,14 @@ project
 │       │   main.dart
 └───model
 ```
+
+### Model
+* Requirements
+requirements
+  + tensorflow 2.x
+  + pandas
+  + scikit-learn
+  + openpyxl
 
 ### Scrapper : using **Python**
 * Requirements 

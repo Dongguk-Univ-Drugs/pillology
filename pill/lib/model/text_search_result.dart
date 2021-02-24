@@ -43,17 +43,52 @@ class TextSearchResult {
       _engName = '';
     }
 
+    // replace pattern <p>---</p>
+    // things to replace list
+    var _xmlList = [
+      'useMethodQesitm',
+      'atpnQesitm',
+      'atpnWarnQesitm',
+      'intrcQesitm',
+      'seQesitm',
+      'depositMethodQesitm',
+      'efcyQesitm'
+    ];
+
+    var _inJson = {
+      '_useMethodQesitm': '',
+      '_atpnQesitm': '',
+      '_atpnWarnQesitm': '',
+      '_intrcQesitm': '',
+      '_seQesitm': '',
+      '_depositMethodQesitm': '',
+      'efcyQesitm': ''
+    };
+
+    // replaceAll(new RegExp(r"[(<p>)(</p>)]"), '');
+    // on index
+    for (String item in _xmlList) {
+      if (parsedJson[item] is String) {
+        String temp = parsedJson[item];
+        _inJson["_" + item] = temp.replaceAll(new RegExp(r"<p>"), '');
+        _inJson["_" + item] =
+            _inJson["_" + item].replaceAll(new RegExp(r"</p>"), '\n');
+      } else {
+        _inJson["_" + item] = parsedJson[item];
+      }
+    }
+
     return TextSearchResult(
         entpName: parsedJson['entpName'],
         itemName: _korName,
         itemEngName: _engName,
-        efcyQesitm: parsedJson['efcyQesitm'],
-        useMethodQesitm: parsedJson['useMethodQesitm'],
-        atpnWarnQesitm: parsedJson['atpnWarnQesitm'],
-        atpnQesitm: parsedJson['atpnQesitm'],
-        intrcQesitm: parsedJson['intrcQesitm'],
-        seQesitm: parsedJson['seQesitm'],
-        depositMethodQesitm: parsedJson['depositMethodQesitm'],
+        efcyQesitm: _inJson['_efcyQesitm'],
+        useMethodQesitm: _inJson['_useMethodQesitm'],
+        atpnWarnQesitm: _inJson['_atpnWarnQesitm'],
+        atpnQesitm: _inJson['_atpnQesitm'],
+        intrcQesitm: _inJson['_intrcQesitm'],
+        seQesitm: _inJson['_seQesitm'],
+        depositMethodQesitm: _inJson['_depositMethodQesitm'],
         openDe: parsedJson['openDe'],
         updateDe: parsedJson['updateDe'],
         itemImage: parsedJson['itemImage']);

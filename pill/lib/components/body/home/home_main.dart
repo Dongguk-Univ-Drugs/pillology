@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+
 import 'package:pill/components/body/home/search/barcode/barcode_main.dart';
 import 'package:pill/components/body/home/search/photo/photo_main.dart';
 import 'package:pill/components/body/home/search/result_list.dart';
@@ -10,7 +10,7 @@ import 'package:pill/model/text_search.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
 import 'package:pill/utility/textify.dart';
-import 'package:sqflite/sqflite.dart';
+
 // util
 import '../../../utility/input_decoration.dart';
 // packages
@@ -118,13 +118,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                             children: [
                                               Expanded(
                                                 flex: 2,
-                                                child: makeBoldTitle(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 7,
+                                                      child: makeBoldTitle(
                                                     title: '최근 검색어',
                                                     color: color333,
                                                     size: MediaQuery.of(context)
                                                             .size
                                                             .width *
-                                                        0.04),
+                                                        0.04)
+                                                    ),
+                                                    blankBox(flex:1),
+                                                    Expanded(
+                                                      flex: 2,
+                                                      child: TextButton(
+                                                        child: Icon(Icons.delete_outline_rounded, size: 22, color: colorAAA,),
+                                                        onPressed: () { 
+                                                          TextSearchDataProvider().deleteAllTexts();
+                                                          setState(() {
+                                                                  fetchedData =
+                                                                      TextSearchDataProvider()
+                                                                          .getAllTexts();
+                                                                });
+                                                        },
+                                                      ),
+                                                    )   
+                                                  ],
+                                                )
                                               ),
                                               Expanded(
                                                 flex: 8,
@@ -168,10 +192,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         children: [
                                                           Expanded(
                                                             flex: 6,
-                                                            child:
-                                                                makeSemiTitle(
+                                                            child: GestureDetector(
+                                                              onTap: () => searchController.text = data.name,
+                                                              child:   makeSemiTitle(
                                                                     title: data
                                                                         .name),
+                                                            )
                                                           ),
                                                           blankBox(flex: 1),
                                                           Expanded(
@@ -190,6 +216,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               onPressed: () {
                                                                 TextSearchDataProvider()
                                                                     .deleteText(snapshot
+                                                                            .data
+                                                                            .length -
+                                                                        index);
+                                                                        print(snapshot
                                                                             .data
                                                                             .length -
                                                                         index);
@@ -411,8 +441,9 @@ GestureDetector foodStory(BuildContext context) {
 
 GestureDetector drugStory(BuildContext context) {
   return GestureDetector(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Story())),
+      // onTap: () => Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => Story())),
+      onTap: () => print('TODO: 오늘 나의 약 점수는?'),
       child: Container(
           decoration: boxDecorationNoShadow(),
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),

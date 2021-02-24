@@ -1,6 +1,7 @@
 // packages
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +28,7 @@ class SearchResultState extends State<SearchResult> {
   final _controller = ScrollController();
 
   // text search
-  var _serviceKey =
-      'xCmiTrdFK8b1d4tNOWt%2Fjs%2BYo7TQcd%2BJqb3KxAib7iDWO%2B3aGkevwya5zHvIv%2FJ6pyrjjHGwSbjOR%2FnTQ%2B5zfA%3D%3D';
+  var _serviceKey = env['SERVICE_KEY'];
   var _entpName;
   var _itemName;
   /*
@@ -41,11 +41,13 @@ class SearchResultState extends State<SearchResult> {
       type        : xml(default) / json
   */
 
-  Future<dynamic> futureResult;
-
+  // e약은요
+  Future<dynamic> _eDrugResult;
+  
   Future<dynamic> fetchTextSearchResult() async {
     print(_entpName + "\t" + _itemName);
-    // TODO: api 가 이상한듯 ...
+    
+    // API 명칭 : e약은요 
     final response = await http.get(
         "http://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList?serviceKey=" +
             _serviceKey +
@@ -71,7 +73,7 @@ class SearchResultState extends State<SearchResult> {
       _entpName =
           widget.entpName != null ? "&trustEntpName=" + widget.entpName : "";
     });
-    futureResult = fetchTextSearchResult();
+    _eDrugResult = fetchTextSearchResult();
   }
 
   @override
@@ -79,7 +81,7 @@ class SearchResultState extends State<SearchResult> {
     return Scaffold(
         appBar: customHeader("약품 검색 결과"),
         body: FutureBuilder(
-          future: futureResult, // TODO: data fetch !!!
+          future: _eDrugResult, // TODO: data fetch !!!
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return Center(
@@ -89,10 +91,10 @@ class SearchResultState extends State<SearchResult> {
             } else if (!snapshot.hasData) {
               return loadingPage(context);
             } else {
+
+              // API 요청 (1): e약은요
               Response _response =
                   Response.fromJson(Map<String, dynamic>.from(snapshot.data));
-              // Response _response =
-              //     Response.fromJson(json.decode(snapshot.data));
               ResponseHeader _responseHeader =
                   ResponseHeader.fromJson(_response.header);
               ResponseBody _responseBody =
