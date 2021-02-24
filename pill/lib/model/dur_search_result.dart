@@ -3,7 +3,7 @@ class TotalDurSearchResult {
   final int numOfRows; // 한 페이지 결과 수
   final int pageNo; // 페이지 번호
   final int totalCount; // 전체 결과 수
-  final List<DurSearchResult> items;
+  final List items;
 
   TotalDurSearchResult(
       {this.items,
@@ -36,7 +36,7 @@ class TotalDurSearchResult {
 }
 
 String returnNonEmpty(final data) {
-  return data != null ? data : 'null';
+  return data != null ? data : null;
 }
 
 class DurSearchResult {
@@ -67,19 +67,19 @@ class DurSearchResult {
       mixtureItemSeq, // 범용 금기 품목 기준 코드
       mixtureItemName, // 병용금기품목명
       mixtureEntpName, // 병용금기업체명
-      mixtureFormCode, // 범용 금기 제형 구분 코드
-      mixtureEtcOtcCode, // 범용 금기 전문 / 일반 구분 코드
-      mixtureClassCode, // 범용 금기 약효 분류 코드
-      mixtureFormName, // 범용 금기 제형
-      mixtureEtcOtcName, // 범용 금기 전문 / 일반
-      mixtureClassName, // 범용 금기 약효 분류
-      mixtureMainIngr, // 범용 금기 주성분
+      mixtureFormCode, // 병용 금기 제형 구분 코드
+      mixtureEtcOtcCode, // 병용 금기 전문 / 일반 구분 코드
+      mixtureClassCode, // 병용 금기 약효 분류 코드
+      mixtureFormName, // 병용 금기 제형
+      mixtureEtcOtcName, // 병용 금기 전문 / 일반
+      mixtureClassName, // 병용 금기 약효 분류
+      mixtureMainIngr, // 병용 금기 주성분
       notificationDate, // 고시일자
       prohbtContent, // 금기 내용
       remark, // 비고
       itemPermitDate, // 품목 허가 일자
       mixtureItemPermitDate, // 범용 금기 품목 허가 일자
-      mixtureChart, // 범용 금기 성상
+      mixtureChart, // 병용 금기 성상
       changeDate, // 변경일자
       mixtureChangeDate; // 병용 변경 일자
 
@@ -163,7 +163,7 @@ class DurSearchResult {
         mixtureIngrKorName: returnNonEmpty(json['MIXTURE_INGR_KOR_NAME']),
         mixtureIngrEngName: returnNonEmpty(json['MIXTURE_INGR_ENG_NAME']),
         mixtureItemSeq: returnNonEmpty(json['MIXTURE_ITEM_SEQ']),
-        mixtureItemName: returnNonEmpty(json['MIXTURE_ITEM_CODE']),
+        mixtureItemName: returnNonEmpty(json['MIXTURE_ITEM_NAME']),
         mixtureItemPermitDate: returnNonEmpty(json['MIXTURE_ITEM_PERMIT_DATE']),
         mixtureEntpName: returnNonEmpty(json['MIXTURE_ENTP_NAME']),
         mixtureMainIngr: returnNonEmpty(json['MIXTURE_MAIN_INGR']),

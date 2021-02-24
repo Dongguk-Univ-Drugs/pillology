@@ -34,22 +34,28 @@ class _ResultDetailState extends State<ResultDetail>
   var _serviceKey = env['SERVICE_KEY'];
   // DUR 성분
   Future<dynamic> _durResult;
-  Future<dynamic> fetchDURResult() async {
-    // API 명칭 : DUR 성분정보
-    String usjntAPI = '';
-    // 병용금기
-    final usjntRes = await http.get(
-        "http://apis.data.go.kr/1470000/DURPrdlstInfoService/getUsjntTabooInfoList?ServiceKey=" +
+
+  // api call function
+  Future<http.Response> apiCall(String api) {
+    return http.get(
+        "http://apis.data.go.kr/1470000/DURPrdlstInfoService/" +
+            api +
+            "?ServiceKey=" +
             _serviceKey +
             "&itemName=" +
             _result.itemName +
             "&pageNo=1&numOfRows=3&type=json");
+  }
+
+  Future<dynamic> fetchDURResult() async {
+    // 병용금기
+    String usjntAPI = 'getUsjntTabooInfoList';
     // 특정 연령 금기
     String spcifyagAPI = 'getSpcifyAgrdeTabooInfoList';
     // 임부 금기
-    String prgntAPI ='getPwnmTabooInfoList';
+    String prgntAPI = 'getPwnmTabooInfoList';
     // 용량 주의
-    String cpctyAPI ='getCpctyAtentInfoList';
+    String cpctyAPI = 'getCpctyAtentInfoList';
     // 투여 기간 주의
     String mdlatAPI = 'getMdctnPdAtentInfoList';
     // 노인 주의
@@ -61,10 +67,23 @@ class _ResultDetailState extends State<ResultDetail>
     // ★ DUR 품목 조회 → 모델이 다름...
     String durinfoAPI = 'getDurPrdlstInfoList';
 
-
-
+    // api call
+    // API 명칭 : DUR 성분정보
+    final usjntRes = await apiCall(usjntAPI);
+    // prd another model
+    final durinfoRes = await apiCall(durinfoAPI);
+    
     if (usjntRes.statusCode == 200) {
-      return json.decode(usjntRes.body)['body'];
+      var usjntJson = json.decode(usjntRes.body)['body'];
+      var durinfoJson = json.decode(durinfoRes.body)['body'];
+      
+      var sendResult = [usjntJson, durinfoJson];
+      // var sendResult = {
+      //   0 : usjntJson,
+      //   1 : durinfoJson
+      // };
+      // return json.decode(usjntRes.body)['body'];
+      return sendResult;
     } else {
       throw Exception('Failed to load DUR information');
     }
@@ -95,12 +114,22 @@ class _ResultDetailState extends State<ResultDetail>
           } else if (!snapshot.hasData) {
             return loadingPage(context);
           } else {
+            // TotalDurSearchResult _total =
+            //     TotalDurSearchResult.fromJson(snapshot.data, 0);
+            var totalList = snapshot.data;
+            // total data            
             TotalDurSearchResult _total =
-                TotalDurSearchResult.fromJson(snapshot.data, 0);
+                TotalDurSearchResult.fromJson(totalList[0], 0);
+            TotalDurSearchResult _durInfoTotal =
+                TotalDurSearchResult.fromJson(totalList[1], 1);
+
+            // get list
+            List<DurPrdSearchResult> _listDUR = List.from(_durInfoTotal.items);
             List<DurSearchResult> _list = List.from(_total.items);
 
             // set one result
             DurSearchResult _item = _list[0]; // latest !
+            DurPrdSearchResult _itemPrd = _listDUR[0];
 
             return SingleChildScrollView(
               controller: _controller,
@@ -130,7 +159,9 @@ class _ResultDetailState extends State<ResultDetail>
                         // tab view : 5 tabs required
                         flex: 7,
                         child: resultTabView(context, tabController,
-                            data: _result, durData: _item, imagePath: _result.itemImage)),
+                            data: _result,
+                            durData: _item,
+                            imagePath: _result.itemImage)),
                     Expanded(
                         // bookmark button
                         flex: 1,
@@ -225,7 +256,10 @@ Widget resultAlert(BuildContext context, {String bewareDrug}) {
     //     normalEnd: bewareDrug != null ? '와 병용 투여시 주의해주세요 !' : '텍스트2',
     //     color: colorThemeGreen,
     //     textAlign: TextAlign.center)
-    child: Text('준 비 중', style: TextStyle(fontSize: 14.0),),
+    child: Text(
+      '준 비 중',
+      style: TextStyle(fontSize: 14.0),
+    ),
   );
 }
 
@@ -278,7 +312,8 @@ Widget resultTabView(BuildContext context, TabController tabController,
                   tabEfcy(context, data: data),
                   tabUsage(context, data: data),
                   tabNotion(context, data: data, imagePath: imagePath),
-                  tabDURInformation(context, durData: durData, imagePath: imagePath),
+                  tabDURInformation(context,
+                      durData: durData, imagePath: imagePath),
                 ],
               ))
         ],

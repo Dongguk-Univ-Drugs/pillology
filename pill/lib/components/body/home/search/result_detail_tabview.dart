@@ -264,30 +264,32 @@ Container tabDURInformation(BuildContext context,
                     children: [
                       Container(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              tabInformationSubItem(
-                                  title: 'DUR 일련번호',
-                                  content: durData != null
-                                      ? durData.durSeq
-                                      : '정보가 없습니다.'),
-                              tabInformationSubItem(
-                                  title: '단일 / 복합',
-                                  content: durData != null
-                                      ? durData.mix
-                                      : '정보가 없습니다.'),
-                              tabInformationSubItem(
-                                  title: 'DUR 성분명',
-                                  content: durData != null
-                                      ? durData.ingrKorName + " (${durData.ingrEngName})"
-                                      : '정보가 없습니다.'),
-                              tabInformationSubItem(
-                                  title: '금기 내용',
-                                  content: durData != null
-                                      ? durData.prohbtContent
-                                      : '정보가 없습니다.')
-                            ],
-                          )),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          tabInformationSubItem(
+                              title: 'DUR 일련번호',
+                              content: durData != null
+                                  ? durData.durSeq
+                                  : '정보가 없습니다.'),
+                          tabInformationSubItem(
+                              title: '단일 / 복합',
+                              content:
+                                  durData != null ? durData.mix : '정보가 없습니다.'),
+                          tabInformationSubItem(
+                              title: 'DUR 성분명',
+                              content: durData != null
+                                  ? durData.ingrKorName +
+                                      " (${durData.ingrEngName})"
+                                  : '정보가 없습니다.'),
+                          tabInformationSubItem(
+                              title: '금기 내용',
+                              content: durData != null
+                                  ? durData.prohbtContent
+                                  : '정보가 없습니다.')
+                        ],
+                      )),
+                      Divider(color: colorAAA,),
+                      // 병용금기 내용 ===============================================
                       SizedBox(
                         height: 10.0,
                       ),
@@ -305,51 +307,65 @@ Container tabDURInformation(BuildContext context,
                               //     left:
                               //         MediaQuery.of(context).size.width * 0.025),
                               child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  tabInformationSubItem(
-                                      title: '병용금기 DUR 번호',
-                                      content: durData != null
-                                          ? durData.mixtureDurSeq
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 DUR 성분명',
-                                      content: durData != null
-                                          ? durData.mixtureIngrKorName
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 품목 기준 코드',
-                                      content: durData != null
-                                          ? durData.mixtureItemSeq
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 품목명',
-                                      content: durData != null
-                                          ? durData.mixtureItemName
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 제형',
-                                      content: durData != null
-                                          ? durData.mixtureFormName
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 전문 / 일반',
-                                      content: durData != null
-                                          ? durData.mixtureEtcOtcName
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 약효 분류',
-                                      content: durData != null
-                                          ? durData.mixtureClassName
-                                          : '정보가 없습니다.'),
-                                  tabInformationSubItem(
-                                      title: '병용금기 주성분',
-                                      content: durData != null
-                                          ? durData.mixtureMainIngr
-                                          : '정보가 없습니다.'),
-                                ],
-                              ))
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // 병용금기 DUR 번호 --------------------------
+                                durData.mixtureDurSeq != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 DUR 번호',
+                                        content: durData.mixtureDurSeq)
+                                    : SizedBox(),
+                                // 병용금기 DUR 성분명 --------------------------
+                                durData.mixtureIngrKorName != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 DUR 성분명',
+                                        content: durData.mixtureIngrKorName)
+                                    : SizedBox(),
+                                // 병용금기 품목 기준 코드 --------------------------
+                                durData.mixtureItemSeq != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 품목 기준 코드',
+                                        content: durData.mixtureItemSeq)
+                                    : SizedBox(),
+                                // 병용금기 품목명 --------------------------
+                                durData.mixtureItemName != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 품목명',
+                                        content: durData.mixtureItemName)
+                                    //: '정보가 없습니다.',
+                                    : SizedBox(),
+                                // 병용금기 DUR 번호 --------------------------
+                                durData.mixtureFormName != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 제형',
+                                        content: durData.mixtureFormName)
+                                    : SizedBox(),
+                                // 병용금기 전문 / 일반 --------------------------
+                                durData.mixtureEtcOtcName != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 전문 / 일반',
+                                        content: durData.mixtureEtcOtcName)
+                                    : SizedBox(),
+                                // 병용금기 약효분류 --------------------------
+                                durData.mixtureClassName != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 약효 분류',
+                                        content: durData.mixtureClassName)
+                                    : SizedBox(),
+                                // 병용금기 주성분 --------------------------
+                                durData.mixtureMainIngr != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 주성분',
+                                        content: durData.mixtureMainIngr)
+                                    : SizedBox(),
+                                // 병용금기 성상
+                                durData.mixtureChart != null
+                                    ? tabInformationSubItem(
+                                        title: '병용금기 성상',
+                                        content: durData.mixtureChart)
+                                    : SizedBox()
+                              ],
+                            ))
                           : SizedBox(),
                     ])))
       ],
