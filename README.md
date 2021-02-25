@@ -3,7 +3,7 @@
 ```
 SERVICE_KEY='API인증키'
 ```
-인증키는 @seunghwanly 에게 문의해주세요.
+인증키는 [이승환@seunghwanly](https://github.com/seunghwanly) 에게 문의해주세요.
 
 ---
 <h1 align="center">
