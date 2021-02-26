@@ -29,6 +29,7 @@ Row tabInformationSubItem({String title, String content, double size}) {
 // 약품 검색 상세 결과 - 정보
 Container tabInformation(BuildContext context,
     {final ParsedSearchResult data}) {
+  ScrollController _controller = new ScrollController();
   return Container(
     padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
     decoration: boxDecorationNoShadow(),
@@ -44,9 +45,11 @@ Container tabInformation(BuildContext context,
         Expanded(
           // 약품명부터의 리스트 모두
           flex: 8,
-          child: Column(
-            // 약품명 : ↓↓↓ list
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // 약품명 : ↓↓↓ list
+          child: ListView(
+            controller: _controller,
+            shrinkWrap: true,
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               data.txt != null
                   ? tabInformationSubItem(
@@ -123,11 +126,13 @@ Container tabNotion(BuildContext context, {final ParsedSearchResult data}) {
     decoration: boxDecorationNoShadow(),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-            flex: 1,
+            flex: 2,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                     flex: 8,
@@ -137,43 +142,45 @@ Container tabNotion(BuildContext context, {final ParsedSearchResult data}) {
                 Expanded(
                     flex: 1,
                     child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(
+                            top: 0,
+                            bottom: MediaQuery.of(context).size.width * 0.08),
+                      ),
                       child: Icon(Icons.zoom_in_rounded,
-                          size: 22, color: colorThemeGreen),
+                          size: 24, color: colorThemeGreen),
                       onPressed: () => _showBottomSheetTabNotion(context, data),
                     ))
               ],
             )),
-        blankBox(flex: 1),
+        // blankBox(flex: 1),
         Expanded(
             flex: 8,
-            child: SingleChildScrollView(
-                controller: _controller,
-                child: Column(children: [
-                  data.txt != null
-                      ? tabInformationSubItem(
-                          title: '주의사항', content: data.txt.atpnQesitm)
-                      : SizedBox(),
-                  data.txt != null
-                      ? tabInformationSubItem(
-                          title: '상호작용', content: data.txt.intrcQesitm)
-                      : SizedBox(),
-                  data.txt != null
-                      ? tabInformationSubItem(
-                          title: '부작용', content: data.txt.seQesitm)
-                      : SizedBox(),
-                  data.txt != null
-                      ? tabInformationSubItem(
-                          title: '보관법', content: data.txt.depositMethodQesitm)
-                      : SizedBox(),
-                  data.txt != null
-                      ? tabInformationSubItem(
-                          title: '주의사항 경고', content: data.txt.atpnWarnQesitm)
-                      : SizedBox(),
-                  data.dur != null
-                      ? tabInformationSubItem(
-                          title: '비고', content: data.dur.remark)
-                      : SizedBox()
-                ])))
+            child: ListView(controller: _controller, children: [
+              data.txt != null
+                  ? tabInformationSubItem(
+                      title: '주의사항', content: data.txt.atpnQesitm)
+                  : SizedBox(),
+              data.txt != null
+                  ? tabInformationSubItem(
+                      title: '상호작용', content: data.txt.intrcQesitm)
+                  : SizedBox(),
+              data.txt != null
+                  ? tabInformationSubItem(
+                      title: '부작용', content: data.txt.seQesitm)
+                  : SizedBox(),
+              data.txt != null
+                  ? tabInformationSubItem(
+                      title: '보관법', content: data.txt.depositMethodQesitm)
+                  : SizedBox(),
+              data.txt != null
+                  ? tabInformationSubItem(
+                      title: '주의사항 경고', content: data.txt.atpnWarnQesitm)
+                  : SizedBox(),
+              data.dur != null
+                  ? tabInformationSubItem(title: '비고', content: data.dur.remark)
+                  : SizedBox()
+            ]))
       ],
     ),
   );
@@ -221,16 +228,16 @@ Container tabEfcy(BuildContext context, {final ParsedSearchResult data}) {
       decoration: boxDecorationNoShadow(),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
                 // 오직 상세정보만
-                flex: 1,
+                flex: 2,
                 child: makeBoldTitle(
                     title: '상세 정보', size: 16.0, color: Colors.black)),
             Expanded(
               // 약품명부터의 리스트 모두
-              flex: 9,
+              flex: 8,
               child: Column(
                 // 약품명 : ↓↓↓ list
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -255,11 +262,13 @@ Container tabDURInformation(BuildContext context,
     decoration: boxDecorationNoShadow(),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-            flex: 1,
+            flex: 2,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                     flex: 8,
@@ -269,6 +278,11 @@ Container tabDURInformation(BuildContext context,
                 Expanded(
                     flex: 1,
                     child: TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.only(
+                            top: 0,
+                            bottom: MediaQuery.of(context).size.width * 0.08),
+                      ),
                       child: Icon(Icons.zoom_in_rounded,
                           size: 22, color: colorThemeGreen),
                       onPressed: () =>
@@ -276,123 +290,119 @@ Container tabDURInformation(BuildContext context,
                     ))
               ],
             )),
-        blankBox(flex: 1),
         Expanded(
             flex: 8,
-            child: SingleChildScrollView(
-                controller: _controller,
-                child: Column(
+            child: ListView(controller: _controller, shrinkWrap: true,
+                // child: Column(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                      child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Container(
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: 'DUR 일련번호', content: data.dur.durSeq)
-                              : SizedBox(),
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '단일 / 복합', content: data.dur.mix)
-                              : SizedBox(),
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: 'DUR 성분명',
-                                  content: data.dur.ingrEngName != null
-                                      ? data.dur.ingrKorName +
-                                          " (${data.dur.ingrEngName})"
-                                      : data.dur.ingrKorName)
-                              : SizedBox(),
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '금기 내용',
-                                  content: data.dur.prohbtContent)
-                              : SizedBox()
-                        ],
-                      )),
-                      Divider(
-                        color: colorAAA,
-                      ),
-                      // 병용금기 내용 ===============================================
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      makeBoldTitle(
-                          title:
-                              data.dur != null ? data.dur.typeName : 'DUR 유형',
-                          size: 16.0,
-                          color: colorThemeGreen),
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                      // 병용금기 관련 내용
-                      Container(
-                          // padding: EdgeInsets.only(
-                          //     left:
-                          //         MediaQuery.of(context).size.width * 0.025),
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          // 병용금기 DUR 번호 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 DUR 번호',
-                                  content: data.dur.mixtureDurSeq)
-                              : SizedBox(),
-                          // 병용금기 DUR 성분명 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 DUR 성분명',
-                                  content: data.dur.mixtureIngrKorName)
-                              : SizedBox(),
-                          // 병용금기 품목 기준 코드 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 품목 기준 코드',
-                                  content: data.dur.mixtureItemSeq)
-                              : SizedBox(),
-                          // 병용금기 품목명 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 품목명',
-                                  content: data.dur.mixtureItemName)
-                              //: '정보가 없습니다.',
-                              : SizedBox(),
-                          // 병용금기 DUR 번호 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 제형',
-                                  content: data.dur.mixtureFormName)
-                              : SizedBox(),
-                          // 병용금기 전문 / 일반 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 전문 / 일반',
-                                  content: data.dur.mixtureEtcOtcName)
-                              : SizedBox(),
-                          // 병용금기 약효분류 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 약효 분류',
-                                  content: data.dur.mixtureClassName)
-                              : SizedBox(),
-                          // 병용금기 주성분 --------------------------
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 주성분',
-                                  content: data.dur.mixtureMainIngr)
-                              : SizedBox(),
-                          // 병용금기 성상
-                          data.dur != null
-                              ? tabInformationSubItem(
-                                  title: '병용금기 성상',
-                                  content: data.dur.mixtureChart)
-                              : SizedBox()
-                        ],
-                      ))
-                    ])))
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: 'DUR 일련번호', content: data.dur.durSeq)
+                          : SizedBox(),
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '단일 / 복합', content: data.dur.mix)
+                          : SizedBox(),
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: 'DUR 성분명',
+                              content: data.dur.ingrEngName != null
+                                  ? data.dur.ingrKorName +
+                                      " (${data.dur.ingrEngName})"
+                                  : data.dur.ingrKorName)
+                          : SizedBox(),
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '금기 내용', content: data.dur.prohbtContent)
+                          : SizedBox()
+                    ],
+                  )),
+                  Divider(
+                    color: colorAAA,
+                  ),
+                  // 병용금기 내용 ===============================================
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  makeBoldTitle(
+                      title: data.dur != null ? data.dur.typeName : 'DUR 유형',
+                      size: 16.0,
+                      color: colorThemeGreen),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  // 병용금기 관련 내용
+                  Container(
+                      // padding: EdgeInsets.only(
+                      //     left:
+                      //         MediaQuery.of(context).size.width * 0.025),
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // 병용금기 DUR 번호 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 DUR 번호',
+                              content: data.dur.mixtureDurSeq)
+                          : SizedBox(),
+                      // 병용금기 DUR 성분명 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 DUR 성분명',
+                              content: data.dur.mixtureIngrKorName)
+                          : SizedBox(),
+                      // 병용금기 품목 기준 코드 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 품목 기준 코드',
+                              content: data.dur.mixtureItemSeq)
+                          : SizedBox(),
+                      // 병용금기 품목명 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 품목명',
+                              content: data.dur.mixtureItemName)
+                          //: '정보가 없습니다.',
+                          : SizedBox(),
+                      // 병용금기 DUR 번호 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 제형',
+                              content: data.dur.mixtureFormName)
+                          : SizedBox(),
+                      // 병용금기 전문 / 일반 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 전문 / 일반',
+                              content: data.dur.mixtureEtcOtcName)
+                          : SizedBox(),
+                      // 병용금기 약효분류 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 약효 분류',
+                              content: data.dur.mixtureClassName)
+                          : SizedBox(),
+                      // 병용금기 주성분 --------------------------
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 주성분',
+                              content: data.dur.mixtureMainIngr)
+                          : SizedBox(),
+                      // 병용금기 성상
+                      data.dur != null
+                          ? tabInformationSubItem(
+                              title: '병용금기 성상', content: data.dur.mixtureChart)
+                          : SizedBox()
+                    ],
+                  ))
+                ]))
+        //)
       ],
     ),
   );
