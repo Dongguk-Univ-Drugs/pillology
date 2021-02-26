@@ -66,26 +66,21 @@ class _ResultDetailState extends State<ResultDetail>
     // ★ DUR 품목 조회 → 모델이 다름...
     String durinfoAPI = 'getDurPrdlstInfoList';
 
-    // api call
-    // API 명칭 : DUR 성분정보
-    final usjntRes = await apiCall(usjntAPI);
-    // prd another model
-    final durinfoRes = await apiCall(durinfoAPI);
+    return await Future.wait([apiCall(usjntAPI), apiCall(durinfoAPI)])
+        .then((List res) {
+      var usjntJson = json.decode(res[0].body)['body'];
+      var durinfoJson = json.decode(res[1].body)['body'];
 
-    if (usjntRes.statusCode == 200) {
-      var usjntJson = json.decode(usjntRes.body)['body'];
-      var durinfoJson = json.decode(durinfoRes.body)['body'];
-
-      var sendResult = [usjntJson, durinfoJson];
-      // var sendResult = {
-      //   0 : usjntJson,
-      //   1 : durinfoJson
-      // };
-      // return json.decode(usjntRes.body)['body'];
-      return sendResult;
-    } else {
-      throw Exception('Failed to load DUR information');
-    }
+      if (usjntJson['items'] == null) print('병용금기 X');
+      if (durinfoJson['items'] == null) print('DUR 품목조회 X');
+      // if (usjntJson['items'] != null && durinfoJson['items'] != null) {
+      //   var result = [usjntJson, durinfoJson];
+      //   return result;
+      // } else
+      //   return throw Exception('no items List !');
+      var result = [usjntJson, durinfoJson];
+      return result;
+    }).catchError((err) => throw Exception(err));
   }
 
   @override
@@ -113,22 +108,28 @@ class _ResultDetailState extends State<ResultDetail>
           } else if (!snapshot.hasData) {
             return loadingPage(context);
           } else {
-            // TotalDurSearchResult _total =
-            //     TotalDurSearchResult.fromJson(snapshot.data, 0);
             var totalList = snapshot.data;
             // total data
-            TotalDurSearchResult _total =
-                TotalDurSearchResult.fromJson(totalList[0], 0);
-            TotalDurSearchResult _durInfoTotal =
-                TotalDurSearchResult.fromJson(totalList[1], 1);
-
+            TotalDurSearchResult _total;
+            TotalDurSearchResult _durInfoTotal;
             // get list
-            List<DurPrdSearchResult> _listDUR = List.from(_durInfoTotal.items);
-            List<DurSearchResult> _list = List.from(_total.items);
-
+            List<DurSearchResult> _list;
+            List<DurPrdSearchResult> _listDUR;
             // set one result
-            DurSearchResult _item = _list[0]; // latest !
-            DurPrdSearchResult _itemPrd = _listDUR[0];
+            DurSearchResult _item;
+            DurPrdSearchResult _itemPrd;
+
+            if (totalList[0]['items'] != null) {
+              _total = TotalDurSearchResult.fromJson(totalList[0], 0);
+              _list = List.from(_total.items);
+              _item = _list[0]; // latest !
+            }
+
+            if (totalList[1]['items'] != null) {
+              _durInfoTotal = TotalDurSearchResult.fromJson(totalList[1], 1);
+              _listDUR = List.from(_durInfoTotal.items);
+              _itemPrd = _listDUR[0];
+            }
 
             // into One Object
             ParsedSearchResult psd = new ParsedSearchResult(

@@ -252,6 +252,7 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
+// 홈 - 검색창
   Widget searchBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

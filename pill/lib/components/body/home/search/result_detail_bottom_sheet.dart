@@ -178,6 +178,7 @@ Widget zoomInTabDUR(BuildContext context, final ParsedSearchResult data) {
                                   child: Column(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
                                       SizedBox(
                                         height: 8.0,

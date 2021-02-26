@@ -19,11 +19,15 @@ class TotalDurSearchResult {
       Map<String, dynamic> parsedJson, int flag) {
     var itemList = parsedJson['items'] as List;
     var _itemList;
-    if (flag == 0) {
-      _itemList = itemList.map((e) => DurSearchResult.fromJson(e)).toList();
-    } else if (flag == 1) {
-      _itemList = itemList.map((e) => DurPrdSearchResult.fromJson(e)).toList();
-    }
+    if (itemList != null) {
+      if (flag == 0) {
+        _itemList = itemList.map((e) => DurSearchResult.fromJson(e)).toList();
+      } else if (flag == 1) {
+        _itemList =
+            itemList.map((e) => DurPrdSearchResult.fromJson(e)).toList();
+      }
+    } else
+      _itemList = [];
 
     return TotalDurSearchResult(
         resultCode: parsedJson['resultCode'],
@@ -36,7 +40,7 @@ class TotalDurSearchResult {
 }
 
 String returnNonEmpty(final data) {
-  return data != null ? data : null;
+  return data != null ? data : '정보가 없습니다.';
 }
 
 class DurSearchResult {
@@ -129,6 +133,7 @@ class DurSearchResult {
       this.remark});
 
   factory DurSearchResult.fromJson(Map<String, dynamic> json) {
+    
     return DurSearchResult(
         // DUR info
         durSeq: returnNonEmpty(json['DUR_SEQ']),
@@ -246,7 +251,7 @@ class DurPrdSearchResult {
       reexamTarget: returnNonEmpty(json['REEXAM_TARGET']),
       reexamDate: returnNonEmpty(json['REEXAM_DATE']),
       packUnit: returnNonEmpty(json['PACK_UNIT']),
-      ediCode: returnNonEmpty(json['EDI_DATE']),
+      ediCode: returnNonEmpty(json['EDI_CODE']),
       cancelDate: returnNonEmpty(json['CANCEL_DATE']),
       cancelName: returnNonEmpty(json['CANCEL_NAME']),
       changeDate: returnNonEmpty(json['CHANGE_DATE']),
