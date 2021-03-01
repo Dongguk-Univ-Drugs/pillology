@@ -20,6 +20,7 @@ class CalendarDatabase {
   // add new pill data
   Future<PersonalPillInfo> saveData(Map pillinfo) async {
     var jsonResponse = null;
+    print(pillinfo);
     var response =
         await http.post("http://localhost:27017/user/pilldb", body: pillinfo);
 
@@ -28,19 +29,19 @@ class CalendarDatabase {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
     } else {
+      print(response.statusCode);
       print('Response body: ${response.body}');
     }
   }
 
   // edit pill data
   void editPillInfo(PersonalPillInfo pillinfo) async {
-    String myUrl =
-        "http://localhost:27017/user/pilldb/601b9b30e763c78789064316";
+    final _id = pillinfo.id;
+    String myUrl = "http://localhost:27017/user/pilldb/$_id";
 
     http.put(myUrl, body: pillinfo.toJson()).then((response) {
       print('Response status : ${response.statusCode}');
       print('Response body : ${response.body}');
     });
-    
   }
 }

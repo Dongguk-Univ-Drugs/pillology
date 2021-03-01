@@ -3,6 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 @JsonSerializable()
 class PersonalPillInfo {
   @JsonKey(name: "_id")
+  String id;
   String pillname = '';
   String startDate;
   String endDate;
@@ -14,7 +15,8 @@ class PersonalPillInfo {
   String isEveningTimeSet;
 
   PersonalPillInfo(
-      {this.pillname,
+      {this.id,
+      this.pillname,
       this.startDate,
       this.endDate,
       this.morningTime,
@@ -26,6 +28,7 @@ class PersonalPillInfo {
 
   factory PersonalPillInfo.fromJson(Map<String, dynamic> pillMap) {
     return PersonalPillInfo(
+      id: pillMap['_id'],
       pillname: pillMap['pillname'],
       startDate: pillMap['startDate'],
       endDate: pillMap['endDate'],
@@ -39,6 +42,7 @@ class PersonalPillInfo {
   }
 
   Map<String, dynamic> toJson() => {
+        '_id': id,
         'pillname': pillname,
         'startDate': startDate,
         'endDate': endDate,

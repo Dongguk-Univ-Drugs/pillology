@@ -16,26 +16,12 @@ import 'package:http/http.dart' as http;
 final Map<DateTime, List> _holidays = {
   DateTime(2021, 1, 1): ['New Year\'s Day'],
 };
-final _currentDate =
+var _currentDate =
     DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
 class CalendarPage extends StatefulWidget {
   @override
   _CalendarPageState createState() => _CalendarPageState();
-}
-
-Future<PersonalPillInfo> updateData(Map pillinfo) async {
-  var jsonResponse = null;
-  var response =
-      await http.post("http://localhost:27017/user/pilldb", body: pillinfo);
-
-  if (response.statusCode == 200) {
-    jsonResponse = json.decode(response.body);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-  } else {
-    print('Response body: ${response.body}');
-  }
 }
 
 class _CalendarPageState extends State<CalendarPage>
@@ -63,7 +49,6 @@ class _CalendarPageState extends State<CalendarPage>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-
     _animationController.forward();
   }
 
@@ -218,6 +203,7 @@ class _CalendarPageState extends State<CalendarPage>
   void addPillDetail(BuildContext context) {
     var difference;
     Map<String, dynamic> pillinfo = {
+      "_id": "",
       "pillname": "테스트1",
       "startDate": DateTime(
               DateTime.now().year, DateTime.now().month, DateTime.now().day)
@@ -366,7 +352,7 @@ class _CalendarPageState extends State<CalendarPage>
                                     showTitleActions: true,
                                     onChanged: (date) {}, onConfirm: (date) {
                                   setState(() {
-                                    this._pillInfo[index].startDate = DateTime(
+                                    this._pillInfo[index].endDate = DateTime(
                                             date.year, date.month, date.day)
                                         .toString();
                                   });
@@ -565,7 +551,7 @@ class _CalendarPageState extends State<CalendarPage>
   }
 
   void showPillDetail(BuildContext context, String pillname) {
-    var original_difference, difference;
+    var difference;
     var index;
     for (int i = 0; i < _pillInfo.length; i++) {
       if (pillname == _pillInfo[i].pillname) {
@@ -598,23 +584,23 @@ class _CalendarPageState extends State<CalendarPage>
                           FlatButton(
                               onPressed: () {
                                 // 달력에 표시
-                                // TODO: 이중으로 표시되는 문제 해결해야 함.
                                 difference =
                                     DateTime.parse(_pillInfo[index].endDate)
                                         .difference(DateTime.parse(
                                             _pillInfo[index].startDate))
                                         .inDays;
-                                        print(pillname);
-                                        print("before : $_events");
-                                      
-                                _events.removeWhere(
-                                    (key, value) => value[0].toString() == pillname);
-                                        print("after:  $_events");
 
+                                // _events에서 삭제하고 추가
+                                _events.forEach((key, value) {
+                                  for (int i = 0; i < value.length; i++) {
+                                    if (value[i] == pillname) {
+                                      value.removeAt(i);
+                                    }
+                                  }
+                                });
                                 for (int i = 0; i <= difference; i++) {
                                   DateTime dateTime = DateTime.parse(
                                       _pillInfo[index].startDate);
-                                  print("dateTime : $dateTime");
                                   if (_events[DateTime(dateTime.year,
                                           dateTime.month, dateTime.day + i)] ==
                                       null) {
@@ -726,7 +712,7 @@ class _CalendarPageState extends State<CalendarPage>
                                     showTitleActions: true,
                                     onChanged: (date) {}, onConfirm: (date) {
                                   setState(() {
-                                    this._pillInfo[index].startDate = DateTime(
+                                    this._pillInfo[index].endDate = DateTime(
                                             date.year, date.month, date.day)
                                         .toString();
                                   });

@@ -25,24 +25,16 @@ exports.postPills = async (req, res) => {
             startDate: startDate, endDate: endDate, morningTime: morningTime, afternoonTime: afternoonTime, eveningTime: eveningTime,
             isMorningTimeSet: isMorningTimeSet, isAfternoonTimeSet: isAfternoonTimeSet, isEveningTimeSet: isEveningTimeSet
         });
+        await PillModel.create(pill);
 
-        await PillModel.insertOne(pill);
     } catch (e) {
         console.log(e)
         res.status(500).send('There was a problem posting pill info');
     }
 }
 
-exports.view = function (req, res) {
-    PillModel.findById(req.params.id, function (err, result) {
-        if (err) {
-            console.log(err);
-        }
-        res.json(result);
-    })
-}
-
 exports.update = (req, res) => {
+
     PillModel.findById(req.params.id, function (err, result) {
         if (err){
             res.json({
@@ -73,13 +65,22 @@ exports.update = (req, res) => {
         })
     })
 }
-
-exports.condition = async (req, res) => {
-    try {
-        console.log('Request Id:', req.params.id);
-
-    } catch (e) {
-        console.log(e)
-        res.status(500).send('id error');
-    }
+/*
+exports.condition = (req, res) => {
+    PillModel.find({ pillname: req.body.pillname})
+        .then((result) => {
+            if (!result.length)
+                return res.status(404).send({ err: 'not found !' });
+            res.json(result);
+        })
+        .catch((err) => res.status(500).send(err));
 }
+exports.view = function (req, res) {
+    PillModel.findById(req.params.id, function (err, result) {
+        if (err) {
+            console.log(err);
+        }
+        res.json(result);
+    })
+}
+*/
