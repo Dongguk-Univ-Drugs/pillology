@@ -115,8 +115,8 @@ class _CalendarPageState extends State<CalendarPage>
                             icon: Image.asset('assets/icons/add-outline.png'),
                             iconSize: 20,
                             onPressed: () {
-                              addPillDetail(context);
                               _pillNameController.text = "";
+                              addPillDetail(context);
                             })
                       ],
                     ),
@@ -193,7 +193,10 @@ class _CalendarPageState extends State<CalendarPage>
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                 child: ListTile(
                   title: Text(pillName.toString()),
-                  onTap: () => showPillDetail(context, pillName),
+                  onTap: () {
+                    _pillNameController.text = "";
+                    showPillDetail(context, pillName);
+                  },
                 ),
               ))
           .toList(),
