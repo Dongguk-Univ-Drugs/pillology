@@ -38,9 +38,9 @@ class _AppState extends State<App> {
       ),
       "screen": HomeScreen()
     },
-    {"pageIndex": 1, "title": "지도", "screen": Text("MAP SCREEN")},
+    {"pageIndex": 1, "title": "지도", "screen": MapPage()},
     {"pageIndex": 2, "title": "캘린더", "screen": CalendarPage()},
-    {"pageIndex": 3, "title": "나의약", "screen": Text("MYINFO SCREEN")}
+    {"pageIndex": 3, "title": "나의약", "screen": PersonalInfoPage()}
   ];
 
   changePage(int index) {
@@ -100,10 +100,10 @@ class _AppState extends State<App> {
                           size: 25)),
                   BottomNavigationBarItem(
                       label: "나의 약",
-                      icon: ImageIcon(AssetImage('assets/icons/person.png'),
+                      icon: ImageIcon(AssetImage('assets/icons/person-outline.png'),
                           size: 25),
                       activeIcon: ImageIcon(
-                          AssetImage('assets/icons/person-outline.png'),
+                          AssetImage('assets/icons/person.png'),
                           size: 25))
                 ],
               ),

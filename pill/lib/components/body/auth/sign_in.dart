@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class MapPage extends StatefulWidget {
+class SignInPage extends StatefulWidget {
   @override
-  _MapPageState createState() => _MapPageState();
+  _SignInPageState createState() => _SignInPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     super.initState();
@@ -14,7 +14,7 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text("Map Screen")
+      child: Text("로그인")
     );
   }
 }

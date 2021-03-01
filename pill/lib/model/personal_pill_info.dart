@@ -1,23 +1,56 @@
+import 'package:json_annotation/json_annotation.dart';
+
+@JsonSerializable()
 class PersonalPillInfo {
-  String pillName = '';
-  DateTime startDate = DateTime.now();
-  DateTime endDate = DateTime.now();
+  @JsonKey(name: "_id")
+  String id;
+  String pillname = '';
+  String startDate;
+  String endDate;
   String morningTime;
   String afternoonTime;
   String eveningTime;
-  bool isMorningTimeSet = false;
-  bool isAfternoonTimeSet = false;
-  bool isEveningTimeSet = false;
-  PersonalPillInfo(String pillName, DateTime startDate, DateTime endDate, String morningTime, String afternoonTime, String eveningTime,
-      bool isMorningTimeSet, bool isAfternoonTimeSet, bool isEveningTimeSet) {
-    this.pillName = pillName;
-    this.startDate = startDate;
-    this.endDate = endDate;
-    this.morningTime = morningTime;
-    this.afternoonTime = afternoonTime;
-    this.eveningTime = eveningTime;
-    this.isMorningTimeSet = isMorningTimeSet;
-    this.isAfternoonTimeSet = isAfternoonTimeSet;
-    this.isEveningTimeSet = isEveningTimeSet;
+  String isMorningTimeSet;
+  String isAfternoonTimeSet;
+  String isEveningTimeSet;
+
+  PersonalPillInfo(
+      {this.id,
+      this.pillname,
+      this.startDate,
+      this.endDate,
+      this.morningTime,
+      this.afternoonTime,
+      this.eveningTime,
+      this.isMorningTimeSet,
+      this.isAfternoonTimeSet,
+      this.isEveningTimeSet});
+
+  factory PersonalPillInfo.fromJson(Map<String, dynamic> pillMap) {
+    return PersonalPillInfo(
+      id: pillMap['_id'],
+      pillname: pillMap['pillname'],
+      startDate: pillMap['startDate'],
+      endDate: pillMap['endDate'],
+      morningTime: pillMap['morningTime'],
+      afternoonTime: pillMap['afternoonTime'],
+      eveningTime: pillMap['eveningTime'],
+      isMorningTimeSet: pillMap['isMorningTimeSet'],
+      isAfternoonTimeSet: pillMap['isAfternoonTimeSet'],
+      isEveningTimeSet: pillMap['isEveningTimeSet'],
+    );
   }
+
+  Map<String, dynamic> toJson() => {
+        '_id': id,
+        'pillname': pillname,
+        'startDate': startDate,
+        'endDate': endDate,
+        'morningTime': morningTime,
+        'afternoonTime': afternoonTime,
+        'eveningTime': eveningTime,
+        'isMorningTimeSet': isMorningTimeSet,
+        'isAfternoonTimeSet': isAfternoonTimeSet,
+        'isEveningTimeSet': isEveningTimeSet,
+      };
 }

@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const bodyparser = require('body-parser');
 // app
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 27017;
 
 // Static File Service
 app.use(express.static('public'));
@@ -23,6 +23,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 .catch((e) => console.error(e));
 
 // router
-app.use('/index', require('./routes/index'));
+const routes = require('./routes');
 
+app.use('/', routes);
 app.listen(port, () => console.log(`server listening on port ${port}`));

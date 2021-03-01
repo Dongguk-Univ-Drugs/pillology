@@ -1,15 +1,8 @@
-const router = require('express').Router();
-const model = require('../models/shema');
+const express = require('express');
+const router = express.Router();
 
-// find all
-router.get('/', (req, res) => {
-    model.findAll()
-        .then((result) => {
-            if (!result.length)
-                return res.status(404).send({ err: 'not found !' });
-            res.send(result);
-        })
-        .catch((err) => res.status(500).send(err));
-})
+const user = require('./users/index');
+
+router.use('/user', user);
 
 module.exports = router;
