@@ -48,7 +48,7 @@ class TextSearchResult {
       // kor name
       _korName = name.substring(0, name.indexOf("(수출명:"));
       // eng name
-      _engName = name.substring(name.indexOf("(수출명:") + 1, name.length - 1);
+      _engName = name.substring(name.indexOf("(수출명:") + 5, name.length - 1);
     } else {
       _korName = name;
       _engName = '';
@@ -148,7 +148,8 @@ class ResponseBody {
             _itemList.add(value);
         }
       });
-    } else print('itemList as Map not working');
+    } else
+      print('itemList as Map not working');
 
     List<TextSearchResult> parsedList =
         _itemList.map((element) => TextSearchResult.fromJson(element)).toList();
