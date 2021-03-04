@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // text editing controller
   TextEditingController searchController = new TextEditingController();
+  FocusNode searchNode = new FocusNode();
 
   // sqlite data
   var fetchedData;
@@ -46,7 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext context,
             AsyncSnapshot<List<TextSearchData>> snapshot) {
           if (snapshot.hasData) {
-            
             return Center(
                 child: SingleChildScrollView(
                     controller: mainScrollController,
@@ -117,39 +117,48 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 CrossAxisAlignment.stretch,
                                             children: [
                                               Expanded(
-                                                flex: 2,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 7,
-                                                      child: makeBoldTitle(
-                                                    title: '최근 검색어',
-                                                    color: color333,
-                                                    size: MediaQuery.of(context)
-                                                            .size
-                                                            .width *
-                                                        0.04)
-                                                    ),
-                                                    blankBox(flex:1),
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: TextButton(
-                                                        child: Icon(Icons.delete_outline_rounded, size: 22, color: colorAAA,),
-                                                        onPressed: () { 
-                                                          TextSearchDataProvider().deleteAllTexts();
-                                                          setState(() {
-                                                                  fetchedData =
-                                                                      TextSearchDataProvider()
-                                                                          .getAllTexts();
-                                                                });
-                                                        },
-                                                      ),
-                                                    )   
-                                                  ],
-                                                )
-                                              ),
+                                                  flex: 2,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Expanded(
+                                                          flex: 7,
+                                                          child: makeBoldTitle(
+                                                              title: '최근 검색어',
+                                                              color: color333,
+                                                              size: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width *
+                                                                  0.04)),
+                                                      blankBox(flex: 1),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: TextButton(
+                                                          child: Icon(
+                                                            Icons
+                                                                .delete_outline_rounded,
+                                                            size: 22,
+                                                            color: colorAAA,
+                                                          ),
+                                                          onPressed: () {
+                                                            TextSearchDataProvider()
+                                                                .deleteAllTexts();
+                                                            setState(() {
+                                                              fetchedData =
+                                                                  TextSearchDataProvider()
+                                                                      .getAllTexts();
+                                                            });
+                                                          },
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )),
                                               Expanded(
                                                 flex: 8,
                                                 child: ListView.builder(
@@ -191,14 +200,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 .center,
                                                         children: [
                                                           Expanded(
-                                                            flex: 6,
-                                                            child: GestureDetector(
-                                                              onTap: () => searchController.text = data.name,
-                                                              child:   makeSemiTitle(
+                                                              flex: 6,
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () =>
+                                                                    searchController
+                                                                            .text =
+                                                                        data.name,
+                                                                child: makeSemiTitle(
                                                                     title: data
                                                                         .name),
-                                                            )
-                                                          ),
+                                                              )),
                                                           blankBox(flex: 1),
                                                           Expanded(
                                                             flex: 2,
@@ -219,10 +231,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             .data
                                                                             .length -
                                                                         index);
-                                                                        print(snapshot
-                                                                            .data
-                                                                            .length -
-                                                                        index);
+                                                                print(snapshot
+                                                                        .data
+                                                                        .length -
+                                                                    index);
                                                                 setState(() {
                                                                   fetchedData =
                                                                       TextSearchDataProvider()
@@ -263,6 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 margin: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width * 0.02),
                 child: TextFormField(
+                  focusNode: searchNode,
                   controller: searchController,
                   decoration: inputDecoration("검색하려는 약품명을 입력해주세요."),
                   onTap: () {
@@ -294,31 +307,55 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: color777,
                 ),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchResult(
-                              itemName: searchController.text))).then((value) {
-                    String _mm, _dd;
-                    // month
-                    if (DateTime.now().month < 10)
-                      _mm = '0' + DateTime.now().month.toString();
-                    else
-                      _mm = DateTime.now().month.toString();
+                  // check text is not null
+                  if (searchController.text.length > 0) {
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SearchResult(
+                                    itemName: searchController.text)))
+                        .then((value) {
+                      String _mm, _dd;
+                      // month
+                      if (DateTime.now().month < 10)
+                        _mm = '0' + DateTime.now().month.toString();
+                      else
+                        _mm = DateTime.now().month.toString();
 
-                    // date
-                    if (DateTime.now().day < 10)
-                      _dd = '0' + DateTime.now().day.toString();
-                    else
-                      _dd = DateTime.now().day.toString();
+                      // date
+                      if (DateTime.now().day < 10)
+                        _dd = '0' + DateTime.now().day.toString();
+                      else
+                        _dd = DateTime.now().day.toString();
 
-                    String _date =
-                        DateTime.now().year.toString() + '-' + _mm + '-' + _dd;
-                    
-                    TextSearchDataProvider().createData(new TextSearchData(
-                        name: searchController.text, date: _date));
-                  });
-                  
+                      String _date = DateTime.now().year.toString() +
+                          '-' +
+                          _mm +
+                          '-' +
+                          _dd;
+
+                      TextSearchDataProvider().createData(new TextSearchData(
+                          name: searchController.text, date: _date));
+                    });
+                  } else {
+                    final snackBar = SnackBar(
+                      content: Text('검색하실 약품명을 입력해주세요!'),
+                      backgroundColor: colorThemeGreen,
+                      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 5.0),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0)
+                      ),
+                      elevation: 3.0,
+                      action: SnackBarAction(
+                        label: '입력하러가기',
+                        textColor: Colors.blue[700],
+                        onPressed: () => searchNode.requestFocus(), 
+                      ),
+                    );
+                    // show a SnackBar.
+                    Scaffold.of(context).showSnackBar(snackBar);
+                  }
                 }))
       ],
     );
