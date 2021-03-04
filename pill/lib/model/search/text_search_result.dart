@@ -1,3 +1,14 @@
+// parsed Data
+import 'package:pill/model/search/dur_search_result.dart';
+
+class ParsedSearchResult {
+  final TextSearchResult txt;
+  final DurSearchResult dur;
+  final DurPrdSearchResult durPrd;
+
+  ParsedSearchResult({this.dur, this.durPrd, this.txt});
+}
+
 class TextSearchResult {
   final String entpName; // 제조회사 이름
   final String itemName; // 의약품 이름
@@ -37,7 +48,7 @@ class TextSearchResult {
       // kor name
       _korName = name.substring(0, name.indexOf("(수출명:"));
       // eng name
-      _engName = name.substring(name.indexOf("(수출명:") + 1, name.length - 1);
+      _engName = name.substring(name.indexOf("(수출명:") + 5, name.length - 1);
     } else {
       _korName = name;
       _engName = '';
@@ -72,7 +83,7 @@ class TextSearchResult {
         String temp = parsedJson[item];
         _inJson["_" + item] = temp.replaceAll(new RegExp(r"<p>"), '');
         _inJson["_" + item] =
-            _inJson["_" + item].replaceAll(new RegExp(r"</p>"), '\n');
+            _inJson["_" + item].replaceAll(new RegExp(r"</p>"), '\n\n');
       } else {
         _inJson["_" + item] = parsedJson[item];
       }
@@ -130,14 +141,15 @@ class ResponseBody {
     var itemList = json['items'] as List;
     var _itemList = [];
     // list parsing
-    if (itemList.asMap() != null) {
+    if (itemList != null) {
       itemList.asMap().forEach((index, value) {
         if (index + 1 < itemList.length) {
           if (value['itemName'] != itemList[index + 1]['itemName'])
             _itemList.add(value);
         }
       });
-    }
+    } else
+      print('itemList as Map not working');
 
     List<TextSearchResult> parsedList =
         _itemList.map((element) => TextSearchResult.fromJson(element)).toList();

@@ -6,9 +6,9 @@ import 'dart:convert';
 import 'package:pill/components/body/home/search/result_detail_tabview.dart';
 import 'package:pill/components/header/header.dart';
 import 'package:pill/components/loading.dart';
-import 'package:pill/model/dur_search_result.dart';
+import 'package:pill/model/search/dur_search_result.dart';
 // models
-import 'package:pill/model/text_search_result.dart';
+import 'package:pill/model/search/text_search_result.dart';
 // utility
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/palette.dart';
@@ -34,21 +34,53 @@ class _ResultDetailState extends State<ResultDetail>
   var _serviceKey = env['SERVICE_KEY'];
   // DUR 성분
   Future<dynamic> _durResult;
-  Future<dynamic> fetchDURResult() async {
-    // API 명칭 : DUR 성분정보
-    // 병용금기
-    final usjntRes = await http.get(
-        "http://apis.data.go.kr/1470000/DURPrdlstInfoService/getUsjntTabooInfoList?ServiceKey=" +
-            _serviceKey +
-            "&itemName=" +
-            _result.itemName +
-            "&pageNo=1&numOfRows=3&type=json");
 
-    if (usjntRes.statusCode == 200) {
-      return json.decode(usjntRes.body)['body'];
-    } else {
-      throw Exception('Failed to load DUR information');
-    }
+  // api call function
+  Future<http.Response> apiCall(String api) {
+    return http.get("http://apis.data.go.kr/1470000/DURPrdlstInfoService/" +
+        api +
+        "?ServiceKey=" +
+        _serviceKey +
+        "&itemName=" +
+        _result.itemName +
+        "&pageNo=1&numOfRows=3&type=json");
+  }
+
+  Future<dynamic> fetchDURResult() async {
+    // 병용금기
+    String usjntAPI = 'getUsjntTabooInfoList';
+    // 특정 연령 금기
+    String spcifyagAPI = 'getSpcifyAgrdeTabooInfoList';
+    // 임부 금기
+    String prgntAPI = 'getPwnmTabooInfoList';
+    // 용량 주의
+    String cpctyAPI = 'getCpctyAtentInfoList';
+    // 투여 기간 주의
+    String mdlatAPI = 'getMdctnPdAtentInfoList';
+    // 노인 주의
+    String oldmanAPI = 'getOdsnAtentInfoList';
+    // 효능군 중복 조회
+    String efcyDulAPI = 'getEfcyDplctInfoList';
+    // 서방정 분할 주의 정보조회
+    String seodivAPI = 'getSeobangjeongPartitnAtentInfoList';
+    // ★ DUR 품목 조회 → 모델이 다름...
+    String durinfoAPI = 'getDurPrdlstInfoList';
+
+    return await Future.wait([apiCall(usjntAPI), apiCall(durinfoAPI)])
+        .then((List res) {
+      var usjntJson = json.decode(res[0].body)['body'];
+      var durinfoJson = json.decode(res[1].body)['body'];
+
+      if (usjntJson['items'] == null) print('병용금기 X');
+      if (durinfoJson['items'] == null) print('DUR 품목조회 X');
+      // if (usjntJson['items'] != null && durinfoJson['items'] != null) {
+      //   var result = [usjntJson, durinfoJson];
+      //   return result;
+      // } else
+      //   return throw Exception('no items List !');
+      var result = [usjntJson, durinfoJson];
+      return result;
+    }).catchError((err) => throw Exception(err));
   }
 
   @override
@@ -76,12 +108,32 @@ class _ResultDetailState extends State<ResultDetail>
           } else if (!snapshot.hasData) {
             return loadingPage(context);
           } else {
-            TotalDurSearchResult _total =
-                TotalDurSearchResult.fromJson(snapshot.data);
-            List<DurSearchResult> _list = List.from(_total.items);
-
+            var totalList = snapshot.data;
+            // total data
+            TotalDurSearchResult _total;
+            TotalDurSearchResult _durInfoTotal;
+            // get list
+            List<DurSearchResult> _list;
+            List<DurPrdSearchResult> _listDUR;
             // set one result
-            DurSearchResult _item = _list[0]; // latest !
+            DurSearchResult _item;
+            DurPrdSearchResult _itemPrd;
+
+            if (totalList[0]['items'] != null) {
+              _total = TotalDurSearchResult.fromJson(totalList[0], 0);
+              _list = List.from(_total.items);
+              _item = _list[0]; // latest !
+            }
+
+            if (totalList[1]['items'] != null) {
+              _durInfoTotal = TotalDurSearchResult.fromJson(totalList[1], 1);
+              _listDUR = List.from(_durInfoTotal.items);
+              _itemPrd = _listDUR[0];
+            }
+
+            // into One Object
+            ParsedSearchResult psd = new ParsedSearchResult(
+                txt: _result, dur: _item, durPrd: _itemPrd);
 
             return SingleChildScrollView(
               controller: _controller,
@@ -110,8 +162,7 @@ class _ResultDetailState extends State<ResultDetail>
                     Expanded(
                         // tab view : 5 tabs required
                         flex: 7,
-                        child: resultTabView(context, tabController,
-                            data: _result, durData: _item, imagePath: _result.itemImage)),
+                        child: resultTabView(context, tabController, res: psd)),
                     Expanded(
                         // bookmark button
                         flex: 1,
@@ -206,13 +257,16 @@ Widget resultAlert(BuildContext context, {String bewareDrug}) {
     //     normalEnd: bewareDrug != null ? '와 병용 투여시 주의해주세요 !' : '텍스트2',
     //     color: colorThemeGreen,
     //     textAlign: TextAlign.center)
-    child: Text('준 비 중', style: TextStyle(fontSize: 14.0),),
+    child: Text(
+      '준 비 중',
+      style: TextStyle(fontSize: 14.0),
+    ),
   );
 }
 
 // 결과화면 탭 뷰
 Widget resultTabView(BuildContext context, TabController tabController,
-    {TextSearchResult data, DurSearchResult durData, String imagePath}) {
+    {ParsedSearchResult res}) {
   return Container(
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.05,
@@ -255,11 +309,11 @@ Widget resultTabView(BuildContext context, TabController tabController,
               child: TabBarView(
                 controller: tabController,
                 children: [
-                  tabInformation(context, data: data, durData: durData),
-                  tabEfcy(context, data: data),
-                  tabUsage(context, data: data),
-                  tabNotion(context, data: data, imagePath: imagePath),
-                  tabDURInformation(context, durData: durData, imagePath: imagePath),
+                  tabInformation(context, data: res),
+                  tabEfcy(context, data: res),
+                  tabUsage(context, data: res),
+                  tabNotion(context, data: res),
+                  tabDURInformation(context, data: res),
                 ],
               ))
         ],

@@ -42,3 +42,6 @@ app.*.map.json
 
 # environment related
 .env*
+
+# run your own
+*.lock

@@ -13,7 +13,7 @@ import 'package:pill/components/loading.dart';
 import 'package:pill/utility/box_decoration.dart';
 import 'package:pill/utility/textify.dart';
 // model
-import 'package:pill/model/text_search_result.dart';
+import 'package:pill/model/search/text_search_result.dart';
 
 class SearchResult extends StatefulWidget {
   final String entpName, itemName;
