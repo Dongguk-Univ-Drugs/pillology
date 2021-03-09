@@ -44,12 +44,12 @@ const startServer = async () => {
 
     const app = express();
 
-    init({ app: app });
+    await init(app);
     
     app.listen(config.port, err => {
         if (err) { console.error(err); return; }
         else console.log(`server listening on port ${config.port}`);
-    })
+    });
 }
 
 startServer();
