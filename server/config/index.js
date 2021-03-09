@@ -5,5 +5,6 @@ dotenv.config();
 
 exports.config = { 
     port : process.env.PORT,
-    databaseURI : process.env.MONGO_URI
+    databaseURI : process.env.MONGO_URI,
+    apiServiceKey : process.env.SERVICE_KEY
 }

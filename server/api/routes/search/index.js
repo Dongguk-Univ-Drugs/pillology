@@ -10,4 +10,7 @@ module.exports = (app) => {
     app.use('/search', router);
 
     const searchService = new SearchService();
+
+    // get item information
+    
 }

@@ -6,9 +6,6 @@ module.exports = class UserService {
     constructor() { }
 
     // functions
-    // getUsers = (req, res, next) => {
-    //     return res.send('respond with a resource');
-    // }
     getUsers = () => {
         try {
             return { status: 200, result: 'Success' };
@@ -19,12 +16,10 @@ module.exports = class UserService {
     }
 
     // findPills
-    findAllPills = () => {
+    findAllPills = async () => {
         try {
-            Pill.find({}, (err, result) => {
-                if (err) return { status: 500, result: err };
-                else return { status: 200, result: result };
-            });
+            const res = await Pill.find({});
+            return { status: 200, result: res };
         } catch (err) {
             console.err(err);
             return { status: 500, result: err };

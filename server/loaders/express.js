@@ -14,7 +14,7 @@ module.exports = async (app) => {
 
     // use custom routes
     const routes = require('../api');
-    app.use('/', routes)
-
+    app.use('/', routes());
+    
     return app;
 }

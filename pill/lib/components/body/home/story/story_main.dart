@@ -21,7 +21,7 @@ class _StoryState extends State<Story> {
   var data;
 
   fetchData() async {
-    final response = await http.get('http://127.0.0.1:3000/index');
+    final response = await http.get('http://127.0.0.1:3000/images');
 
     if (response.statusCode == 200) {
       return JsonArray.fromJson(jsonDecode(response.body));

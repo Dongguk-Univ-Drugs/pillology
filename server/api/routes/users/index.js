@@ -32,8 +32,8 @@ module.exports = (app) => {
     const userService = new UserService();
 
     // get
-    router.get('/', (req, res) => {
-        const { status, result } = userService.findAllPills();
+    router.get('/', async (req, res) => {
+        const { status, result } = await userService.findAllPills();
         if (status === 200) return res.send(result);
         else return res.status(status).send(result);
     });

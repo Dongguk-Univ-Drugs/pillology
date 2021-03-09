@@ -6,6 +6,7 @@ const router = require('express').Router({
 // routes
 const search = require('./routes/search');
 const user =require('./routes/users');
+const image =require('./routes/image');
 
 module.exports = () => {
     const app = router;
@@ -13,6 +14,7 @@ module.exports = () => {
     // routes
     search(app);
     user(app);
-
+    image(app);
+    
     return app;
 }
