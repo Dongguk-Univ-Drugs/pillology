@@ -1,7 +1,21 @@
 ⚠️  App 실행 시 주의사항
-**root 디렉토리**에 .env 파일을 생성해야 앱이 작동합니다.
+**pill 디렉토리**과 **server 디렉토리** 에 .env 파일을 생성해야 앱이 작동합니다.
+1) pill(.env)
 ```
-SERVICE_KEY='API인증키'
+# DB PORT
+PORT=3000
+# 공공데이터포털 KEY
+SERVICE_KEY=인증키
+```
+<em>pill 디렉토리에서의 인증키는 삭제될 예정입니다.</em><br/>
+2) server(.env)
+```
+# port number
+PORT=3000
+# MONGODB URI
+MONGO_URI=mongodb://localhost/pilldb
+# 공공데이터포털API
+SERVICE_KEY=인증키
 ```
 인증키는 [이승환@seunghwanly](https://github.com/seunghwanly) 에게 문의해주세요.
 
