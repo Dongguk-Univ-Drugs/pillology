@@ -345,7 +345,7 @@ class _CalendarPageState extends State<CalendarPage>
                                     locale: LocaleType.ko);
                               },
                               child: Text(
-                                "${DateTime.parse(_pillInfo[index].startDate).year}년 ${DateTime.parse(_pillInfo[index].startDate).month}월 ${DateTime.parse(_pillInfo[index].startDate).day}일",
+                                "${DateTime.parse(_pillInfo[index].startDate).toLocal().year}년 ${DateTime.parse(_pillInfo[index].startDate).toLocal().month}월 ${DateTime.parse(_pillInfo[index].startDate).toLocal().day}일",
                                 style: TextStyle(color: Colors.black),
                               )),
                           Text("종료: "),
@@ -364,7 +364,7 @@ class _CalendarPageState extends State<CalendarPage>
                                     locale: LocaleType.ko);
                               },
                               child: Text(
-                                "${DateTime.parse(_pillInfo[index].endDate).year}년 ${DateTime.parse(_pillInfo[index].endDate).month}월 ${DateTime.parse(_pillInfo[index].endDate).day}일",
+                                "${DateTime.parse(_pillInfo[index].endDate).toLocal().year}년 ${DateTime.parse(_pillInfo[index].endDate).toLocal().month}월 ${DateTime.parse(_pillInfo[index].endDate).toLocal().day}일",
                                 style: TextStyle(color: Colors.black),
                               )),
                         ],
@@ -705,7 +705,7 @@ class _CalendarPageState extends State<CalendarPage>
                                     locale: LocaleType.ko);
                               },
                               child: Text(
-                                "${DateTime.parse(_pillInfo[index].startDate).year}년 ${DateTime.parse(_pillInfo[index].startDate).month}월 ${DateTime.parse(_pillInfo[index].startDate).day}일",
+                                "${DateTime.parse(_pillInfo[index].startDate).toLocal().year}년 ${DateTime.parse(_pillInfo[index].startDate).toLocal().month}월 ${DateTime.parse(_pillInfo[index].startDate).toLocal().day}일",
                                 style: TextStyle(color: Colors.black),
                               )),
                           Text("종료: "),
@@ -724,7 +724,7 @@ class _CalendarPageState extends State<CalendarPage>
                                     locale: LocaleType.ko);
                               },
                               child: Text(
-                                "${DateTime.parse(_pillInfo[index].endDate).year}년 ${DateTime.parse(_pillInfo[index].endDate).month}월 ${DateTime.parse(_pillInfo[index].endDate).day}일",
+                                "${DateTime.parse(_pillInfo[index].endDate).toLocal().year}년 ${DateTime.parse(_pillInfo[index].endDate).toLocal().month}월 ${DateTime.parse(_pillInfo[index].endDate).toLocal().day}일",
                                 style: TextStyle(color: Colors.black),
                               )),
                         ],
