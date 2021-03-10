@@ -18,11 +18,18 @@ SERVICE_KEY='API인증키'
 project
 └───scrapper
 │   │   webScrapper.ipynb
-└───server
+└───server : 3 Layers Architecture
+│   │   .env
+│   └───api
+│   │   └───middlewares
+│   │   └───routes
+│   └───config
+│   └───loaders
 │   └───models
-│   └───routes
+│   └───services
 │   │   app.js
 └───pill
+│   │   .env
 │   └───android
 │   └───ios
 │   └───lib
