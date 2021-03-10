@@ -48,7 +48,11 @@ module.exports = (app) => {
     // update pill
     router.route('/pilldb/:id').put(async (req, res) => {
         const { status, result } = await userService.updatePills(req.params.id, req.body);
-        if (status === 200) return res.send(result);
-        else return res.status(status).send(result);
+        if (status === 200) return res.json(result);
+        else return res.json({
+            status:'err',
+            code:status,
+            message:result
+        });
     })
 }

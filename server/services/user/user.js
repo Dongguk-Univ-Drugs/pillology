@@ -55,24 +55,30 @@ module.exports = class UserService {
     // update
     updatePills = async (id, body) => {
         try {
-            await Pill.findByIdAndUpdate(id, {
-                // update query
+            // console.log('update query > id :' + id);
+            // console.log('\t\tbody:' + JSON.stringify(body))
+
+            const reqBody = {
                 pillname: body.pillname,
                 startDate: body.startDate,
                 endDate: body.endDate,
                 isMorningTimeSet: body.isMorningTimeSet,
                 isAfternoonTimeSet: body.isAfternoonTimeSet,
                 isEveningTimeSet: body.isEveningTimeSet,
-                morningTime: morningTime,
-                afternoonTime: afternoonTime,
+                morningTime: body.morningTime,
+                afternoonTime: body.afternoonTime,
                 eveningTime: body.eveningTime
-            }, (err, result) => {
-                if (err) return { status: 500, result: err };
-                return { status: 200, result: result };
-            })
+            };
+
+            const updatePill = await Pill.findOneAndUpdate({ _id: id }, reqBody, {
+                new: true
+            });
+
+            return { status: 200, result: updatePill };
+
         } catch (err) {
-            console.err(err);
-            return { status: 500, result: 'There was a problem posting pill info' };
+            console.error(err);
+            return { status: 500, result: 'There was a problem updating pill info' };
         }
     }
 }
