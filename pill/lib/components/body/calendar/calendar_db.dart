@@ -1,12 +1,12 @@
 import 'dart:convert';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:pill/model/personal_pill_info.dart';
 
 class CalendarDatabase {
   // get pill data
   Future<List<PersonalPillInfo>> getData() async {
-    final response = await http.get('http://localhost:27017/user');
+    final response = await http.get('http://localhost:${env['PORT']}/user');
     if (response.statusCode == 200) {
       final userMap = json.decode(response.body);
       List<PersonalPillInfo> result = [];
@@ -22,7 +22,7 @@ class CalendarDatabase {
     var jsonResponse = null;
     print(pillinfo);
     var response =
-        await http.post("http://localhost:27017/user/pilldb", body: pillinfo);
+        await http.post("http://localhost:${env['PORT']}/user/pilldb", body: pillinfo);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -37,9 +37,9 @@ class CalendarDatabase {
   // edit pill data
   void editPillInfo(PersonalPillInfo pillinfo) async {
     final _id = pillinfo.id;
-    String myUrl = "http://localhost:27017/user/pilldb/$_id";
+    String myUrl = "http://localhost:${env['PORT']}/user/pilldb/$_id";
 
-    http.put(myUrl, body: pillinfo.toJson()).then((response) {
+    await http.put(myUrl, body: pillinfo.toJson()).then((response) {
       print('Response status : ${response.statusCode}');
       print('Response body : ${response.body}');
     });

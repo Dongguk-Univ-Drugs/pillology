@@ -1,6 +1,6 @@
 const { get } = require('mongoose');
-const { collection } = require('../../models/pillSchema');
-const PillModel = require('../../models/pillSchema');
+const { collection } = require('../../../models/pillSchema');
+const PillModel = require('../../../models/pillSchema');
 
 exports.users = (req, res, next) => {
     res.send('respond with a resource');
